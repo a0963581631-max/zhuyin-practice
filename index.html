@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>注音認讀與標準筆順練習（筆順練習模式版）</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="confettiLayer" aria-hidden="true"></div>
+<button id="helpBtn" class="help-btn" type="button" aria-label="開啟使用說明" title="使用說明">?</button>
+<main>
+<h1>注音認讀與標準筆順練習</h1>
+<p class="lead">可播放標準筆順，也可進入練習模式讓學生依照正確筆畫順序實際描寫。</p>
+
+<section class="top">
+  <div class="card center">
+    <span class="badge">目前選擇</span>
+    <div id="bigSymbol">ㄅ</div>
+    <div id="status">正在載入標準筆順資料……</div>
+    <div class="actions">
+      <button id="speakBtn" class="action">🔊 聽注音</button>
+      <button id="mainPlayBtn" class="action" disabled>✏️ 播放筆順</button>
+      <button id="practiceBtn" class="action practice-btn" disabled>✍️ 練習筆順</button>
+      <button id="vocabBtn" class="action vocab-btn" type="button">📚 詞彙</button>
+    </div>
+
+    <div class="nav-arrows" aria-label="上一個與下一個注音">
+      <button id="prevSymbolBtn" class="nav-btn" type="button" title="上一個注音" aria-label="上一個注音">&lt;</button>
+      <button id="nextSymbolBtn" class="nav-btn" type="button" title="下一個注音" aria-label="下一個注音">&gt;</button>
+    </div>
+    <div class="nav-caption">使用 &lt;、&gt; 快速切換上一個／下一個注音</div>
+
+    <div class="hint-control" aria-label="提示程度設定">
+      <div class="hint-control-title">提示程度滑桿</div>
+      <div class="hint-slider-wrap">
+        <div class="hint-fan-track" aria-hidden="true"></div>
+        <input id="hintLevelRange" type="range" min="0" max="2" step="1" value="2" aria-label="提示程度">
+      </div>
+      <div class="hint-scale">
+        <span>無提示<br>（無綠點、無藍底）</span>
+        <span>部分提示<br>（有綠點、無藍底）</span>
+        <span>完全提示<br>（有綠點、有藍底）</span>
+      </div>
+      <div class="hint-current" id="hintLevelText">目前提示程度：完全提示</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="player">
+      <h2>筆順播放／練習區</h2>
+      <div class="board-wrap">
+        <div class="stage-stack">
+          <svg id="stage" viewBox="0 0 2048 2048" aria-label="注音標準筆順播放區"></svg>
+          <svg id="practiceLayer" viewBox="0 0 2048 2048" aria-label="筆順練習描寫層"></svg>
+        </div>
+      </div>
+      <div class="controls">
+        <button id="playBtn" class="round play" title="播放" disabled>▶</button>
+        <button id="nextBtn" class="round next" title="下一畫" disabled>▶|</button>
+        <button id="replayBtn" class="round replay" title="重播" disabled>↻</button>
+        <button id="clearBtn" class="round clear" title="清除" disabled>×</button>
+      </div>
+      <div class="speed">
+        <span>速度：</span>
+        <label><input type="radio" name="speed" value="slow">慢</label>
+        <label><input type="radio" name="speed" value="medium" checked>中</label>
+        <label><input type="radio" name="speed" value="fast">快</label>
+      </div>
+      <div id="progress">筆順資料載入中</div>
+      <div class="source">筆畫資料來源：教育部《國字標準字體筆順學習網》資料之公開整理檔。</div>
+    </div>
+  </div>
+</section>
+
+<section class="group">
+  <h2>聲母</h2>
+  <div id="initials" class="grid"></div>
+</section>
+<section class="group">
+  <h2>介音與韻母</h2>
+  <div id="finals" class="grid"></div>
+</section>
+<section class="group">
+  <h2>結合韻</h2>
+  <div id="compound" class="grid"></div>
+</section>
+</main>
+
+<div id="vocabBackdrop" class="vocab-backdrop" role="dialog" aria-modal="true" aria-labelledby="vocabTitle">
+  <div class="vocab-modal">
+    <div class="vocab-header">
+      <h2 id="vocabTitle">詞彙</h2>
+      <button id="vocabCloseBtn" class="vocab-close" type="button" aria-label="關閉詞彙">×</button>
+    </div>
+    <div id="vocabNote" class="vocab-note">點選詞卡可聽詞彙，並觀察國字與直式注音的對應關係。</div>
+    <div id="vocabGrid" class="vocab-grid"></div>
+  </div>
+</div>
+
+<div id="helpBackdrop" class="help-backdrop" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+  <div class="help-modal">
+    <div class="help-modal-header">
+      <h2 id="helpTitle">使用說明</h2>
+      <button id="helpCloseBtn" class="help-close" type="button" aria-label="關閉說明">×</button>
+    </div>
+
+    <div class="help-section">
+      <h3>教學功能</h3>
+      <ul>
+        <li><strong>聽注音：</strong>播放目前選擇的注音發音。</li>
+        <li><strong>播放筆順：</strong>依標準筆順逐筆示範，並同步念出筆畫數字。</li>
+        <li><strong>練習筆順：</strong>讓學生直接用滑鼠或手指在方格中描寫。</li>
+        <li><strong>上一個／下一個：</strong>使用 &lt;、&gt; 快速切換注音，不需捲動頁面尋找。</li>
+        <li><strong>十字格線：</strong>協助學生觀察字體位置、上下左右對齊與書寫工整度。</li>
+      </ul>
+    </div>
+
+    <div class="help-section">
+      <h3>練習模式使用方式</h3>
+      <ul>
+        <li>先按「播放筆順」讓學生觀察正確的筆畫順序。</li>
+        <li>再按「練習筆順」進入書寫模式。</li>
+        <li>學生需依序完成每一筆；寫對後才會進入下一筆。</li>
+        <li>寫錯時會播放提示音並請學生再試一次。</li>
+        <li>全部完成後會播放鼓掌與成功音效，提供正向增強。</li>
+      </ul>
+    </div>
+
+    <div class="help-section">
+      <h3>提示程度</h3>
+      <div class="help-levels">
+        <div class="help-level"><strong>無提示：</strong>無綠色起筆點、無藍色下一筆提示。</div>
+        <div class="help-level"><strong>部分提示：</strong>有綠色起筆點、無藍色下一筆提示。</div>
+        <div class="help-level"><strong>完全提示：</strong>有綠色起筆點，也有藍色下一筆提示。</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="data.js"></script>
+<script src="core.js"></script>
+<script src="ui.js"></script>
+</body>
+</html>
