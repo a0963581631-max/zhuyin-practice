@@ -18,7 +18,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Extract embedded media from previous site version
+      - name: Restore home images and music from previous site version
         shell: bash
         run: |
           set -euo pipefail
@@ -38,46 +38,35 @@ jobs:
           for mime, payload in matches:
               groups[mime].append(base64.b64decode(payload))
 
-          expected = {'image/jpeg': 10, 'image/png': 5, 'audio/mpeg': 1}
           actual = {k: len(v) for k, v in groups.items()}
-          if actual != expected:
-              raise SystemExit(f'Unexpected embedded media counts: {actual}; expected {expected}')
+          print('Legacy embedded media counts:', actual)
+          if len(groups['image/jpeg']) != 10:
+              raise SystemExit(f"Expected 10 JPEG home images, found {len(groups['image/jpeg'])}")
+          if len(groups['audio/mpeg']) != 1:
+              raise SystemExit(f"Expected 1 MP3 file, found {len(groups['audio/mpeg'])}")
 
           home = Path('assets/images/home')
-          reading = Path('assets/images/reading')
           audio = Path('assets/audio')
           home.mkdir(parents=True, exist_ok=True)
-          reading.mkdir(parents=True, exist_ok=True)
           audio.mkdir(parents=True, exist_ok=True)
 
           for i, data in enumerate(groups['image/jpeg'], 1):
               (home / f'home-{i:02d}.jpg').write_bytes(data)
 
-          reading_names = [
-              'reading-01-elephant.png',
-              'reading-02-hippo.png',
-              'reading-03-tiger.png',
-              'reading-04-butterfly.png',
-              'reading-05-smile.png',
-          ]
-          for name, data in zip(reading_names, groups['image/png']):
-              (reading / name).write_bytes(data)
-
           (audio / 'shop-music.mp3').write_bytes(groups['audio/mpeg'][0])
-
-          print('Restored 10 JPEG home images, 5 PNG reading images, and 1 MP3 file.')
+          print('Restored 10 JPEG home images and 1 MP3 file.')
           PY
 
       - name: Commit restored assets
         shell: bash
         run: |
           set -euo pipefail
-          git add assets
+          git add assets/images/home assets/audio
           if git diff --cached --quiet; then
-            echo "Assets already restored; no commit needed."
+            echo "Legacy assets already restored; no commit needed."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit -m "Restore media assets for GitHub Pages"
+          git commit -m "Restore home images and music for GitHub Pages"
           git push origin HEAD:main
