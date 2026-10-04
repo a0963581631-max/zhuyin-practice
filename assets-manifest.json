@@ -1,0 +1,103 @@
+{
+  "source_file": "index(1).html",
+  "source_size_bytes": 40384788,
+  "output_index_size_bytes": 186573,
+  "assets": [
+    {
+      "path": "assets/audio/shop-music.mp3",
+      "mime": "audio/mpeg",
+      "size_bytes": 6007118,
+      "sha256": "be7a15fc69f1f67be624fd0da2ced622023b7fc6beecc073e7acc851a9661fff"
+    },
+    {
+      "path": "assets/images/home/home-01.jpg",
+      "mime": "image/jpeg",
+      "size_bytes": 1110408,
+      "sha256": "12b70dd95562c064679fd0dda6cb3a0fd18f91b24fd0c695a0ac0ba9d69cad71"
+    },
+    {
+      "path": "assets/images/home/home-02.jpg",
+      "mime": "image/jpeg",
+      "size_bytes": 1390889,
+      "sha256": "9d7dad04080a021449158d668b6f0beb34f5873a3f5663c21182157f450a0ce7"
+    },
+    {
+      "path": "assets/images/home/home-03.jpg",
+      "mime": "image/jpeg",
+      "size_bytes": 1073059,
+      "sha256": "6905f460a750bf9e5c905aa8b6ac139d437b581a49347936a6587a2bc8a0e7d3"
+    },
+    {
+      "path": "assets/images/home/home-04.jpg",
+      "mime": "image/jpeg",
+      "size_bytes": 536839,
+      "sha256": "706c8f99fb9e7be46b81a53ef3ebebc5bcfcd4f4920281bfb2d35becfbc976a2"
+    },
+    {
+      "path": "assets/images/home/home-05.jpg",
+      "mime": "image/jpeg",
+      "size_bytes": 1198538,
+      "sha256": "ecff76753a6a25e41c0609eb235354d2ae9789a5d9e397f7d15bf602c608295e"
+    },
+    {
+      "path": "assets/images/home/home-06.jpg",
+      "mime": "image/jpeg",
+      "size_bytes": 585848,
+      "sha256": "d32df447a26180e461f09cb2222bcee88678afa0ef7534db68657ce684508874"
+    },
+    {
+      "path": "assets/images/home/home-07.jpg",
+      "mime": "image/jpeg",
+      "size_bytes": 853135,
+      "sha256": "44603f1a4123428ad7ecbfaff568055c5f35819412e476e23e81eca6457efcc8"
+    },
+    {
+      "path": "assets/images/home/home-08.jpg",
+      "mime": "image/jpeg",
+      "size_bytes": 228944,
+      "sha256": "e8a72a585a4852a80ea32723841bfe558061e5b2b35f09e1d7f85448c2d1fd92"
+    },
+    {
+      "path": "assets/images/home/home-09.jpg",
+      "mime": "image/jpeg",
+      "size_bytes": 1477416,
+      "sha256": "6b717c54a5157a8e358ae39d200d332a74ec4ea5c2946f87632ee95fcdb3569a"
+    },
+    {
+      "path": "assets/images/home/home-10.jpg",
+      "mime": "image/jpeg",
+      "size_bytes": 636210,
+      "sha256": "81c544226dc4d7b1443f018a2c25ecb2beedcdbad16a4fd549dc167210f84ac2"
+    },
+    {
+      "path": "assets/images/reading/reading-01-elephant.png",
+      "mime": "image/png",
+      "size_bytes": 3128651,
+      "sha256": "357fcdd2f15dd634cee2d53cba21948416f9d08b9120dc753ecb1bf1f03e39a0"
+    },
+    {
+      "path": "assets/images/reading/reading-02-hippo.png",
+      "mime": "image/png",
+      "size_bytes": 3206650,
+      "sha256": "f8021106e9744fb56d1078a08691f58de6da85ae120b037115f7902879591e64"
+    },
+    {
+      "path": "assets/images/reading/reading-03-tiger.png",
+      "mime": "image/png",
+      "size_bytes": 3180792,
+      "sha256": "ceca19ade08830bf7fa3323f6dcab34d3ba4922a12d312ee6891eff3b54501a2"
+    },
+    {
+      "path": "assets/images/reading/reading-04-butterfly.png",
+      "mime": "image/png",
+      "size_bytes": 2710807,
+      "sha256": "7f08b1aa92c493ed0c2e1f784587055c56c7c8541772bd2adabdd4395c4465e8"
+    },
+    {
+      "path": "assets/images/reading/reading-05-smile.png",
+      "mime": "image/png",
+      "size_bytes": 2823477,
+      "sha256": "91697a0368f784219d5fa5d5ab2457e085d63924639e30c03e9d96ef607d9470"
+    }
+  ]
+}
