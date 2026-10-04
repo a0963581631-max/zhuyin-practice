@@ -3,104 +3,10 @@ name: Optimize homepage slideshow
 on:
   push:
     paths:
-      - '.github/workflows/optimize-home-slideshow.yml'
-
-permissions:
-  contents: write
+      - .github/workflows/optimize-home-slideshow.yml
 
 jobs:
-  optimize-home:
+  test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Update homepage slideshow loading strategy
-        shell: bash
-        run: |
-          set -euo pipefail
-          python3 - <<'PY'
-          from pathlib import Path
-
-          p = Path('index.html')
-          s = p.read_text(encoding='utf-8')
-
-          old_photos = ' const photos = ["assets/images/home/home-01.jpg", "assets/images/home/home-02.jpg", "assets/images/home/home-03.jpg", "assets/images/home/home-04.jpg", "assets/images/home/home-05.jpg", "assets/images/home/home-06.jpg", "assets/images/home/home-07.jpg", "assets/images/home/home-08.jpg", "assets/images/home/home-09.jpg", "assets/images/home/home-10.jpg"];'
-          new_photos = ' const photos = ["assets/images/home/home-01.jpg", "assets/images/home/home-02.jpg", "assets/images/home/home-03.jpg", "assets/images/home/home-04.jpg", "assets/images/home/home-05.jpg", "assets/images/home/home-06.jpg", "assets/images/home/home-07.jpg", "assets/images/home/home-08.jpg"];'
-          if old_photos not in s:
-              raise SystemExit('Expected 10-photo list not found')
-          s = s.replace(old_photos, new_photos, 1)
-
-          old_load = ''' let index=0, active=0, timer=null;
- const animations=[null,null];
- // Decode all embedded photos ahead of their turn to avoid a blank transition.
- photos.forEach(src=>{const image=new Image();image.src=src;});'''
-          new_load = ''' let index=0, active=0, timer=null, initialized=false;
- const animations=[null,null];
- const preloaded=new Set();
- function preloadPhoto(i,priority='low'){
-   const src=photos[(i+photos.length)%photos.length];
-   if(preloaded.has(src)) return;
-   const image=new Image();
-   image.decoding='async';
-   image.fetchPriority=priority;
-   image.src=src;
-   preloaded.add(src);
- }
- function ensureStarted(){
-   if(initialized) return;
-   initialized=true;
-   preloadPhoto(0,'high');
-   preloadPhoto(1,'low');
-   layers[0].style.backgroundImage=`url("${photos[0]}")`;
-   layers[0].dataset.photo='1';
-   layers[0].classList.add('visible');
-   drift(0);
- }'''
-          if old_load not in s:
-              raise SystemExit('Expected eager preload block not found')
-          s = s.replace(old_load, new_load, 1)
-
-          old_next = '''   layers[active].classList.remove('visible');
-   active=next;
- }'''
-          new_next = '''   layers[active].classList.remove('visible');
-   active=next;
-   preloadPhoto(index+1,'low');
- }'''
-          if old_next not in s:
-              raise SystemExit('Expected showNext tail not found')
-          s = s.replace(old_next, new_next, 1)
-
-          old_sync = '''   backdrop.hidden=!home();document.body.classList.toggle('home-active',home());
-   animations.forEach(a=>{if(a) running()?a.play():a.pause();});'''
-          new_sync = '''   const isHome=home();
-   backdrop.hidden=!isHome;document.body.classList.toggle('home-active',isHome);
-   if(isHome) ensureStarted();
-   animations.forEach(a=>{if(a) running()?a.play():a.pause();});'''
-          if old_sync not in s:
-              raise SystemExit('Expected sync block not found')
-          s = s.replace(old_sync, new_sync, 1)
-
-          old_init = ''' layers[0].style.backgroundImage=`url("${photos[0]}")`;
- layers[0].dataset.photo='1';layers[0].classList.add('visible');drift(0);
- window.addEventListener('hashchange',sync);'''
-          if old_init not in s:
-              raise SystemExit('Expected eager initial background block not found')
-          s = s.replace(old_init, " window.addEventListener('hashchange',sync);", 1)
-
-          p.write_text(s, encoding='utf-8')
-          PY
-
-      - name: Commit homepage optimization
-        shell: bash
-        run: |
-          set -euo pipefail
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add index.html
-          git commit -m "Optimize homepage slideshow loading"
-          git push origin HEAD:main
-
-# trigger: 2
+      - run: echo ok
