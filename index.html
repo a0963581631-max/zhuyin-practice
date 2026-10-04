@@ -2712,13 +2712,38 @@ window.addEventListener('readingimagechange',()=>pen.clear());window.addEventLis
 <script id="prettyReadingScript">
 (()=>{
 const slides=window.prettyLessonSlides=[
-  {src:"assets/images/reading/reading-01-elephant.webp",alt:"大象鼻子長"},
-  {src:"assets/images/reading/reading-02-hippo.webp",alt:"河馬長得壯"},
-  {src:"assets/images/reading/reading-03-tiger.webp",alt:"老虎毛皮黃"},
-  {src:"assets/images/reading/reading-04-butterfly.webp",alt:"蝴蝶花衣裳"},
-  {src:"assets/images/reading/reading-05-smile.webp",alt:"笑一笑好漂亮"}
+  {src:"assets/images/reading/reading-01-elephant-fast.webp",alt:"大象鼻子長"},
+  {src:"assets/images/reading/reading-02-hippo-fast.webp",alt:"河馬長得壯"},
+  {src:"assets/images/reading/reading-03-tiger-fast.webp",alt:"老虎毛皮黃"},
+  {src:"assets/images/reading/reading-04-butterfly-fast.webp",alt:"蝴蝶花衣裳"},
+  {src:"assets/images/reading/reading-05-smile-fast.webp",alt:"笑一笑好漂亮"}
 ];
 let index=0;
+// Warm the first card from the Chinese menu; queue the lesson only when relevant.
+const warmedLessonImages=new Set();
+let warmingLessonImages=false;
+function lessonWarmCount(){
+ if(['#chinese-1-first','#chinese-1-first-pretty','#chinese-1-first-pretty-quiz'].includes(location.hash))return slides.length;
+ return ['#chinese','#chinese-1'].includes(location.hash)?1:0;
+}
+async function warmLessonImages(){
+ if(warmingLessonImages||!lessonWarmCount()||document.hidden)return;
+ warmingLessonImages=true;
+ try{
+  const order=[index,...slides.map((_,i)=>i).filter(i=>i!==index)];
+  for(const n of order){
+   if(document.hidden||!lessonWarmCount())break;
+   if(n>=lessonWarmCount()||warmedLessonImages.has(n))continue;
+   const ok=await new Promise(resolve=>{
+    const card=new Image();card.decoding='async';card.fetchPriority='low';
+    card.onload=()=>resolve(true);card.onerror=()=>resolve(false);card.src=slides[n].src;
+   });
+   if(ok)warmedLessonImages.add(n);
+  }
+ }finally{warmingLessonImages=false;}
+}
+window.addEventListener('hashchange',warmLessonImages);
+document.addEventListener('visibilitychange',warmLessonImages);
 const image=document.getElementById('prettyImage'),prev=document.getElementById('prettyPrev'),next=document.getElementById('prettyNext'),position=document.getElementById('prettyPosition');
 function draw(){image.fetchPriority='high';image.src=slides[index].src;image.alt=slides[index].alt;prev.disabled=index===0;next.disabled=index===slides.length-1;position.textContent=(index+1)+' / '+slides.length;}
 function move(delta){stopReading();const target=Math.max(0,Math.min(slides.length-1,index+delta));if(target===index)return;index=target;draw();window.dispatchEvent(new Event('readingimagechange'));}
@@ -2756,10 +2781,7 @@ function markSyllables(indices){
 }
 image.addEventListener('load',()=>{
  maskIndex=-1;if(reading)markSyllables(selectedSyllables);
- // Fetch just the next reading card, after the current card is visible.
- if(location.hash==='#chinese-1-first-pretty'&&index+1<slides.length){
-  const nextImage=new Image();nextImage.fetchPriority='low';nextImage.src=slides[index+1].src;
- }
+ warmLessonImages();
 });
 function resetListen(keepHighlight=false){reading=false;listen.textContent='🔊 聆聽課文';listen.setAttribute('aria-pressed','false');if(!keepHighlight)clearHighlight();}
 function stopReading(){speechToken++;if('speechSynthesis' in window)window.speechSynthesis.cancel();resetListen();audioStatus.textContent='';}
@@ -2804,6 +2826,7 @@ full.addEventListener('click',async()=>{try{if(ownFullscreen&&document.fullscree
 document.addEventListener('fullscreenchange',syncFullscreen);
 window.addEventListener('pagehide',stopReading);
 if(location.hash==='#chinese-1-first-pretty'){draw();requestAnimationFrame(fit);}
+warmLessonImages();
 })();
 </script>
 <script id="prettyQuizScript">
