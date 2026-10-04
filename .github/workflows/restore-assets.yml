@@ -1,4 +1,4 @@
-name: Restore GitHub Pages media assets
+name: Update reading images and remove shop music
 
 on:
   workflow_dispatch:
@@ -10,83 +10,109 @@ permissions:
   contents: write
 
 jobs:
-  restore-assets:
+  update-site:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository with history
+      - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Restore home images and music from previous site version
+      - name: Update reading image sources and remove shop music
         shell: bash
         run: |
           set -euo pipefail
-          OLD_COMMIT="24c503575e2c7a613ee0b35ff2b9aa30ffa659ba"
-          git show "${OLD_COMMIT}:index.html" > /tmp/legacy-index.html
-
           python3 - <<'PY'
-          import base64
+          from pathlib import Path
           import re
-          from pathlib import Path
 
-          source = Path('/tmp/legacy-index.html').read_text(encoding='utf-8')
-          pattern = re.compile(r'data:(image/jpeg|image/png|audio/mpeg);base64,([A-Za-z0-9+/=]+)')
-          groups = {'image/jpeg': [], 'image/png': [], 'audio/mpeg': []}
-          for mime, payload in pattern.findall(source):
-              groups[mime].append(base64.b64decode(payload))
+          path = Path('index.html')
+          html = path.read_text(encoding='utf-8')
 
-          if len(groups['image/jpeg']) != 10:
-              raise SystemExit(f"Expected 10 JPEG home images, found {len(groups['image/jpeg'])}")
-          if len(groups['audio/mpeg']) != 1:
-              raise SystemExit(f"Expected 1 MP3 file, found {len(groups['audio/mpeg'])}")
+          slides = '''const slides=window.prettyLessonSlides=[
+            {src:"assets/images/reading/reading-01-elephant.png",alt:"大象鼻子長"},
+            {src:"assets/images/reading/reading-02-hippo.png",alt:"河馬長得壯"},
+            {src:"assets/images/reading/reading-03-tiger.png",alt:"老虎毛皮黃"},
+            {src:"assets/images/reading/reading-04-butterfly.png",alt:"蝴蝶花衣裳"},
+            {src:"assets/images/reading/reading-05-smile.png",alt:"笑一笑好漂亮"}
+          ];
+          let index=0;'''
 
-          home = Path('assets/images/home')
-          audio = Path('assets/audio')
-          home.mkdir(parents=True, exist_ok=True)
-          audio.mkdir(parents=True, exist_ok=True)
-          for i, data in enumerate(groups['image/jpeg'], 1):
-              (home / f'home-{i:02d}.jpg').write_bytes(data)
-          (audio / 'shop-music.mp3').write_bytes(groups['audio/mpeg'][0])
-          print('Restored 10 JPEG home images and 1 MP3 file.')
+          html, count = re.subn(
+              r'const slides=window\.prettyLessonSlides=\[.*?\];\nlet index=0;',
+              slides,
+              html,
+              count=1,
+              flags=re.S,
+          )
+          if count != 1:
+              raise SystemExit(f'Expected one reading slide block, found {count}')
+
+          html, count = re.subn(
+              r'<div><div class="shop-music-controls" role="group" aria-label="背景音樂控制">.*?</div><span class="shop-tag">生活小超市</span><h2>購物分一分</h2></div>',
+              '<div><span class="shop-tag">生活小超市</span><h2>購物分一分</h2></div>',
+              html,
+              count=1,
+              flags=re.S,
+          )
+          if count != 1:
+              raise SystemExit(f'Expected one music controls block, found {count}')
+
+          html, count = re.subn(r'\s*<audio id="shopMusicAudio"[^>]*></audio>', '', html, count=1)
+          if count != 1:
+              raise SystemExit(f'Expected one shop audio element, found {count}')
+
+          html, count = re.subn(
+              r'/\* Compact teacher music controls in the game\'s upper-left corner\. \*/.*?(?=/\* The hint uses the freed side column;)',
+              '',
+              html,
+              count=1,
+              flags=re.S,
+          )
+          if count != 1:
+              raise SystemExit(f'Expected one music CSS block, found {count}')
+
+          html, count = re.subn(
+              r'/\* Teacher preference stays separate from the temporary narration ducking\. \*/\nconst ShopMusic=\(\(\)=>\{.*?\n\}\)\(\);\n\n(?=const ShopSplit=\(\(\)=>\{)',
+              '',
+              html,
+              count=1,
+              flags=re.S,
+          )
+          if count != 1:
+              raise SystemExit(f'Expected one ShopMusic module, found {count}')
+
+          html = html.replace('ShopMusic.duck();', '')
+
+          html, count = re.subn(
+              r"\n\s*const completedQuestion=question;\n\s*const narration=speakText\(question\.total\+'可以分成'\+question\.taken\+'和'\+question\.answer\+'。',\.72,true\);\n\s*const resumeAfterResult=.*?\n\s*if\(narration\)\{.*?\n\s*\}else resumeAfterResult\(\);",
+              "\n   speakText(question.total+'可以分成'+question.taken+'和'+question.answer+'。',.72,true);",
+              html,
+              count=1,
+              flags=re.S,
+          )
+          if count != 1:
+              raise SystemExit(f'Expected one music-resume narration block, found {count}')
+
+          old_return = "return {enter(){active=true;panel.hidden=false;if(!question)newQuestion();ShopMusic.enter();},leave(){setDrawer(false);active=false;panel.hidden=true;ShopMusic.leave();}};"
+          new_return = "return {enter(){active=true;panel.hidden=false;if(!question)newQuestion();},leave(){setDrawer(false);active=false;panel.hidden=true;}};"
+          if old_return not in html:
+              raise SystemExit('Expected ShopSplit enter/leave music hooks not found')
+          html = html.replace(old_return, new_return, 1)
+
+          if 'ShopMusic' in html or 'shopMusic' in html:
+              raise SystemExit('Music feature identifiers still remain')
+
+          path.write_text(html, encoding='utf-8')
+          print('Updated reading images to external PNG files and removed shop music feature.')
           PY
 
-      - name: Embed the five reading images into index.html
+      - name: Commit site update
         shell: bash
         run: |
           set -euo pipefail
-          python3 - <<'PY'
-          from pathlib import Path
-
-          index_path = Path('index.html')
-          html = index_path.read_text(encoding='utf-8')
-          mapping = {
-              'assets/images/reading/reading-01-elephant.png': '.github/reading-b64/reading-01-elephant.txt',
-              'assets/images/reading/reading-02-hippo.png': '.github/reading-b64/reading-02-hippo.txt',
-              'assets/images/reading/reading-03-tiger.png': '.github/reading-b64/reading-03-tiger.txt',
-              'assets/images/reading/reading-04-butterfly.png': '.github/reading-b64/reading-04-butterfly.txt',
-              'assets/images/reading/reading-05-smile.png': '.github/reading-b64/reading-05-smile.txt',
-          }
-          changed = 0
-          for old_path, b64_path in mapping.items():
-              if old_path in html:
-                  payload = Path(b64_path).read_text(encoding='utf-8').strip()
-                  html = html.replace(old_path, 'data:image/webp;base64,' + payload)
-                  changed += 1
-          index_path.write_text(html, encoding='utf-8')
-          print(f'Embedded {changed} reading image reference(s).')
-          PY
-
-      - name: Commit repaired media references
-        shell: bash
-        run: |
-          set -euo pipefail
-          git add index.html assets/images/home assets/audio
-          if git diff --cached --quiet; then
-            echo "Media already repaired; no commit needed."
-            exit 0
-          fi
+          git add index.html
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit -m "Repair GitHub Pages media assets"
+          git commit -m "Use high-resolution reading images and remove shop music"
           git push origin HEAD:main
