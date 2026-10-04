@@ -22,7 +22,6 @@ jobs:
           set -euo pipefail
           python3 - <<'PY'
           from pathlib import Path
-          import re
 
           p = Path('index.html')
           s = p.read_text(encoding='utf-8')
@@ -87,10 +86,9 @@ jobs:
           old_init = ''' layers[0].style.backgroundImage=`url("${photos[0]}")`;
  layers[0].dataset.photo='1';layers[0].classList.add('visible');drift(0);
  window.addEventListener('hashchange',sync);'''
-          new_init = ''' window.addEventListener('hashchange',sync);'''
           if old_init not in s:
               raise SystemExit('Expected eager initial background block not found')
-          s = s.replace(old_init, new_init, 1)
+          s = s.replace(old_init, " window.addEventListener('hashchange',sync);", 1)
 
           p.write_text(s, encoding='utf-8')
           PY
@@ -104,3 +102,5 @@ jobs:
           git add index.html
           git commit -m "Optimize homepage slideshow loading"
           git push origin HEAD:main
+
+# trigger: 2
