@@ -739,6 +739,7 @@ body.reading-fullscreen{overflow:hidden}
 <p class="lead">請選擇課文。</p>
 <nav id="chineseFirstLessons" class="grade-grid" aria-label="上學期課文">
 <a class="grade-choice" href="#chinese-1-first-pretty">好漂亮</a>
+<a class="grade-choice" href="#chinese-1-first-scissors-rock-paper">剪刀石頭布</a>
 </nav>
 <section id="chineseSecondLessons" class="guide-block" hidden><p>下學期課文準備中。</p></section>
 </main>
@@ -2478,11 +2479,13 @@ function showPortalPage(){
   const hash=location.hash.slice(1);
   const chineseTermMatch=/^chinese-1-(first|second)$/.exec(hash);
   const isPretty=hash==='chinese-1-first-pretty';
+  const isScissors=hash==='chinese-1-first-scissors-rock-paper';
+  const isReading=isPretty||isScissors;
   const chineseGradeMatch=/^chinese-([1-6])$/.exec(hash);
   const gradeMatch=/^math-([1-6])$/.exec(hash);
   const topicMatch=/^math-1-parts-(split|join|practice)$/.exec(hash);
   const topicTitles={split:'分',join:'合',practice:'綜合練習'};
-  const route=hash==='chinese-1-first-pretty-quiz'?'chineseQuiz':isPretty?'chineseReading':chineseTermMatch?'chineseLessons':topicMatch?'mathPartsTopic':hash==='math-1-parts'?'mathParts':gradeMatch?'mathGrade':chineseGradeMatch?'chineseGrade':(['home','learn','help','math','chinese'].includes(hash)?hash:'home');
+  const route=hash==='chinese-1-first-pretty-quiz'?'chineseQuiz':isReading?'chineseReading':chineseTermMatch?'chineseLessons':topicMatch?'mathPartsTopic':hash==='math-1-parts'?'mathParts':gradeMatch?'mathGrade':chineseGradeMatch?'chineseGrade':(['home','learn','help','math','chinese'].includes(hash)?hash:'home');
   if(topicMatch) document.getElementById('mathPartsTopicTitle').textContent=topicTitles[topicMatch[1]];
   const isShop=hash==='math-1-parts-split';
   document.body.classList.toggle('shop-active',isShop);
@@ -2502,7 +2505,11 @@ function showPortalPage(){
     document.getElementById('chineseFirstLessons').hidden=!first;
     document.getElementById('chineseSecondLessons').hidden=first;
   }
-  document.body.classList.toggle('reading-active',isPretty);
+  document.body.classList.toggle('reading-active',isReading);
+  if(isReading){
+    document.querySelector('#chineseReadingPage h1').textContent=(isScissors?'剪刀石頭布':'好漂亮')+'｜課文理解';
+    document.querySelector('#chineseReadingPage .reading-quiz').hidden=!isPretty;
+  }
   if(gradeMatch){
     document.getElementById('mathGradeTitle').textContent=gradeMatch[1]+'年級數學';
     document.getElementById('gradeOneUnits').hidden=gradeMatch[1]!=='1';
@@ -2525,7 +2532,7 @@ function showPortalPage(){
     if(a.dataset.route===route) a.setAttribute('aria-current','page');
     else a.removeAttribute('aria-current');
   });
-  document.title='教學互動學習網站｜'+(hash==='chinese-1-first-pretty-quiz'?'好漂亮｜小測驗':isPretty?'好漂亮｜課文理解':chineseTermMatch?'一年級'+(chineseTermMatch[1]==='first'?'上學期':'下學期')+'｜課文選擇':topicMatch?'1年級數學・分與合・'+topicTitles[topicMatch[1]]:gradeMatch?gradeMatch[1]+'年級數學':chineseGradeMatch?chineseGradeMatch[1]+'年級國語科':{chinese:'國語科',home:'首頁',learn:'注音學習',help:'幫助',math:'數學',mathParts:'1年級數學・分與合'}[route]);
+  document.title='教學互動學習網站｜'+(hash==='chinese-1-first-pretty-quiz'?'好漂亮｜小測驗':isScissors?'剪刀石頭布｜課文理解':isPretty?'好漂亮｜課文理解':chineseTermMatch?'一年級'+(chineseTermMatch[1]==='first'?'上學期':'下學期')+'｜課文選擇':topicMatch?'1年級數學・分與合・'+topicTitles[topicMatch[1]]:gradeMatch?gradeMatch[1]+'年級數學':chineseGradeMatch?chineseGradeMatch[1]+'年級國語科':{chinese:'國語科',home:'首頁',learn:'注音學習',help:'幫助',math:'數學',mathParts:'1年級數學・分與合'}[route]);
   window.scrollTo(0,0);
   (pages[route].querySelector('h1') || pages[route].querySelector('a')).focus({preventScroll:true});
   if(route==='learn'&&!learningStarted){
@@ -2543,7 +2550,7 @@ showPortalPage();
  const layers=[...backdrop.querySelectorAll('.home-photo')];
  let index=0, active=0, timer=null, warmTimer=null, busy=false, started=false;
  const animations=[null,null], cache=new Map();
- const home=()=>!['learn','help','math','chinese','math-1-parts'].includes(location.hash.slice(1))&&!/^chinese-[1-6](?:-(?:first|second)(?:-pretty(?:-quiz)?)?)?$/.test(location.hash.slice(1))&&!/^math-[1-6]$/.test(location.hash.slice(1))&&!/^math-1-parts-(split|join|practice)$/.test(location.hash.slice(1));
+ const home=()=>!['learn','help','math','chinese','math-1-parts'].includes(location.hash.slice(1))&&!/^chinese-[1-6](?:-(?:first|second)(?:-(?:pretty(?:-quiz)?|scissors-rock-paper))?)?$/.test(location.hash.slice(1))&&!/^math-[1-6]$/.test(location.hash.slice(1))&&!/^math-1-parts-(split|join|practice)$/.test(location.hash.slice(1));
  const running=()=>home()&&!document.hidden;
  function load(n,priority='low'){
    if(cache.has(n))return cache.get(n);
@@ -2704,43 +2711,48 @@ function beep(){try{if(!audio)return;for(let i=0;i<3;i++){const o=audio.createOs
 function tick(){if(!running)return;remaining=Math.max(0,deadline-Date.now());if(!remaining){running=false;started=false;clearInterval(ticker);$('timerStatus').textContent='時間到！';$('timerStatus').className='done';if(!host.hidden){setOpen(true);setTool('timer');timerMode('countdown')}beep()}renderTime()}
 $('start').onclick=()=>{if(running){remaining=Math.max(0,deadline-Date.now());running=false;clearInterval(ticker);$('timerStatus').textContent='已暫停'}else{if(!started)remaining=configured();if(!remaining){$('timerStatus').textContent='請設定大於 0 秒的時間';return}try{audio=audio||new(window.AudioContext||window.webkitAudioContext)();audio.resume().catch(()=>{})}catch{}started=running=true;deadline=Date.now()+remaining;clearInterval(ticker);ticker=setInterval(tick,150);$('timerStatus').className='';$('timerStatus').textContent='計時中'}renderTime()};
 $('resetTimer').onclick=()=>{clearInterval(ticker);running=started=false;remaining=configured();$('timerStatus').className='';$('timerStatus').textContent='設定時間後按開始';renderTime()};for(const id of ['minutes','seconds'])$(id).onchange=()=>{if(!started){remaining=configured();renderTime()}};document.addEventListener('visibilitychange',tick);
-function route(){const h=location.hash.slice(1);host.hidden=!(h==='learn'||h==='chinese'||/^chinese-[1-6](?:-(?:first|second)(?:-pretty(?:-quiz)?)?)?$/.test(h)||h==='math'||/^math-[1-6]$/.test(h)||/^math-1-parts(?:-(?:split|join|practice))?$/.test(h));pen.clear();$('ink').hidden=true;setTool('');if(host.hidden){opened=false;$('rail').hidden=true;$('handle').hidden=false;$('handle').setAttribute('aria-expanded','false')}}
+function route(){const h=location.hash.slice(1);host.hidden=!(h==='learn'||h==='chinese'||/^chinese-[1-6](?:-(?:first|second)(?:-(?:pretty(?:-quiz)?|scissors-rock-paper))?)?$/.test(h)||h==='math'||/^math-[1-6]$/.test(h)||/^math-1-parts(?:-(?:split|join|practice))?$/.test(h));pen.clear();$('ink').hidden=true;setTool('');if(host.hidden){opened=false;$('rail').hidden=true;$('handle').hidden=false;$('handle').setAttribute('aria-expanded','false')}}
 window.addEventListener('readingimagechange',()=>pen.clear());window.addEventListener('hashchange',route);window.addEventListener('scroll',()=>pen.clear(),{passive:true});route();
 })();
 
 </script>
+<script src="lesson-scissors-rock-paper.js"></script>
 <script id="prettyReadingScript">
 (()=>{
-const slides=window.prettyLessonSlides=[
+const prettySlides=window.prettyLessonSlides=[
   {src:"assets/images/reading/reading-01-elephant-fast.webp",alt:"大象鼻子長"},
   {src:"assets/images/reading/reading-02-hippo-fast.webp",alt:"河馬長得壯"},
   {src:"assets/images/reading/reading-03-tiger-fast.webp",alt:"老虎毛皮黃"},
   {src:"assets/images/reading/reading-04-butterfly-fast.webp",alt:"蝴蝶花衣裳"},
   {src:"assets/images/reading/reading-05-smile-fast.webp",alt:"笑一笑好漂亮"}
 ];
-let index=0;
+let slides=prettySlides,index=0;
+const newLesson=window.scissorsRockPaperLesson;
+const readingRoutes=['#chinese-1-first-pretty',newLesson.route];
+const isReadingRoute=()=>readingRoutes.includes(location.hash);
 // Warm the first card from the Chinese menu; queue the lesson only when relevant.
 const warmedLessonImages=new Set();
 let warmingLessonImages=false;
 function lessonWarmCount(){
- if(['#chinese-1-first','#chinese-1-first-pretty','#chinese-1-first-pretty-quiz'].includes(location.hash))return slides.length;
+ if(isReadingRoute()||['#chinese-1-first','#chinese-1-first-pretty-quiz'].includes(location.hash))return slides.length;
  return ['#chinese','#chinese-1'].includes(location.hash)?1:0;
 }
 async function warmLessonImages(){
  if(warmingLessonImages||!lessonWarmCount()||document.hidden)return;
  warmingLessonImages=true;
+ const currentSlides=slides;
  try{
   const order=[index,...slides.map((_,i)=>i).filter(i=>i!==index)];
   for(const n of order){
-   if(document.hidden||!lessonWarmCount())break;
-   if(n>=lessonWarmCount()||warmedLessonImages.has(n))continue;
+   if(document.hidden||!lessonWarmCount()||slides!==currentSlides)break;
+   if(n>=lessonWarmCount()||warmedLessonImages.has(currentSlides[n].src))continue;
    const ok=await new Promise(resolve=>{
     const card=new Image();card.decoding='async';card.fetchPriority='low';
-    card.onload=()=>resolve(true);card.onerror=()=>resolve(false);card.src=slides[n].src;
+    card.onload=()=>resolve(true);card.onerror=()=>resolve(false);card.src=currentSlides[n].src;
    });
-   if(ok)warmedLessonImages.add(n);
+   if(ok)warmedLessonImages.add(currentSlides[n].src);
   }
- }finally{warmingLessonImages=false;}
+ }finally{warmingLessonImages=false;if(slides!==currentSlides)warmLessonImages();}
 }
 window.addEventListener('hashchange',warmLessonImages);
 document.addEventListener('visibilitychange',warmLessonImages);
@@ -2748,33 +2760,43 @@ const image=document.getElementById('prettyImage'),prev=document.getElementById(
 function draw(){image.fetchPriority='high';image.src=slides[index].src;image.alt=slides[index].alt;prev.disabled=index===0;next.disabled=index===slides.length-1;position.textContent=(index+1)+' / '+slides.length;}
 function move(delta){stopReading();const target=Math.max(0,Math.min(slides.length-1,index+delta));if(target===index)return;index=target;draw();window.dispatchEvent(new Event('readingimagechange'));}
 prev.addEventListener('click',()=>move(-1));next.addEventListener('click',()=>move(1));
-function fit(){if(location.hash!=='#chinese-1-first-pretty')return;document.body.style.setProperty('--reading-nav-bottom',document.body.classList.contains('reading-fullscreen')?'0px':Math.ceil(document.querySelector('.portal-nav').getBoundingClientRect().bottom)+'px');}
-window.addEventListener('resize',fit);window.addEventListener('hashchange',()=>{stopReading();if(location.hash!=='#chinese-1-first-pretty')leaveFullscreen();if(location.hash==='#chinese-1-first-pretty'){index=0;draw();requestAnimationFrame(fit);}});
-window.addEventListener('keydown',e=>{if(location.hash!=='#chinese-1-first-pretty'||e.altKey||e.ctrlKey||e.metaKey)return;if(e.composedPath().some(n=>n.tagName==='INPUT'||n.tagName==='TEXTAREA'||n.tagName==='SELECT'||n.isContentEditable))return;if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();move(e.key==='ArrowLeft'?-1:1);}});
+function fit(){if(!isReadingRoute())return;document.body.style.setProperty('--reading-nav-bottom',document.body.classList.contains('reading-fullscreen')?'0px':Math.ceil(document.querySelector('.portal-nav').getBoundingClientRect().bottom)+'px');}
+window.addEventListener('resize',fit);window.addEventListener('hashchange',()=>{stopReading();if(!isReadingRoute())leaveFullscreen();if(isReadingRoute()){selectLesson();draw();requestAnimationFrame(fit);warmLessonImages();}});
+window.addEventListener('keydown',e=>{if(!isReadingRoute()||e.altKey||e.ctrlKey||e.metaKey)return;if(e.composedPath().some(n=>n.tagName==='INPUT'||n.tagName==='TEXTAREA'||n.tagName==='SELECT'||n.isContentEditable))return;if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();move(e.key==='ArrowLeft'?-1:1);}});
 
 const listen=document.getElementById('prettyListen'),audioStatus=document.getElementById('prettyAudioStatus'),full=document.getElementById('prettyFullscreen');
 let reading=false,speechToken=0,ownFullscreen=false;
 // Word groups keep connected pronunciation when a voice offers no boundary events.
-const readingGroups=[['大象','鼻子長'],['河馬','長得壯'],['老虎','毛皮黃'],['蝴蝶','花衣裳'],['笑一笑','好漂亮']];
+const prettyReadingGroups=[['大象','鼻子長'],['河馬','長得壯'],['老虎','毛皮黃'],['蝴蝶','花衣裳'],['笑一笑','好漂亮']];
 // Original picture coordinates, one rectangle per printed syllable, including tone marks.
-const syllableRects=[
+const prettySyllableRects=[
  [[1170,55,1385,240],[1170,255,1385,447],[1170,465,1385,645],[1170,665,1385,820],[1170,837,1385,1025]],
  [[1200,52,1385,216],[1200,245,1385,410],[1200,436,1385,602],[1200,625,1385,805],[1200,827,1385,1024]],
  [[1180,50,1390,228],[1180,255,1390,425],[1180,450,1390,625],[1180,648,1390,817],[1180,839,1390,1040]],
  [[1195,42,1395,214],[1195,235,1395,427],[1195,446,1395,629],[1195,657,1395,814],[1195,835,1395,1047]],
  [[1290,87,1394,298],[1290,320,1394,533],[1290,552,1394,780],[1095,87,1220,298],[1095,320,1220,533],[1095,552,1220,780]]
 ];
+let readingGroups=prettyReadingGroups,syllableRects=prettySyllableRects,canvasWidth=1448,canvasHeight=1086;
 const highlight=document.getElementById('prettyHighlight'),highlightContext=highlight.getContext('2d');
-const sourceCanvas=document.createElement('canvas');sourceCanvas.width=1448;sourceCanvas.height=1086;
+const sourceCanvas=document.createElement('canvas');sourceCanvas.width=canvasWidth;sourceCanvas.height=canvasHeight;
 const sourceContext=sourceCanvas.getContext('2d',{willReadFrequently:true});
 let maskIndex=-1,sourcePixels=null,selectedSyllables=[];
-function clearHighlight(){selectedSyllables=[];highlightContext.clearRect(0,0,1448,1086);}
+function selectLesson(){
+ const scissors=location.hash===newLesson.route;
+ slides=scissors?newLesson.slides:prettySlides;
+ readingGroups=scissors?newLesson.groups:prettyReadingGroups;
+ syllableRects=scissors?newLesson.syllableRects:prettySyllableRects;
+ canvasWidth=scissors?newLesson.width:1448;canvasHeight=scissors?newLesson.height:1086;
+ highlight.width=sourceCanvas.width=canvasWidth;highlight.height=sourceCanvas.height=canvasHeight;
+ index=0;maskIndex=-1;sourcePixels=null;selectedSyllables=[];
+}
+function clearHighlight(){selectedSyllables=[];highlightContext.clearRect(0,0,canvasWidth,canvasHeight);}
 function markSyllables(indices){
- selectedSyllables=indices;highlightContext.clearRect(0,0,1448,1086);
+ selectedSyllables=indices;highlightContext.clearRect(0,0,canvasWidth,canvasHeight);
  if(!indices.length||!image.complete||!image.naturalWidth)return;
- if(maskIndex!==index){sourceContext.clearRect(0,0,1448,1086);sourceContext.drawImage(image,0,0,1448,1086);sourcePixels=sourceContext.getImageData(0,0,1448,1086).data;maskIndex=index;}
+ if(maskIndex!==index){sourceContext.clearRect(0,0,canvasWidth,canvasHeight);sourceContext.drawImage(image,0,0,canvasWidth,canvasHeight);sourcePixels=sourceContext.getImageData(0,0,canvasWidth,canvasHeight).data;maskIndex=index;}
  for(const number of indices){const rect=syllableRects[index][number];if(!rect)continue;const [x,y,right,bottom]=rect,w=right-x,h=bottom-y,patch=highlightContext.createImageData(w,h);
-  for(let py=0;py<h;py++)for(let px=0;px<w;px++){const src=((y+py)*1448+x+px)*4,r=sourcePixels[src],g=sourcePixels[src+1],b=sourcePixels[src+2];
+  for(let py=0;py<h;py++)for(let px=0;px<w;px++){const src=((y+py)*canvasWidth+x+px)*4,r=sourcePixels[src],g=sourcePixels[src+1],b=sourcePixels[src+2];
    if(Math.max(r,g,b)<180&&Math.max(r,g,b)-Math.min(r,g,b)<65){const dst=(py*w+px)*4;patch.data[dst]=220;patch.data[dst+1]=20;patch.data[dst+2]=35;patch.data[dst+3]=255;}}
   highlightContext.putImageData(patch,x,y);
  }
@@ -2825,7 +2847,7 @@ async function leaveFullscreen(){if(ownFullscreen&&document.fullscreenElement){t
 full.addEventListener('click',async()=>{try{if(ownFullscreen&&document.fullscreenElement){await leaveFullscreen();}else if(document.documentElement.requestFullscreen){ownFullscreen=true;await document.documentElement.requestFullscreen();syncFullscreen();}else{audioStatus.textContent='此瀏覽器不支援網頁全螢幕。';}}catch{ownFullscreen=false;audioStatus.textContent='無法開啟全螢幕，請確認瀏覽器允許此功能。';syncFullscreen();}});
 document.addEventListener('fullscreenchange',syncFullscreen);
 window.addEventListener('pagehide',stopReading);
-if(location.hash==='#chinese-1-first-pretty'){draw();requestAnimationFrame(fit);}
+if(isReadingRoute()){selectLesson();draw();requestAnimationFrame(fit);}
 warmLessonImages();
 })();
 </script>
