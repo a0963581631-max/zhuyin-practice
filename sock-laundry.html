@@ -88,7 +88,7 @@ dialog{width:min(570px,90vw);border:2px solid #add8d6;border-radius:22px;box-sha
 <div class="form-grid">
 <div class="setting"><label for="countMode">襪子數量範圍</label><select id="countMode"><option value="30">1～30隨機</option><option value="10">1～10隨機</option><option value="20">11～20隨機</option><option value="high">21～30隨機</option><option value="custom" selected>自訂數量</option></select><label for="sockCount" style="margin-top:9px">自訂襪子數量</label><input id="sockCount" type="number" min="1" max="30" value="23"></div>
 <div class="setting"><label for="mode">教學模式</label><select id="mode"><option value="guided" selected>引導操作</option><option value="demo">教師示範（可逐步或自動）</option><option value="independent">獨立挑戰</option></select><label for="hintLevel" style="margin-top:9px">預設提示程度</label><select id="hintLevel"><option value="full">完整提示</option><option value="partial" selected>部分提示</option><option value="none">不顯示提示</option></select></div>
-<div class="setting"><label for="lessonMode">本次活動</label><select id="lessonMode"><option value="full" selected>完整遊戲：六關依序進行</option><option value="1">第一關｜房間找襪子</option><option value="2">第二關｜襪子配成雙</option><option value="3">第三關｜襪子洗一洗</option><option value="4">第四關｜乾淨襪子出來了</option><option value="5">第五關｜襪子收進衣櫃</option><option value="6">第六關｜誰的襪子比較多</option></select></div>
+<div class="setting"><label for="lessonMode">本次活動</label><select id="lessonMode"><option value="full" selected>完整遊戲：六關依序進行</option><option value="1">第一關｜房間找襪子</option><option value="2">第二關｜兩隻一組裝籃</option><option value="3">第三關｜襪子洗一洗</option><option value="4">第四關｜乾淨襪子出來了</option><option value="5">第五關｜襪子收進衣櫃</option><option value="6">第六關｜誰的襪子比較多</option></select></div>
 <div class="setting"><label for="speed">動畫速度</label><select id="speed"><option value="1200">慢速</option><option value="750" selected>一般</option><option value="400">快速</option></select><div class="toggles"><label><input type="checkbox" id="voice" checked> 語音朗讀</label><label><input type="checkbox" id="compareEnabled" checked> 比較挑戰</label></div></div>
 </div><div class="setup-footer"><button id="resumeBtn" class="btn" type="button" hidden>繼續上一回合</button><button class="btn primary" id="startBtn" type="button">開始整理襪子 →</button></div>
 </section>
@@ -102,7 +102,7 @@ dialog{width:min(570px,90vw);border:2px solid #add8d6;border-radius:22px;box-sha
 (()=>{
 'use strict';
 const $=id=>document.getElementById(id);
-const names=['','房間找襪子','襪子配成雙','襪子洗一洗','乾淨襪子出來了','襪子收進衣櫃','誰的襪子比較多'];
+const names=['','房間找襪子','兩隻一組裝籃','襪子洗一洗','乾淨襪子出來了','襪子收進衣櫃','誰的襪子比較多'];
 const descriptions=['','找出房間有幾隻襪子，一個一個數清楚。','每點兩隻襪子就合成一個框，再放進洗衣籃；每籃裝10隻。','每個滿籃有10隻，先整籃倒入，零散的逐隻放。','點一下洗衣機拿出一隻，注意剩餘數字。','每點兩隻乾淨襪子就合成一組，再放進衣櫃；每櫃裝10隻。','觀察誰比較多、比較少，或一樣多。'];
 let S=null,timer=null,spoken='';
 const num=(n,min,max)=>Math.min(max,Math.max(min,Math.trunc(Number(n))||min));
