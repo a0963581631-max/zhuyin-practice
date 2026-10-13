@@ -168,11 +168,11 @@ for(let id=0;id<S.N;id++){
 }
 return '<div class="sock-grid-wrap"><div class="sock-grid">'+slots+'</div></div>';
 }
-function looseDisplay(count,totalComplete){
-return '<div class="loose-display" aria-label="未裝進籃子的零散襪子'+count+'隻"><div class="loose-number">'+count+'</div><strong>隻零散襪子（沒有籃子）</strong><div class="loose-socks">'+Array.from({length:count},()=>'<span class="loose-one">'+oneSock()+'</span>').join('')+'</div><p class="loose-description">'+(totalComplete*10)+'隻裝在完整的籃子裡，另外'+count+'隻單獨放著</p></div>';
+function looseDisplay(count,totalComplete,container='籃子'){
+return '<div class="loose-display" aria-label="未裝進'+container+'的零散襪子'+count+'隻"><div class="loose-number">'+count+'</div><strong>隻零散襪子（沒有'+container+'）</strong><div class="loose-socks">'+Array.from({length:count},()=>'<span class="loose-one">'+oneSock()+'</span>').join('')+'</div><p class="loose-description">'+(totalComplete*10)+'隻裝在完整的'+container+'裡，另外'+count+'隻單獨放著</p></div>';
 }
-function pendingTen(count){
-return '<div class="ten-building" aria-label="尚未湊滿10隻，目前'+count+'隻"><div class="building-number">'+count+'</div><strong>正在湊10隻（還不是籃子）</strong><div class="unit-groups">'+Array.from({length:5},(_,i)=>'<span class="dot-group '+(i*2<count?'':'empty')+'">'+(i*2<count?'<i class="dot"></i><i class="dot"></i>':'')+'</span>').join('')+'</div><span class="loose-description">每兩個點放進同一組，集滿10隻才出現籃子</span></div>';
+function pendingTen(count,container='籃子'){
+return '<div class="ten-building" aria-label="尚未湊滿10隻，目前'+count+'隻"><div class="building-number">'+count+'</div><strong>正在湊10隻（還不是'+container+'）</strong><div class="unit-groups">'+Array.from({length:5},(_,i)=>'<span class="dot-group '+(i*2<count?'':'empty')+'">'+(i*2<count?'<i class="dot"></i><i class="dot"></i>':'')+'</span>').join('')+'</div><span class="loose-description">每兩個點放進同一組，集滿10隻才出現'+container+'</span></div>';
 }
 
 function icons(n){return Array.from({length:n},()=>'<span aria-label="1隻襪子">'+oneSock()+'</span>').join('')}
@@ -209,6 +209,7 @@ const maxPairs=Math.floor(S.N/10)*5,complete=Math.floor(S.packedPairs/5),pending
 const pairMode=S.packedPairs<maxPairs,usedCount=S.packedPairs*2+S.looseSorted.size,remaining=S.N-usedCount;
 let items='<div class="counter">已整理 <strong>'+usedCount+'</strong> 隻襪子</div>';
 items+=sockWorkGrid(S.chosen,S.looseSorted,S.selected,'pack');
+if(S.selected.length)items+='<button type="button" class="btn" data-action="cancelPair">↶ 取消選取，重新挑襪子</button>';
 items+='<div class="help-text">'+(pairMode?(S.selected.length===2?'兩隻已在原來的位置合在同一框！點框框，就能放進整理區。':S.selected.length===1?'已選1隻，請在原本的襪子區再選1隻。':'先點2隻襪子，讓它們在原本的區域合成一組。'):'現在剩下的襪子不夠湊成10隻。請每次點1隻，移到右邊的零散襪子區。')+'</div>';
 let groups='<div class="basket-zone">'+Array.from({length:complete},(_,i)=>basketCard(10,'第'+(i+1)+'籃｜10隻')).join('');
 if(pairMode&&pendingPairs>0)groups+=pendingTen(pendingPairs*2);
@@ -241,13 +242,13 @@ function render5(){
 const maxPairs=Math.floor(S.N/10)*5,complete=Math.floor(S.closetPairs/5),pendingPairs=S.closetPairs%5;
 const pairMode=S.closetPairs<maxPairs,stored=S.closetPairs*2+S.closetLoose.size,remain=S.N-stored;
 let closets='<div class="basket-zone">'+Array.from({length:complete},(_,i)=>closetCard(10,'第'+(i+1)+'櫃｜10隻')).join('');
-if(pairMode&&pendingPairs)closets+=pendingTen(pendingPairs*2);
-if(!pairMode&&S.N%10)closets+=looseDisplay(S.closetLoose.size,complete);
+if(pairMode&&pendingPairs)closets+=pendingTen(pendingPairs*2,'衣櫃');
+if(!pairMode&&S.N%10)closets+=looseDisplay(S.closetLoose.size,complete,'衣櫃');
 closets+='</div>';
 let info='<div class="counter">已整理 <strong>'+stored+'</strong> 隻</div>'+closets;
 if(effectiveHint())info+='<div class="help-text">'+(pairMode?'在原地每次選2隻合成一框，點框收好；湊滿10隻才形成一個完整的衣櫃。':'不足10隻的襪子，請一隻一隻點選，放到衣櫃旁的散放區。')+'</div>';
 if(correct())info+='<p class="feedback good">收納完成！'+complete+'個完整10隻的衣櫃，另外'+S.closetLoose.size+'隻散放，共'+S.N+'隻。</p>';
-const selection='<div class="counter">剩下 <strong>'+remain+'</strong> 隻</div>'+sockWorkGrid(S.closetChosen,S.closetLoose,S.selected,'store')+'<div class="help-text">'+(pairMode?(S.selected.length===2?'兩隻已在原本的區域合成同一個框，點框收納。':S.selected.length===1?'已選一隻，再選第二隻。':'點兩隻襪子，在同一位置把它們合成一組。'):'剩下不滿10隻，請逐隻移到衣櫃旁邊，不另外出現衣櫃。')+'</div>';
+const selection='<div class="counter">剩下 <strong>'+remain+'</strong> 隻</div>'+sockWorkGrid(S.closetChosen,S.closetLoose,S.selected,'store')+(S.selected.length?'<button type="button" class="btn" data-action="cancelPair">↶ 取消選取，重新挑襪子</button>':'')+'<div class="help-text">'+(pairMode?(S.selected.length===2?'兩隻已在原本的區域合成同一個框，點框收納。':S.selected.length===1?'已選一隻，再選第二隻。':'點兩隻襪子，在同一位置把它們合成一組。'):'剩下不滿10隻，請逐隻移到衣櫃旁邊，不另外出現衣櫃。')+'</div>';
 return '<div class="board"><div class="scene"><h3>乾淨襪子原位置</h3>'+selection+'</div><div class="info"><h3>🚪 衣櫃與散放區</h3>'+info+'</div></div>';
 }
 function render6(){
