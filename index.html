@@ -2651,10 +2651,22 @@ root.innerHTML=`<style>
 #hundredStage .hundred-switch{display:flex;gap:7px;justify-content:center;flex-wrap:wrap;padding:7px 12px;background:#f7fbfc;flex:none}
 #hundredStage .hundred-switch button{font-size:14px;font-weight:750;min-height:36px;padding:5px 10px}
 #hundredStage .hundred-switch button[aria-pressed=true]{background:#caeae2;border-color:#458b89}
-#hundredStage .hundred-image-area{flex:1;min-height:0;display:grid;place-items:center;padding:6px;background:#fff;overflow:hidden}
-#hundredStage img#hundredImage{display:block;width:100%;height:100%;max-height:100%;object-fit:contain;user-select:none}
-#hundredStage:fullscreen{width:100vw;height:100vh;max-height:none;border-radius:0;border:0;background:white}
-#hundredStage:fullscreen .hundred-image-area{padding:4px}
+#hundredStage .hundred-image-area{flex:1;min-height:0;display:block;padding:6px;background:#fff;overflow:auto;overscroll-behavior:contain;scrollbar-gutter:stable;touch-action:pan-x pan-y}
+#hundredImageWrap{position:relative;width:100%;height:auto;margin:0 auto;line-height:0}
+#hundredStage img#hundredImage{display:block;width:100%;height:auto;max-height:none;object-fit:unset;user-select:none}
+#hundredImageWrap #ink{position:absolute;inset:0;width:100%;height:100%;z-index:3}
+#hundredStage .hundred-image-area:focus-visible{outline:3px solid #248da0;outline-offset:-3px}
+#hundredOverlay{padding:12px 103px 12px 12px}
+#hundredStage{width:min(970px,100%)}
+#handle,#rail{z-index:230}
+.panel{z-index:240}
+#board{z-index:200}
+#ink{z-index:190}
+:host(:fullscreen){background:#f3fafb;overflow:hidden}
+:host(:fullscreen) #hundredOverlay{padding:0 94px 0 0;background:#fff}
+:host(:fullscreen) #hundredStage{width:100%;height:100dvh;max-height:none;border-radius:0;border:0;box-shadow:none}
+:host(:fullscreen) #hundredStage .hundred-image-area{padding:3px 8px 12px}
+@media(max-width:600px){#hundredOverlay{padding:5px 77px 5px 4px}:host(:fullscreen) #hundredOverlay{padding-right:74px}#hundredStage{width:100%}}
 @media(max-width:640px){#aids .chart-thumb{width:60px;height:66px}#hundredStage .hundred-head{padding:7px}#hundredStage .hundred-head strong{font-size:17px}#hundredStage .hundred-actions button{font-size:12px;padding:4px 7px}}
 </style>
 <canvas id="ink" hidden aria-label="頁面畫筆區"></canvas>
@@ -2685,9 +2697,9 @@ root.innerHTML=`<style>
   </div>
 </section>
 <section id="hundredOverlay" hidden aria-label="百數表放大檢視">
-  <div id="hundredStage" role="dialog" aria-modal="true" aria-label="百數表" tabindex="-1">
+  <div id="hundredStage" role="dialog" aria-modal="false" aria-label="百數表" tabindex="-1">
     <div class="hundred-head">
-      <strong id="hundredTitle">百數表</strong>
+      <strong id="hundredTitle">百數表｜可上下捲動</strong>
       <div class="hundred-actions">
         <button id="hundredFullscreen" type="button" aria-label="將百數表切換到全螢幕">⛶ 全螢幕</button>
         <button id="hundredClose" type="button" aria-label="關閉百數表">× 關閉</button>
@@ -2698,7 +2710,7 @@ root.innerHTML=`<style>
       <button type="button" data-hundred-select="5" aria-pressed="false">每5個一數</button>
       <button type="button" data-hundred-select="3" aria-pressed="false">每3個一數</button>
     </nav>
-    <div class="hundred-image-area"><img id="hundredImage" alt="百數表，數字1到100" width="960" height="940"/></div>
+    <div id="hundredScroll" class="hundred-image-area" tabindex="0" role="region" aria-label="百數表內容，可上下捲動"><div id="hundredImageWrap"><img id="hundredImage" alt="百數表，數字1到100" width="960" height="940"/></div></div>
   </div>
 </section>
 <section id="timer" class="panel" hidden aria-label="計時器工具"><div class="head"><h2>計時器</h2><button class="close" data-close aria-label="關閉計時器">×</button></div><div class="row"><button id="countdownTab" aria-pressed="true">倒數計時</button><button id="stopwatchTab" aria-pressed="false">碼錶</button></div><div id="countdownPane"><output id="clock" class="big">05:00</output><div class="row"><label><input id="minutes" type="number" min="0" max="99" value="5"> 分</label><label><input id="seconds" type="number" min="0" max="59" value="0"> 秒</label></div><div class="row"><button id="start">開始</button><button id="resetTimer">重設</button></div><p id="timerStatus" role="status">設定時間後按開始</p><p class="muted">收起工具後仍會繼續計時；時間到會顯示提醒並響鈴。</p></div><div id="stopwatchPane" hidden><output id="stopwatchClock" class="big" aria-label="碼錶時間">00:00.00</output><div class="row"><button id="stopwatchStart">開始</button><button id="stopwatchReset">歸零</button></div><p id="stopwatchStatus" role="status">按開始啟動碼錶</p><p class="muted">分：秒．百分秒。切換模式或收起工具後仍持續計時。</p></div></section>`;
@@ -2721,30 +2733,44 @@ const hundredChartData={
 };
 function showHundred(type){
  const chart=hundredChartData[type];if(!chart)return;
+ const wasOpen=!$('hundredOverlay').hidden;
+ if(wasOpen&&$('hundredImage').src!==new URL(chart.src,document.baseURI).href)pen.clear();
  $('hundredImage').src=chart.src;$('hundredImage').alt=chart.alt;$('hundredTitle').textContent=chart.title;
  root.querySelectorAll('[data-hundred-select]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.hundredSelect===type)));
  $('hundredOverlay').hidden=false;
+ const ink=$('ink');
+ if(ink.parentNode!==$('hundredImageWrap')){$('hundredImageWrap').append(ink);pen.clear();pen.resize();}
+ if(!wasOpen)$('hundredScroll').scrollTop=0;
  $('hundredStage').focus();
 }
 function closeHundred(){
- if(!$('hundredOverlay').hidden){$('hundredOverlay').hidden=true;}
- if(root.fullscreenElement===$('hundredStage')||document.fullscreenElement===host){document.exitFullscreen?.().catch(()=>{});}
+ const overlay=$('hundredOverlay');
+ if(overlay.hidden)return;
+ pen.finish();pen.clear();
+ if($('ink').parentNode===$('hundredImageWrap')){
+  root.insertBefore($('ink'),$('board'));pen.resize();
+ }
+ overlay.hidden=true;
+ if(document.fullscreenElement===host)document.exitFullscreen?.().catch(()=>{});
 }
 root.querySelectorAll('[data-chart-choice]').forEach(b=>b.onclick=()=>showHundred(b.dataset.chartChoice));
 root.querySelectorAll('[data-hundred-select]').forEach(b=>b.onclick=()=>showHundred(b.dataset.hundredSelect));
 $('hundredClose').onclick=()=>{closeHundred();root.querySelector('[data-tool="aids"]')?.focus()};
 $('hundredOverlay').addEventListener('click',e=>{if(e.target===$('hundredOverlay'))closeHundred()});
 function syncHundredFullScreen(){
- const full=root.fullscreenElement===$('hundredStage');
+ const full=document.fullscreenElement===host;
  $('hundredFullscreen').textContent=full?'⛶ 退出全螢幕':'⛶ 全螢幕';
  $('hundredFullscreen').setAttribute('aria-label',full?'退出百數表全螢幕':'將百數表切換到全螢幕');
+ if(full)$('rail').hidden=!opened;
+ if(full)$('handle').hidden=opened;
 }
 $('hundredFullscreen').onclick=()=>{
- const panel=$('hundredStage');
- if(root.fullscreenElement===panel){
-  document.exitFullscreen?.().catch(()=>{});
- }else if(typeof panel.requestFullscreen==='function'){
-  panel.requestFullscreen().catch(()=>{syncHundredFullScreen();});
+ if(document.fullscreenElement===host){
+  document.exitFullscreen?.().catch(()=>{syncHundredFullScreen()});
+ }else if(typeof host.requestFullscreen==='function'){
+  host.requestFullscreen().then(()=>{
+   setOpen(true);syncHundredFullScreen();
+  }).catch(()=>{syncHundredFullScreen()});
  }
 };
 root.addEventListener('fullscreenchange',syncHundredFullScreen);
@@ -2761,7 +2787,7 @@ function updateMode(){
  }else $('ink').style.cursor='crosshair';
 }
 function setOpen(v){opened=v;$('rail').hidden=!v;$('handle').hidden=v;$('handle').setAttribute('aria-expanded',String(v));if(!v){setTool('');$('handle').focus();}}
-function setTool(name){pen.finish();setBoardMode('mouse');active=name==='mouse'?'':name;penMode='mouse';if(name!=='aids')closeHundred();for(const n of ['pen','eraser','count','timer','board','aids'])$(n).hidden=n!==active;updateMode();if(name==='board')requestAnimationFrame(()=>board.resize());}
+function setTool(name){pen.finish();setBoardMode('mouse');active=name==='mouse'?'':name;penMode='mouse';for(const n of ['pen','eraser','count','timer','board','aids'])$(n).hidden=n!==active;updateMode();if(name==='board')requestAnimationFrame(()=>board.resize());}
 $('handle').onclick=()=>{setOpen(true);$('collapse').focus()};$('collapse').onclick=()=>setOpen(false);
 root.querySelectorAll('[data-tool]').forEach(b=>b.onclick=()=>setTool(active===b.dataset.tool?'':b.dataset.tool));
 root.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>{const old=active;setTool('');root.querySelector('[data-tool="'+old+'"]').focus()});
