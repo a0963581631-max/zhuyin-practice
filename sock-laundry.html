@@ -24,7 +24,7 @@ h2{margin:3px 0 12px;font-size:clamp(22px,2.7vw,29px)}h3{margin:0 0 10px;font-si
 .pair-bay{border:2px dashed #91b6c3;background:#eaf7f9;border-radius:15px;min-height:100px;display:grid;place-items:center;padding:13px;margin:12px 0;text-align:center}.pair-bay strong{font-size:25px}
 .machine-wrap{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center}.washer{display:block;margin:8px auto;border:9px solid #acc9d5;background:linear-gradient(135deg,#fff,#d5e7f1);width:min(100%,245px);aspect-ratio:1/1.16;border-radius:27px;box-shadow:inset 0 0 0 3px #edf8fa,0 9px 18px #28516522;position:relative;cursor:pointer;padding:0}.washer:disabled{cursor:default}.washer .display{background:#17637c;color:#fff;border-radius:8px;font-size:27px;font-weight:900;padding:5px;position:absolute;left:13%;right:13%;top:7%}.washer .drum{position:absolute;left:17%;right:17%;bottom:8%;aspect-ratio:1;border-radius:50%;border:11px solid #668ba2;background:radial-gradient(circle at 28% 20%,#cfeefa,#85b5ce);display:grid;place-items:center;font-size:50px}.washer.active .drum{animation:turn .8s ease-in-out infinite alternate}@keyframes turn{to{transform:rotate(30deg)}}.washer small{position:absolute;bottom:1%;right:4%;font-weight:750;color:#345}
 .tally{display:flex;gap:7px;flex-wrap:wrap}.tally .unit{padding:10px;border-radius:12px;background:#dcedf3;font-size:19px;font-weight:900}.tally .unit.ten{background:#c5ebdc;color:#20735d}
-.socks-out{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;max-width:370px;margin:auto}.socks-out span{font-size:24px;text-align:center;background:white;border-radius:9px}
+.socks-out{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:5px;min-width:550px;width:100%;margin:auto;align-content:start}.socks-out span{font-size:24px;text-align:center;background:white;border-radius:9px}
 .closet{border:7px solid #b3ccb7;background:#e0efe1;max-width:320px;margin:auto;border-radius:16px;min-height:225px;padding:10px;box-shadow:7px 6px 0 #c4d9d4}.shelf{display:grid;grid-template-columns:repeat(5,1fr);gap:3px;padding:12px 4px;background:#eef6f0;border-bottom:8px solid #96b49c;border-radius:10px;min-height:80px}.shelf .slot{font-size:22px;text-align:center;display:grid;place-items:center;min-height:53px;border:1px dashed #b5cdb8;border-radius:7px}.cabinet-info{text-align:center;margin-top:9px;font-weight:800}
 .compareGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.compare-card{min-height:165px;border:2px solid #b8dce4;border-radius:19px;background:#fff;padding:10px;text-align:center}.compare-card h3{color:#355d73}.compare-card .objects{display:grid;grid-template-columns:repeat(5,1fr);gap:3px;max-width:220px;margin:auto}.compare-card .objects span{font-size:21px}.compare-card .numeral{font-size:66px;color:#137b92;font-weight:950}
 .number-road{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:4px;margin-top:12px}.number-road button{border:1px solid #bfd8df;background:#fff;border-radius:8px;min-height:38px;padding:4px 0;font-size:16px;font-weight:850}.number-road button.passed{background:#c8eedf}.number-road button.expected{border:3px solid #2497a5;background:#e0f6fa}.road-controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:12px}.road-controls select{padding:8px;border-radius:9px;border:1px solid #a9cbd5;background:white}
@@ -89,6 +89,14 @@ dialog{width:min(570px,90vw);border:2px solid #add8d6;border-radius:22px;box-sha
 .loose-socks .loose-one{background:transparent;border:1px dashed #bfd9df;border-radius:9px;padding:2px;display:flex;justify-content:center}
 .loose-description{font-size:13px;color:#527080}
 @media(max-width:710px){.basket-zone{gap:9px}.basket-card{min-width:136px;max-width:100%}}
+.basket-card.review-counted,.loose-one.review-counted{outline:3px solid #1d9d81;outline-offset:2px;background:#dff7ee}
+button.basket-card:hover,button.loose-one:hover{filter:brightness(.96)}
+.loose-socks button.loose-one{cursor:pointer;min-height:52px;min-width:38px;align-items:center}
+.result-review{background:#f0faf6;border:2px solid #9bcfbc;border-radius:16px;padding:14px;margin-top:16px}
+.result-review h3{margin:0 0 6px;color:#266a55}
+.result-review .counter{background:#dff4e8}
+.socks-out span{min-height:43px}
+@media(max-width:710px){.socks-out{min-width:470px}.socks-out .sock-svg{width:27px;height:36px}}
 
 </style>
 </head>
@@ -123,7 +131,7 @@ dialog{width:min(570px,90vw);border:2px solid #add8d6;border-radius:22px;box-sha
 'use strict';
 const $=id=>document.getElementById(id);
 const names=['','房間找襪子','兩隻一組裝籃','襪子洗一洗','乾淨襪子出來了','襪子收進衣櫃','誰的襪子比較多'];
-const descriptions=['','找出房間有幾隻襪子，一個一個數清楚。','每次選兩隻就在原位合成一框；滿10隻才有籃子，不足10隻逐隻整理。','每個滿籃有10隻，先整籃倒入，零散的逐隻放。','點一下洗衣機拿出一隻，注意剩餘數字。','每次選兩隻就在原位合組；滿10隻形成完整衣櫃，剩餘逐隻整理。','觀察誰比較多、比較少，或一樣多。'];
+const descriptions=['','找出房間有幾隻襪子，一個一個數清楚。','這一關，先把兩隻襪子整理成一組。數滿10隻才形成一籃；不足10隻逐隻整理。','每個滿籃有10隻，先整籃倒入，零散的逐隻放。','點一下洗衣機拿出一隻，注意剩餘數字。','把洗好的襪子收進衣櫃，每10隻完成一櫃，其他襪子逐隻整理。','觀察誰比較多、比較少，或一樣多。'];
 let S=null,timer=null,spoken='';
 const num=(n,min,max)=>Math.min(max,Math.max(min,Math.trunc(Number(n))||min));
 const shuffle=a=>{const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b};
@@ -134,7 +142,7 @@ function makeQuestions(){const max=S.maxCompare;const rand=(min,hi)=>min+Math.fl
 function newState(){
 const n=settingsN(),single=$('lessonMode').value,mode=$('mode').value;
 S={N:n,phase:single==='full'?1:Number(single),single:single!=='full',enableCompare:$('compareEnabled').checked,mode,hintLevel:$('hintLevel').value,
-counted:new Set(),firstDone:false,chosen:new Set(),selected:[],packedPairs:0,looseSorted:new Set(),
+counted:new Set(),firstDone:false,chosen:new Set(),selected:[],packedPairs:0,looseSorted:new Set(),reviewBaskets:new Set(),reviewLoose:new Set(),reviewBasketNumbers:{},reviewLooseNumbers:{},
 basketsLoaded:0,looseLoaded:0,unloaded:0,closetChosen:new Set(),closetPairs:0,closetLoose:new Set(),
 questions:[],qIndex:0,qAnswered:false,qHelpForCurrent:false,answers:[],mistakes:{},hints:{},actions:{},
 roadOpen:false,roadNext:1,roadStart:1,roadBackOpen:false,reverseNext:30,reverseStart:30,forwardPass:false,reversePass:false,
@@ -168,8 +176,9 @@ for(let id=0;id<S.N;id++){
 }
 return '<div class="sock-grid-wrap"><div class="sock-grid">'+slots+'</div></div>';
 }
-function looseDisplay(count,totalComplete,container='籃子'){
-return '<div class="loose-display" aria-label="未裝進'+container+'的零散襪子'+count+'隻"><div class="loose-number">'+count+'</div><strong>隻零散襪子（沒有'+container+'）</strong><div class="loose-socks">'+Array.from({length:count},()=>'<span class="loose-one">'+oneSock()+'</span>').join('')+'</div><p class="loose-description">'+(totalComplete*10)+'隻裝在完整的'+container+'裡，另外'+count+'隻單獨放著</p></div>';
+function looseDisplay(count,totalComplete,container='籃子',review=false){
+const socks=Array.from({length:count},(_,i)=>review?'<button type="button" class="loose-one '+(S.reviewLoose.has(i)?'review-counted':'')+'" data-action="reviewLoose" data-id="'+i+'" aria-label="點數第'+(i+1)+'隻零散襪子">'+oneSock()+'</button>':'<span class="loose-one">'+oneSock()+'</span>').join('');
+return '<div class="loose-display" aria-label="未裝進'+container+'的零散襪子'+count+'隻"><div class="loose-number">'+count+'</div><strong>隻零散襪子（沒有'+container+'）</strong><div class="loose-socks">'+socks+'</div><p class="loose-description">'+(totalComplete*10)+'隻裝在完整的'+container+'裡，另外'+count+'隻單獨放著</p></div>';
 }
 function pendingTen(count,container='籃子'){
 return '<div class="ten-building" aria-label="尚未湊滿10隻，目前'+count+'隻"><div class="building-number">'+count+'</div><strong>正在湊10隻（還不是'+container+'）</strong><div class="unit-groups">'+Array.from({length:5},(_,i)=>'<span class="dot-group '+(i*2<count?'':'empty')+'">'+(i*2<count?'<i class="dot"></i><i class="dot"></i>':'')+'</span>').join('')+'</div><span class="loose-description">每兩個點放進同一組，集滿10隻才出現'+container+'</span></div>';
@@ -177,10 +186,11 @@ return '<div class="ten-building" aria-label="尚未湊滿10隻，目前'+count+
 
 function icons(n){return Array.from({length:n},()=>'<span aria-label="1隻襪子">'+oneSock()+'</span>').join('')}
 function dotGroups(count){return '<div class="basket-dots" aria-label="'+count+'個點，每兩個點一組">'+Array.from({length:5},(_,i)=>'<span class="dot-group '+(i*2<count?'':'empty')+'">'+(i*2<count?'<i class="dot"></i><i class="dot"></i>':'')+'</span>').join('')+'</div>'}
-function basketCard(count,label,action='',ready=false){
-const attrs=action?'type="button" data-action="'+action+'" ':'';
+function basketCard(count,label,action='',ready=false,index=0,reviewed=false){
+const attrs=action?'type="button" data-action="'+action+'" data-id="'+index+'" ':'';
 const tag=action?'button':'div';
-return '<'+tag+' '+attrs+'class="basket-card '+(count===10?'full':'')+' '+(ready?'ready':'')+'" aria-label="'+label+'，目前'+count+'隻襪子"><span class="basket-count">'+count+'</span><span class="basket-units">隻襪子</span>'+dotGroups(count)+'<span class="basket-caption">'+label+'</span></'+tag+'>';
+const announced=reviewed?' review-counted':'';
+return '<'+tag+' '+attrs+'class="basket-card '+(count===10?'full':'')+' '+(ready?'ready':'')+announced+'" aria-label="'+label+'，目前'+count+'隻襪子"><span class="basket-count">'+count+'</span><span class="basket-units">隻襪子</span>'+dotGroups(count)+'<span class="basket-caption">'+label+'</span></'+tag+'>';
 }
 function pairBay(action){
 if(S.selected.length===2)return '<div class="pair-bay"><button type="button" class="pair-tile" data-action="'+action+'" aria-label="已選兩隻襪子，點擊把這2隻放進'+(action==='pack'?'籃子':'衣櫃')+'">'+twoSocks()+'<strong>2隻一組</strong><span>點這一組放入'+(action==='pack'?'籃子':'衣櫃')+' →</span></button><button class="btn pair-reset" type="button" data-action="cancelPair">取消選取</button></div>';
@@ -211,15 +221,19 @@ let items='<div class="counter">已整理 <strong>'+usedCount+'</strong> 隻襪�
 items+=sockWorkGrid(S.chosen,S.looseSorted,S.selected,'pack');
 if(S.selected.length)items+='<button type="button" class="btn" data-action="cancelPair">↶ 取消選取，重新挑襪子</button>';
 items+='<div class="help-text">'+(pairMode?(S.selected.length===2?'兩隻已在原來的位置合在同一框！點框框，就能放進整理區。':S.selected.length===1?'已選1隻，請在原本的襪子區再選1隻。':'先點2隻襪子，讓它們在原本的區域合成一組。'):'現在剩下的襪子不夠湊成10隻。請每次點1隻，移到右邊的零散襪子區。')+'</div>';
-let groups='<div class="basket-zone">'+Array.from({length:complete},(_,i)=>basketCard(10,'第'+(i+1)+'籃｜10隻')).join('');
+let groups='<div class="basket-zone">'+Array.from({length:complete},(_,i)=>basketCard(10,'第'+(i+1)+'籃｜10隻'+(correct()?'｜點一下數數':''),correct()?'reviewBasket':'',false,i,S.reviewBaskets.has(i))).join('');
 if(pairMode&&pendingPairs>0)groups+=pendingTen(pendingPairs*2);
-if(!pairMode&&S.N%10>0)groups+=looseDisplay(S.looseSorted.size,complete);
+if(!pairMode&&S.N%10>0)groups+=looseDisplay(S.looseSorted.size,complete,'籃子',correct());
 groups+='</div>';
 let info='<div class="counter">已裝滿 <strong>'+complete+'</strong> 個10隻的籃子</div>'+groups;
 if(pairMode)info+='<p>先每2隻一組，累計2、4、6、8、10。<strong>只有達到10隻，才會出現一個籃子。</strong></p>';
 else info+='<p>現在逐隻數：'+(complete*10)+'、'+Array.from({length:S.looseSorted.size},(_,i)=>complete*10+i+1).join('、')+'。不足10隻的襪子不裝籃。</p>';
 if(effectiveHint())info+='<div class="help-text">'+(pairMode?'第一隻和第二隻都在原地合組。點這個框完成這2隻；五組共10隻才變成籃子。':'每點1隻，它就會移到籃子旁的散放區；例如23隻＝兩個10隻的籃子，旁邊散放3隻。')+'</div>';
-if(correct())info+='<p class="feedback good">整理完成！'+complete+'個籃子（'+complete*10+'隻）＋'+S.looseSorted.size+'隻零散襪子，共'+S.N+'隻。</p>';
+if(correct()){
+ const reviewed=S.reviewBaskets.size*10+S.reviewLoose.size;
+ info+='<div class="result-review"><h3>🔊 點籃子、點襪子，重新數數</h3><p>先點每個10隻的籃子，再一隻一隻點零散襪子。每次都會唸出目前的總數。</p><div class="counter">已複習數到 <strong>'+reviewed+'</strong>／'+S.N+' 隻</div>'+(reviewed===S.N?'<p class="feedback good">已從10、20……數到'+S.N+'！</p>':'')+'<button type="button" class="btn" data-action="reviewReset">↶ 重新點數成果</button></div>';
+ info+='<p class="feedback good">整理完成！'+complete+'個籃子（'+complete*10+'隻）＋'+S.looseSorted.size+'隻零散襪子，共'+S.N+'隻。</p>';
+}
 return '<div class="board"><div class="scene"><h3>原本的襪子區（還有'+remaining+'隻）</h3>'+items+'</div><div class="info"><h3>🧺 整理成果區</h3>'+info+'</div></div>';
 }
 function machine(canClick,label){return '<button type="button" class="washer '+(S.phase===4?'active':'')+'" '+(canClick?'data-action="'+(S.phase===4?'unload':'')+'"':'disabled')+' aria-label="'+label+'"><span class="display">'+label+'</span><span class="drum">'+oneSock()+'</span><small>洗衣機</small></button>'}
@@ -232,7 +246,7 @@ return '<div class="board"><div class="scene"><h3>🫧 洗衣機</h3>'+machine(f
 function render4(){
 const rem=S.N-S.unloaded,clean=S.unloaded;
 const right='<div class="counter">洗衣機剩下 <strong>'+rem+'</strong> 隻</div><div class="counter" style="background:#e4f5e8">已洗好 <strong>'+clean+'</strong> 隻</div><p>按一下洗衣機，就會拿出一隻乾淨襪子。<strong>每次少1</strong>，一起倒著數。</p><button class="btn" data-action="toggleReverse">🔢 '+(S.roadBackOpen?'收起':'展開')+'倒數數字路（30～1）</button>'+(S.roadBackOpen?renderRoad(true):'')+(effectiveHint()?'<div class="help-text">例如剩23隻，拿出1隻後是22隻；接著21、20、19……直到0。</div>':'');
-return '<div class="board"><div class="scene"><h3>🫧 洗好的襪子</h3>'+machine(rem>0,'剩 '+rem+' 隻')+'<h3>🧺 收集區：'+clean+'隻</h3><div class="socks-out">'+icons(clean)+'</div></div><div class="info">'+right+'</div></div>';
+return '<div class="board"><div class="scene"><h3>🫧 洗好的襪子</h3>'+machine(rem>0,'剩 '+rem+' 隻')+'<h3>🧺 收集區：'+clean+'隻</h3><div class="sock-grid-wrap"><div class="socks-out">'+icons(clean)+'</div></div></div><div class="info">'+right+'</div></div>';
 }
 function closetCard(count,label,action=''){
 const tag=action?'button':'div';
@@ -287,7 +301,7 @@ else if(phase===2||phase===5){
   else if(S.selected.length<2)S.selected.push(k);
   else{notice('請先點原位置的兩隻一組框，把這組整理好。');return;}
   notice(S.selected.length===2?'已在原本位置合成同一框！點這個框，完成這2隻。':S.selected.length===1?'第一隻已選，請再點一隻。':'請選兩隻襪子。');
-  if(S.selected.length===2)say('兩隻，一組');
+  // The grouping phrase is spoken once at the beginning of the activity, not after every two clicks.
  }
 }
 }else if(action==='cancelPair'&&(phase===2||phase===5)){S.selected=[];notice('已取消選取，可以重新挑兩隻襪子。');}
