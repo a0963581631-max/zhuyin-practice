@@ -96,7 +96,7 @@ dialog{width:min(570px,90vw);border:2px solid #add8d6;border-radius:22px;box-sha
 <div class="action-bar"><button class="btn" type="button" id="hintBtn">💡 看提示</button><button class="btn" type="button" id="readBtn">🔊 聽說明</button><button class="btn" type="button" id="demoBtn">▶ 示範下一步</button><button class="btn" type="button" id="autoBtn">⏵ 自動示範</button><button class="btn ghost" type="button" id="restartBtn">重新開始</button><button class="btn green push" type="button" id="nextBtn" disabled>下一關 →</button></div>
 <div class="feedback" id="globalFeedback" role="status" aria-live="polite">準備開始囉！</div></section>
 <section id="results" class="card" hidden></section>
-<dialog id="helpDialog"><h2>🧦 遊戲玩法</h2><p class="note">先把地上的襪子一隻一隻數清楚，每點兩隻就合成同一組，再把每組2隻放進籃子。每籃最多10隻，集滿5組時可以整籃投入洗衣機；剩下的襪子逐隻投入。洗好後每點一次洗衣機會排出一隻，再把襪子配對收進衣櫃，最後完成大小比較。</p><p>每一關都有「看提示」、「聽說明」、「示範下一步」。遇到單數量時，最後一隻襪子可以放入單襪暫放區，不會判錯。</p><p>數字小路可以額外練習1到30順數，或30到1倒數。口頭朗讀能力請由教師實際觀察。</p><button class="btn primary" id="closeHelp" type="button">知道了</button></dialog>
+<dialog id="helpDialog"><h2>🧺 遊戲玩法</h2><p class="note">先把地上的襪子一隻一隻數清楚，每點兩隻就合成同一組，再把每組2隻放進籃子。每籃最多10隻，集滿5組時可以整籃投入洗衣機；剩下的襪子逐隻投入。洗好後每點一次洗衣機會排出一隻，再把襪子配對收進衣櫃，最後完成大小比較。</p><p>每一關都有「看提示」、「聽說明」、「示範下一步」。遇到單數量時，最後一隻襪子可以放入單襪暫放區，不會判錯。</p><p>數字小路可以額外練習1到30順數，或30到1倒數。口頭朗讀能力請由教師實際觀察。</p><button class="btn primary" id="closeHelp" type="button">知道了</button></dialog>
 </div>
 <script>
 (()=>{
@@ -167,52 +167,59 @@ if(S.roadOpen)right+=renderRoad(false);
 return '<div class="board"><div class="scene"><h3>🏠 房間地板</h3><div class="sock-grid">'+Array.from({length:S.N},(_,i)=>soc(i,S.counted.has(i)?'counted':'')).join('')+'</div></div><div class="info">'+right+'</div></div>';
 }
 function render2(){
-const pairs=Math.floor(S.N/2),usedCount=S.packedPairs*2,remaining=S.N-usedCount,complete=Math.floor(S.packedPairs/5),partial=S.packedPairs%5,selected=S.selected;
-let main='<div class="counter">已配好 <strong>'+S.packedPairs+'</strong> 雙（'+usedCount+'隻）</div>';
-main+='<div class="sock-grid">'+sockPool(S.chosen,selected)+'</div>';
-main+='<div class="pair-bay">'+(selected.length===2?'<strong>🧦＋🧦＝1雙</strong><div>點右側洗衣籃，把這一雙收起來</div>':selected.length===1?'已選1隻，再選另外1隻':'請先點選兩隻襪子')+'</div>';
-let bs='<div class="work-table">'+Array.from({length:complete},(_,i)=>'<div class="basket full" aria-label="裝滿10隻的籃子"><span>🧺</span>第'+(i+1)+'籃<br>5雙＝10隻 ✓</div>').join('');
-if(remaining>=2)bs+='<button class="basket '+(selected.length===2?'ready':'')+'" type="button" data-action="pack"><span>🧺</span>整理中<br>'+partial+'／5雙</button>';
-else if(partial)bs+='<div class="basket"><span>🧦</span>未滿10隻<br>剩'+(partial*2)+'隻</div>';
+const pairs=Math.floor(S.N/2),usedCount=S.packedPairs*2,remaining=S.N-usedCount,complete=Math.floor(S.packedPairs/5),partial=S.packedPairs%5;
+let main='<div class="counter">已整理 <strong>'+usedCount+'</strong> 隻襪子</div>';
+main+='<div class="sock-grid">'+sockPool(S.chosen,S.selected)+'</div>'+pairBay('pack');
+let bs='<div class="basket-zone">'+Array.from({length:complete},(_,i)=>basketCard(10,'第'+(i+1)+'籃｜已裝滿')).join('');
+if(remaining>=2)bs+=basketCard(partial*2,'第'+(complete+1)+'籃｜點此放入2隻','pack',S.selected.length===2);
+else if(partial)bs+=basketCard(partial*2,'第'+(complete+1)+'籃｜尚未滿10隻');
 bs+='</div>';
-let info='<div class="counter">完整籃子 <strong>'+complete+'</strong> 籃</div><p>每放進一雙，就一起數：<strong>'+Array.from({length:partial},(_,i)=>(complete*10+(i+1)*2)).join('、')+'</strong></p>'+bs;
-info+='<p class="tiny">未滿10隻的'+(partial*2+(S.N%2))+'隻襪子，下一關要逐隻投入洗衣機。</p>';
-if(effectiveHint())info+='<div class="help-text">提示：點選兩隻，完成一雙；再按「整理中」洗衣籃放入。每籃五雙就是10隻。</div>';
-if(pairs===0)info+='<p>只有1隻襪子，無法配成一雙，可直接進下一關。</p>';
-if(correct())info+='<p class="feedback good">配對完成！'+complete+'個滿籃，剩下'+(S.N%10)+'隻零散襪子。</p>';
-return '<div class="board"><div class="scene"><h3>🧦 待整理襪子（剩'+remaining+'隻）</h3>'+main+'</div><div class="info">'+info+'</div></div>';
+let info='<div class="counter">裝滿10隻的籃子 <strong>'+complete+'</strong> 籃</div>';
+info+='<p>這個籃子每次多2隻：<strong>'+Array.from({length:partial},(_,i)=>(i+1)*2).join('、')+(partial===0?'請放入2隻':'')+'</strong></p>'+bs;
+info+='<p class="tiny">每個小框代表2隻襪子。裝滿5個小框，就是10隻襪子。</p>';
+if(effectiveHint())info+='<div class="help-text">先點兩隻襪子，看到兩隻合進同一框，再點那個框或籃子把2隻放入。籃子上方的數字會變成2、4、6、8、10。</div>';
+if(pairs===0)info+='<p>目前只有1隻襪子，無法組成2隻，直接進下一關即可。</p>';
+if(correct())info+='<p class="feedback good">整理完成！'+complete+'籃各有10隻，還有'+(S.N%10)+'隻未滿10隻的襪子。</p>';
+return '<div class="board"><div class="scene"><h3>待整理襪子（剩'+remaining+'隻）</h3>'+main+'</div><div class="info">'+info+'</div></div>';
 }
-function machine(canClick,label){return '<button type="button" class="washer '+(S.phase===4?'active':'')+'" '+(canClick?'data-action="'+(S.phase===4?'unload':'')+'"':'disabled')+' aria-label="'+label+'"><span class="display">'+label+'</span><span class="drum">🧦</span><small>洗衣機</small></button>'}
+function machine(canClick,label){return '<button type="button" class="washer '+(S.phase===4?'active':'')+'" '+(canClick?'data-action="'+(S.phase===4?'unload':'')+'"':'disabled')+' aria-label="'+label+'"><span class="display">'+label+'</span><span class="drum">'+oneSock()+'</span><small>洗衣機</small></button>'}
 function render3(){
 const total=S.basketsLoaded*10+S.looseLoaded,all=Math.floor(S.N/10),loose=S.N%10,remain=all-S.basketsLoaded,looseRemain=loose-S.looseLoaded;
 let info='<div class="counter">目前放入：<strong>'+total+'</strong>隻</div><div class="tally">'+Array.from({length:S.basketsLoaded},()=>'<span class="unit ten">10</span>').join('')+(S.looseLoaded?'<span class="unit">＋'+S.looseLoaded+'</span>':'')+'</div><p><strong>'+S.basketsLoaded+'個十＋'+S.looseLoaded+'個一＝'+total+'</strong></p>';
 if(effectiveHint())info+='<div class="help-text">先倒裝滿10隻的籃子，每次加10；全部倒完後，再一隻一隻放零散襪子。</div>';
-return '<div class="board"><div class="scene"><h3>🫧 洗衣機</h3>'+machine(false,total+' 隻')+'<p style="text-align:center;font-weight:800">共要洗 '+S.N+' 隻</p></div><div class="info">'+info+'<h3>🧺 準備投入</h3><div class="work-table">'+Array.from({length:remain},(_,i)=>'<button class="basket" data-action="loadBasket"><span>🧺</span>10隻<br>整籃倒入</button>').join('')+'</div><h3 style="margin-top:14px">零散襪子：'+looseRemain+'隻</h3><div class="sock-grid">'+Array.from({length:looseRemain},(_,i)=>'<button class="sock" data-action="loadLoose" '+(remain?'disabled title="先投入滿籃"':'')+'>🧦</button>').join('')+'</div>'+(correct()?'<p class="feedback good">全部 '+S.N+' 隻已經放進洗衣機！</p>':'')+'</div></div>';
+return '<div class="board"><div class="scene"><h3>🫧 洗衣機</h3>'+machine(false,total+' 隻')+'<p style="text-align:center;font-weight:800">共要洗 '+S.N+' 隻</p></div><div class="info">'+info+'<h3>🧺 準備投入</h3><div class="work-table">'+Array.from({length:remain},(_,i)=>basketCard(10,'10隻｜點此整籃倒入','loadBasket')).join('')+'</div><h3 style="margin-top:14px">零散襪子：'+looseRemain+'隻</h3><div class="sock-grid">'+Array.from({length:looseRemain},(_,i)=>'<button class="sock" data-action="loadLoose" aria-label="放入1隻襪子" '+(remain?'disabled title="先投入滿籃"':'')+'>'+oneSock()+'</button>').join('')+'</div>'+(correct()?'<p class="feedback good">全部 '+S.N+' 隻已經放進洗衣機！</p>':'')+'</div></div>';
 }
 function render4(){
 const rem=S.N-S.unloaded,clean=S.unloaded;
 const right='<div class="counter">洗衣機剩下 <strong>'+rem+'</strong> 隻</div><div class="counter" style="background:#e4f5e8">已洗好 <strong>'+clean+'</strong> 隻</div><p>按一下洗衣機，就會拿出一隻乾淨襪子。<strong>每次少1</strong>，一起倒著數。</p><button class="btn" data-action="toggleReverse">🔢 '+(S.roadBackOpen?'收起':'展開')+'倒數數字路（30～1）</button>'+(S.roadBackOpen?renderRoad(true):'')+(effectiveHint()?'<div class="help-text">例如剩23隻，拿出1隻後是22隻；接著21、20、19……直到0。</div>':'');
 return '<div class="board"><div class="scene"><h3>🫧 洗好的襪子</h3>'+machine(rem>0,'剩 '+rem+' 隻')+'<h3>🧺 收集區：'+clean+'隻</h3><div class="socks-out">'+icons(clean)+'</div></div><div class="info">'+right+'</div></div>';
 }
+function closetCard(count,label,action=''){
+const tag=action?'button':'div';
+return '<'+tag+' '+(action?'type="button" data-action="'+action+'" ':'')+'class="closet-card" aria-label="'+label+'，目前'+count+'隻襪子"><span class="closet-count">'+count+'</span><span class="basket-units">隻襪子</span><div class="closet-shelf">'+Array.from({length:5},(_,i)=>'<span class="closet-slot '+(i*2<count?'':'empty')+'">'+(i*2<count?twoSocks():'')+'</span>').join('')+'</div><span class="closet-caption">'+label+'</span></'+tag+'>';
+}
 function render5(){
 const pairMax=Math.floor(S.N/2),stored=S.closetPairs*2,full=Math.floor(S.closetPairs/5),partial=S.closetPairs%5;
-let closets=Array.from({length:full},(_,j)=>'<div class="closet"><div class="shelf">'+Array.from({length:5},()=>'<div class="slot">🧦🧦</div>').join('')+'</div><p class="cabinet-info">第'+(j+1)+'櫃｜10隻 ✓</p></div>').join('');
-if(S.closetPairs<pairMax)closets+='<button type="button" class="closet" style="cursor:pointer" data-action="store" aria-label="把這一雙放入衣櫃"><div class="shelf">'+Array.from({length:5},(_,i)=>'<div class="slot">'+(i<partial?'🧦🧦':'＋')+'</div>').join('')+'</div><p class="cabinet-info">整理中 '+partial+'／5雙｜點這裡收納</p></button>';
-else if(partial)closets+='<div class="closet"><div class="shelf">'+Array.from({length:5},(_,i)=>'<div class="slot">'+(i<partial?'🧦🧦':'＋')+'</div>').join('')+'</div><p class="cabinet-info">未滿一櫃｜'+(partial*2)+'隻</p></div>';
-let info='<div class="counter">衣櫃已收 <strong>'+stored+'</strong> 隻</div><div class="work-table">'+closets+'</div>';
-if(correct()){info+='<p class="feedback good">整理完成：'+full+'個滿櫃＋'+(S.N%10)+'隻不足10的襪子。</p>';if(S.N%2)info+='<p>另外1隻單襪放在暫放區，不需要配對。</p>';}
-if(effectiveHint())info+='<div class="help-text">點兩隻配一雙，接著點衣櫃收納。五雙放滿一櫃，剛好10隻。</div>';
-return '<div class="board"><div class="scene"><h3>🧦 乾淨襪子待收區</h3><div class="counter">還有 <strong>'+(S.N-stored)+'</strong>隻</div><div class="sock-grid">'+(correct()&&S.N%2?'<div class="pair-bay">🧦<br>單襪暫放區：1隻</div>':sockPool(S.closetChosen,S.selected))+'</div><div class="pair-bay">'+(S.selected.length===2?'<strong>🧦＋🧦＝1雙</strong><div>點右邊的衣櫃收好</div>':S.selected.length===1?'再挑一隻襪子':'點兩隻襪子配成一雙')+'</div></div><div class="info"><h3>🚪 整理衣櫃</h3>'+info+'</div></div>';
+let closets='<div class="basket-zone">'+Array.from({length:full},(_,j)=>closetCard(10,'第'+(j+1)+'櫃｜已裝滿')).join('');
+if(S.closetPairs<pairMax)closets+=closetCard(partial*2,'第'+(full+1)+'櫃｜點此放入2隻','store');
+else if(partial)closets+=closetCard(partial*2,'第'+(full+1)+'櫃｜尚未滿10隻');
+closets+='</div>';
+let info='<div class="counter">已收進衣櫃 <strong>'+stored+'</strong> 隻</div>'+closets;
+if(correct())info+='<p class="feedback good">收納完成！'+full+'櫃各有10隻，另外還有'+(S.N%10)+'隻不足10隻的襪子。</p>';
+if(effectiveHint())info+='<div class="help-text">一樣先點2隻襪子，讓它們合在同一個框；再點這一組或衣櫃收納。每次增加2隻，一櫃最多10隻。</div>';
+const lone=correct()&&S.N%2;
+const pool=lone?'<div class="pair-bay">'+oneSock()+'<strong>單襪暫放區：1隻</strong></div>':sockPool(S.closetChosen,S.selected);
+return '<div class="board"><div class="scene"><h3>乾淨襪子待收區</h3><div class="counter">還有 <strong>'+(S.N-stored)+'</strong> 隻</div><div class="sock-grid">'+pool+'</div>'+pairBay('store')+'</div><div class="info"><h3>🚪 整理衣櫃</h3>'+info+'</div></div>';
 }
 function render6(){
 const i=S.qIndex,q=S.questions[i];if(!q)return '<div class="feedback good">六題完成！</div>';
 const thing=(n,title)=>'<div class="compare-card"><h3>'+title+'</h3>'+(q.kind==='numbers'?'<div class="numeral">'+n+'</div>':'<div class="objects">'+icons(n)+'</div>')+'</div>';
 let info='<div class="counter">第 <strong>'+(i+1)+'</strong>／'+S.questions.length+' 題</div><h3>哪邊比較多（數字比較大）？</h3><div class="choice-row"><button class="btn" data-action="compare" data-id="left">左邊</button><button class="btn" data-action="compare" data-id="right">右邊</button><button class="btn" data-action="compare" data-id="equal">一樣多</button></div>';
 if(effectiveHint())info+='<div class="help-text">'+(q.kind==='numbers'?'提示：可以想想哪個數字在數字路上比較後面。':'提示：可以一隻對一隻配對，看看有沒有剩下。')+'</div>';
-return '<div class="board"><div class="scene"><h3>🧦 比較挑戰（'+(q.kind==='objects'?'看襪子':'看數字')+'）</h3><div class="compareGrid">'+thing(q.a,'左邊')+thing(q.b,'右邊')+'</div></div><div class="info">'+info+'</div></div>';
+return '<div class="board"><div class="scene"><h3>比較挑戰（'+(q.kind==='objects'?'看襪子':'看數字')+'）</h3><div class="compareGrid">'+thing(q.a,'左邊')+thing(q.b,'右邊')+'</div></div><div class="info">'+info+'</div></div>';
 }
 function render(){
-if(!S)return;let html='<div class="stageTop"><div><p class="tiny">第 '+S.phase+' 關／共 '+(S.enableCompare?6:5)+' 關</p><h2>'+names[S.phase]+'</h2></div>'+badge('🧦 '+S.N+'隻襪子')+'</div><p class="subtitle">'+descriptions[S.phase]+'</p>';
+if(!S)return;let html='<div class="stageTop"><div><p class="tiny">第 '+S.phase+' 關／共 '+(S.enableCompare?6:5)+' 關</p><h2>'+names[S.phase]+'</h2></div>'+badge(S.N+'隻襪子')+'</div><p class="subtitle">'+descriptions[S.phase]+'</p>';
 html+=({1:render1,2:render2,3:render3,4:render4,5:render5,6:render6}[S.phase])();
 $('stage').innerHTML=html;
 $('progress').innerHTML=names.slice(1,S.enableCompare?7:6).map((name,i)=>'<div class="step '+(i+1===S.phase?'active':S.completed.has(i+1)?'done':'')+'">'+(i+1)+'. '+name+'</div>').join('');
@@ -227,13 +234,14 @@ function act(action,id){
 if(!S)return;const phase=S.phase,k=Number(id);
 if(action==='sock'){
 if(phase===1){if(S.counted.has(k)){notice('這隻已經數過了，找另一隻。');return;}S.counted.add(k);S.countedOrder.set(k,S.counted.size);increment(S.actions,phase);say(String(S.counted.size));notice('數到 '+S.counted.size+' 隻。','good');}
-else if(phase===2||phase===5){const used=phase===2?S.chosen:S.closetChosen;if(used.has(k))return;if(S.selected.includes(k))S.selected=S.selected.filter(x=>x!==k);else if(S.selected.length<2)S.selected.push(k);else{notice('已經選了兩隻，先把一雙收好。');return;}notice(S.selected.length===2?'配成一雙了！接著點籃子或衣櫃。':'已選'+S.selected.length+'隻襪子。');if(S.selected.length===2)say('一雙，兩隻');}
-}else if(action==='answerTotal'&&phase===1){if(k===S.N){S.firstDone=true;increment(S.actions,1);say('答對了！一共有'+S.N+'隻襪子');notice('答對！共 '+S.N+' 隻。','good');}else mistake('再數數看，最後唸到的數字就是總數。');}
-else if(action==='pack'&&phase===2){if(S.selected.length!==2){mistake('請先選兩隻襪子，配成一雙。');return;}for(const i of S.selected)S.chosen.add(i);S.selected=[];S.packedPairs++;increment(S.actions,2);const subtotal=S.packedPairs*2;say(String(subtotal));notice('已配好'+S.packedPairs+'雙，共'+subtotal+'隻。'+(S.packedPairs%5===0?'五雙就是10隻，這一籃滿了！':''),'good');}
+else if(phase===2||phase===5){const used=phase===2?S.chosen:S.closetChosen;if(used.has(k))return;if(S.selected.includes(k))S.selected=S.selected.filter(x=>x!==k);else if(S.selected.length<2)S.selected.push(k);else{notice('已選兩隻，請先把這2隻放入籃子或衣櫃。');return;}notice(S.selected.length===2?'兩隻襪子已經合成同一個框框！點框框或容器把2隻放進去。':'已選'+S.selected.length+'隻襪子。');if(S.selected.length===2)say('兩隻，一組');}
+}else if(action==='cancelPair'&&(phase===2||phase===5)){S.selected=[];notice('已取消選取，可以重新挑兩隻襪子。');}
+else if(action==='answerTotal'&&phase===1){if(k===S.N){S.firstDone=true;increment(S.actions,1);say('答對了！一共有'+S.N+'隻襪子');notice('答對！共 '+S.N+' 隻。','good');}else mistake('再數數看，最後唸到的數字就是總數。');}
+else if(action==='pack'&&phase===2){if(S.selected.length!==2){mistake('請先選兩隻襪子，讓它們合成同一組。');return;}for(const i of S.selected)S.chosen.add(i);S.selected=[];S.packedPairs++;increment(S.actions,2);const subtotal=S.packedPairs*2;say(String(subtotal));notice('已整理'+subtotal+'隻。這一籃有'+(S.packedPairs%5===0?10:(S.packedPairs%5)*2)+'隻。'+(S.packedPairs%5===0?'10隻裝滿一籃！':''),'good');}
 else if(action==='loadBasket'&&phase===3){if(S.basketsLoaded>=Math.floor(S.N/10))return;S.basketsLoaded++;increment(S.actions,3);const total=S.basketsLoaded*10+S.looseLoaded;say(String(total));notice('倒入10隻，現在有'+total+'隻。','good');}
 else if(action==='loadLoose'&&phase===3){if(S.basketsLoaded<Math.floor(S.N/10)){mistake('先把裝滿10隻的籃子倒進去。');return;}if(S.looseLoaded>=S.N%10)return;S.looseLoaded++;increment(S.actions,3);const total=S.basketsLoaded*10+S.looseLoaded;say(String(total));notice('放進一隻，現在有'+total+'隻。','good');}
 else if(action==='unload'&&phase===4){if(S.unloaded>=S.N)return;S.unloaded++;increment(S.actions,4);const remaining=S.N-S.unloaded;say(remaining?'剩下'+remaining+'隻':'剩下零隻，洗衣機空了');notice('拿出1隻，洗衣機還剩'+remaining+'隻。','good');}
-else if(action==='store'&&phase===5){if(S.selected.length!==2){mistake('請先點選兩隻乾淨襪子。');return;}for(const i of S.selected)S.closetChosen.add(i);S.selected=[];S.closetPairs++;increment(S.actions,5);const n=S.closetPairs*2;say(String(n));notice('衣櫃已收好'+n+'隻。'+(S.closetPairs%5===0?'五雙裝滿一櫃，共10隻！':''),'good');}
+else if(action==='store'&&phase===5){if(S.selected.length!==2){mistake('請先選兩隻乾淨襪子，讓它們合成同一組。');return;}for(const i of S.selected)S.closetChosen.add(i);S.selected=[];S.closetPairs++;increment(S.actions,5);const n=S.closetPairs*2;say(String(n));notice('衣櫃已收好'+n+'隻。'+(S.closetPairs%5===0?'這一櫃有10隻，裝滿了！':''),'good');}
 else if(action==='compare'&&phase===6){const q=S.questions[S.qIndex];if(!q)return;const right=id===q.answer;if(!S.qAnswered){S.answers.push({q:S.qIndex,first:right,assisted:S.qHelpForCurrent||S.mode==='demo'||S.showHint});S.qAnswered=true;}if(!right){mistake('再看看哪邊比較多。也可能一樣多喔。');}else{increment(S.actions,6);notice('答對了！'+q.a+' 和 '+q.b+'，'+(q.answer==='equal'?'一樣多。':q.a>q.b?'左邊比較多。':'右邊比較多。'),'good');say('答對了！');S.qIndex++;S.qAnswered=false;S.qHelpForCurrent=false;}}
 else if(action==='toggleRoad'){S.roadOpen=!S.roadOpen;S.showHint=true;}
 else if(action==='toggleReverse'){S.roadBackOpen=!S.roadBackOpen;S.showHint=true;}
@@ -259,7 +267,7 @@ const finished=[...S.completed].sort((a,b)=>a-b),answerCorrect=S.answers.filter(
 let tbl='<table class="report"><thead><tr><th>活動</th><th>完成操作</th><th>需要提示</th><th>錯誤嘗試</th></tr></thead><tbody>';
 for(const p of finished)tbl+='<tr><td>'+names[p]+'</td><td>'+(S.actions[p]||0)+'</td><td>'+(S.hints[p]||0)+'</td><td>'+(S.mistakes[p]||0)+'</td></tr>';
 tbl+='</tbody></table>';
-$('results').innerHTML='<h2>🎉 襪子整理完成！</h2><p class="subtitle">這一回合整理了 '+S.N+' 隻襪子，謝謝你幫忙完成任務！</p><div class="result-grid"><div class="result"><strong>'+S.N+'</strong><p>本回合襪子數</p></div><div class="result"><strong>'+Math.floor(S.N/2)+'</strong><p>可配成的完整雙數</p></div><div class="result"><strong>'+Math.floor(S.N/10)+'</strong><p>每10隻為一組的組數</p></div></div><h3 style="margin-top:20px">教師觀察與操作紀錄</h3>'+tbl+'<p class="tiny">數字路：順數'+(S.forwardPass?'已完成':'尚未完整檢核')+'；倒數'+(S.reversePass?'已完成':'尚未完整檢核')+'。比較挑戰第一次未求助即答對：'+answerCorrect+'／'+S.answers.length+'題。點擊操作不代表已確認口語數數能力。</p><div class="setting"><strong>教師口語觀察（可自行勾選）</strong><div class="toggles"><label><input type="checkbox"> 能獨立順數</label><label><input type="checkbox"> 能獨立倒數</label><label><input type="checkbox"> 能以2個一數</label><label><input type="checkbox"> 能以10個一數</label></div></div><p class="note">紀錄僅顯示本次頁面的操作狀況，不保存學生姓名或個人資料。示範模式與使用提示後的作答，不應視為獨立掌握。</p><div class="setup-footer no-print"><button class="btn" id="printResults" type="button">列印本次紀錄</button><button class="btn" id="sameGame" type="button">相同數量重玩</button><button class="btn primary" id="newGame" type="button">重新選擇活動</button></div>';
+$('results').innerHTML='<h2>🎉 襪子整理完成！</h2><p class="subtitle">這一回合整理了 '+S.N+' 隻襪子，謝謝你幫忙完成任務！</p><div class="result-grid"><div class="result"><strong>'+S.N+'</strong><p>本回合襪子數</p></div><div class="result"><strong>'+Math.floor(S.N/2)+'</strong><p>完整的2隻一組</p></div><div class="result"><strong>'+Math.floor(S.N/10)+'</strong><p>每10隻為一組的組數</p></div></div><h3 style="margin-top:20px">教師觀察與操作紀錄</h3>'+tbl+'<p class="tiny">數字路：順數'+(S.forwardPass?'已完成':'尚未完整檢核')+'；倒數'+(S.reversePass?'已完成':'尚未完整檢核')+'。比較挑戰第一次未求助即答對：'+answerCorrect+'／'+S.answers.length+'題。點擊操作不代表已確認口語數數能力。</p><div class="setting"><strong>教師口語觀察（可自行勾選）</strong><div class="toggles"><label><input type="checkbox"> 能獨立順數</label><label><input type="checkbox"> 能獨立倒數</label><label><input type="checkbox"> 能以2個一數</label><label><input type="checkbox"> 能以10個一數</label></div></div><p class="note">紀錄僅顯示本次頁面的操作狀況，不保存學生姓名或個人資料。示範模式與使用提示後的作答，不應視為獨立掌握。</p><div class="setup-footer no-print"><button class="btn" id="printResults" type="button">列印本次紀錄</button><button class="btn" id="sameGame" type="button">相同數量重玩</button><button class="btn primary" id="newGame" type="button">重新選擇活動</button></div>';
 $('printResults').onclick=()=>window.print();$('newGame').onclick=backSetup;$('sameGame').onclick=()=>{$('countMode').value='custom';$('sockCount').value=S.N;start()};
 window.scrollTo({top:0,behavior:'smooth'});
 }
