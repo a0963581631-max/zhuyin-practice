@@ -25,7 +25,7 @@ h2{margin:3px 0 12px;font-size:clamp(22px,2.7vw,29px)}h3{margin:0 0 10px;font-si
 .machine-wrap{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center}.washer{display:block;margin:8px auto;border:9px solid #acc9d5;background:linear-gradient(135deg,#fff,#d5e7f1);width:min(100%,245px);aspect-ratio:1/1.16;border-radius:27px;box-shadow:inset 0 0 0 3px #edf8fa,0 9px 18px #28516522;position:relative;cursor:pointer;padding:0}.washer:disabled{cursor:default}.washer .display{background:#17637c;color:#fff;border-radius:8px;font-size:27px;font-weight:900;padding:5px;position:absolute;left:13%;right:13%;top:7%}.washer .drum{position:absolute;left:17%;right:17%;bottom:8%;aspect-ratio:1;border-radius:50%;border:11px solid #668ba2;background:radial-gradient(circle at 28% 20%,#cfeefa,#85b5ce);display:grid;place-items:center;font-size:50px}.washer.active .drum{animation:turn .8s ease-in-out infinite alternate}@keyframes turn{to{transform:rotate(30deg)}}.washer small{position:absolute;bottom:1%;right:4%;font-weight:750;color:#345}
 .tally{display:flex;gap:7px;flex-wrap:wrap}.tally .unit{padding:10px;border-radius:12px;background:#dcedf3;font-size:19px;font-weight:900}.tally .unit.ten{background:#c5ebdc;color:#20735d}
 .socks-out{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;max-width:370px;margin:auto}.socks-out span{font-size:24px;text-align:center;background:white;border-radius:9px}
-.closet{border:7px solid #b3ccb7;background:#e0efe1;max-width:320px;margin:auto;border-radius:16px;min-height:225px;padding:10px;box-shadow:7px 6px 0 #c4d9d4}.shelf{display:grid;grid-template-columns:repeat(5,1fr);gap:3px;padding:12px 4px;background:#eef6f0;border-bottom:8px solid #96b49c;border-radius:10px;min-height:80px}.shelf .slot{font-size:30px;text-align:center;display:grid;place-items:center;min-height:53px;border:1px dashed #b5cdb8;border-radius:7px}.cabinet-info{text-align:center;margin-top:9px;font-weight:800}
+.closet{border:7px solid #b3ccb7;background:#e0efe1;max-width:320px;margin:auto;border-radius:16px;min-height:225px;padding:10px;box-shadow:7px 6px 0 #c4d9d4}.shelf{display:grid;grid-template-columns:repeat(5,1fr);gap:3px;padding:12px 4px;background:#eef6f0;border-bottom:8px solid #96b49c;border-radius:10px;min-height:80px}.shelf .slot{font-size:22px;text-align:center;display:grid;place-items:center;min-height:53px;border:1px dashed #b5cdb8;border-radius:7px}.cabinet-info{text-align:center;margin-top:9px;font-weight:800}
 .compareGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.compare-card{min-height:165px;border:2px solid #b8dce4;border-radius:19px;background:#fff;padding:10px;text-align:center}.compare-card h3{color:#355d73}.compare-card .objects{display:grid;grid-template-columns:repeat(5,1fr);gap:3px;max-width:220px;margin:auto}.compare-card .objects span{font-size:21px}.compare-card .numeral{font-size:66px;color:#137b92;font-weight:950}
 .number-road{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:4px;margin-top:12px}.number-road button{border:1px solid #bfd8df;background:#fff;border-radius:8px;min-height:38px;padding:4px 0;font-size:16px;font-weight:850}.number-road button.passed{background:#c8eedf}.number-road button.expected{border:3px solid #2497a5;background:#e0f6fa}.road-controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:12px}.road-controls select{padding:8px;border-radius:9px;border:1px solid #a9cbd5;background:white}
 .result-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.result{background:#e9f7f5;border-radius:14px;padding:15px}.result strong{font-size:26px;color:#167a70}.result p{margin:4px 0 0;color:#547184}.report{width:100%;border-collapse:collapse;margin:12px 0}.report th,.report td{padding:9px 6px;border-bottom:1px solid #d1e5e9;text-align:left;font-size:14px}.print-only{display:none}.note{line-height:1.7;border-left:4px solid #7ab2b4;padding-left:13px}
@@ -71,7 +71,7 @@ const n=settingsN(),single=$('lessonMode').value,mode=$('mode').value;
 S={N:n,phase:single==='full'?1:Number(single),single:single!=='full',enableCompare:$('compareEnabled').checked,mode,hintLevel:$('hintLevel').value,
 counted:new Set(),firstDone:false,chosen:new Set(),selected:[],packedPairs:0,
 basketsLoaded:0,looseLoaded:0,unloaded:0,closetChosen:new Set(),closetPairs:0,
-questions:[],qIndex:0,qAnswered:false,answers:[],mistakes:{},hints:{},actions:{},
+questions:[],qIndex:0,qAnswered:false,qHelpForCurrent:false,answers:[],mistakes:{},hints:{},actions:{},
 roadOpen:false,roadNext:1,roadStart:1,roadBackOpen:false,reverseNext:30,reverseStart:30,forwardPass:false,reversePass:false,
 showHint:false,completed:new Set(),maxCompare:$('countMode').value==='10'?10:$('countMode').value==='20'?20:30};
 S.questions=makeQuestions();if(mode==='demo')S.showHint=true;stopAuto();
@@ -114,7 +114,8 @@ let main='<div class="counter">已配好 <strong>'+S.packedPairs+'</strong> 雙�
 main+='<div class="sock-grid">'+sockPool(S.chosen,selected)+'</div>';
 main+='<div class="pair-bay">'+(selected.length===2?'<strong>🧦＋🧦＝1雙</strong><div>點右側洗衣籃，把這一雙收起來</div>':selected.length===1?'已選1隻，再選另外1隻':'請先點選兩隻襪子')+'</div>';
 let bs='<div class="work-table">'+Array.from({length:complete},(_,i)=>'<div class="basket full" aria-label="裝滿10隻的籃子"><span>🧺</span>第'+(i+1)+'籃<br>5雙＝10隻 ✓</div>').join('');
-if(remaining>1||partial>0)bs+='<button class="basket '+(selected.length===2?'ready':'')+'" type="button" data-action="pack"><span>🧺</span>整理中<br>'+partial+'／5雙</button>';
+if(remaining>=2)bs+='<button class="basket '+(selected.length===2?'ready':'')+'" type="button" data-action="pack"><span>🧺</span>整理中<br>'+partial+'／5雙</button>';
+else if(partial)bs+='<div class="basket"><span>🧦</span>未滿10隻<br>剩'+(partial*2)+'隻</div>';
 bs+='</div>';
 let info='<div class="counter">完整籃子 <strong>'+complete+'</strong> 籃</div><p>每放進一雙，就一起數：<strong>'+Array.from({length:partial},(_,i)=>(complete*10+(i+1)*2)).join('、')+'</strong></p>'+bs;
 info+='<p class="tiny">未滿10隻的'+(partial*2+(S.N%2))+'隻襪子，下一關要逐隻投入洗衣機。</p>';
@@ -137,12 +138,13 @@ return '<div class="board"><div class="scene"><h3>🫧 洗好的襪子</h3>'+mac
 }
 function render5(){
 const pairMax=Math.floor(S.N/2),stored=S.closetPairs*2,full=Math.floor(S.closetPairs/5),partial=S.closetPairs%5;
-let closets=Array.from({length:full},(_,j)=>'<div class="closet"><div class="shelf">'+Array.from({length:5},()=>'<div class="slot">🧦</div>').join('')+'</div><p class="cabinet-info">第'+(j+1)+'櫃｜10隻 ✓</p></div>').join('');
-if(S.closetPairs<pairMax||partial)closets+='<button type="button" class="closet" style="cursor:pointer" data-action="store" aria-label="把這一雙放入衣櫃"><div class="shelf">'+Array.from({length:5},(_,i)=>'<div class="slot">'+(i<partial?'🧦':'＋')+'</div>').join('')+'</div><p class="cabinet-info">整理中 '+partial+'／5雙｜點這裡收納</p></button>';
+let closets=Array.from({length:full},(_,j)=>'<div class="closet"><div class="shelf">'+Array.from({length:5},()=>'<div class="slot">🧦🧦</div>').join('')+'</div><p class="cabinet-info">第'+(j+1)+'櫃｜10隻 ✓</p></div>').join('');
+if(S.closetPairs<pairMax)closets+='<button type="button" class="closet" style="cursor:pointer" data-action="store" aria-label="把這一雙放入衣櫃"><div class="shelf">'+Array.from({length:5},(_,i)=>'<div class="slot">'+(i<partial?'🧦🧦':'＋')+'</div>').join('')+'</div><p class="cabinet-info">整理中 '+partial+'／5雙｜點這裡收納</p></button>';
+else if(partial)closets+='<div class="closet"><div class="shelf">'+Array.from({length:5},(_,i)=>'<div class="slot">'+(i<partial?'🧦🧦':'＋')+'</div>').join('')+'</div><p class="cabinet-info">未滿一櫃｜'+(partial*2)+'隻</p></div>';
 let info='<div class="counter">衣櫃已收 <strong>'+stored+'</strong> 隻</div><div class="work-table">'+closets+'</div>';
 if(correct()){info+='<p class="feedback good">整理完成：'+full+'個滿櫃＋'+(S.N%10)+'隻不足10的襪子。</p>';if(S.N%2)info+='<p>另外1隻單襪放在暫放區，不需要配對。</p>';}
 if(effectiveHint())info+='<div class="help-text">點兩隻配一雙，接著點衣櫃收納。五雙放滿一櫃，剛好10隻。</div>';
-return '<div class="board"><div class="scene"><h3>🧦 乾淨襪子待收區</h3><div class="counter">還有 <strong>'+(S.N-stored)+'</strong>隻</div><div class="sock-grid">'+sockPool(S.closetChosen,S.selected)+'</div><div class="pair-bay">'+(S.selected.length===2?'<strong>🧦＋🧦＝1雙</strong><div>點右邊的衣櫃收好</div>':S.selected.length===1?'再挑一隻襪子':'點兩隻襪子配成一雙')+'</div></div><div class="info"><h3>🚪 整理衣櫃</h3>'+info+'</div></div>';
+return '<div class="board"><div class="scene"><h3>🧦 乾淨襪子待收區</h3><div class="counter">還有 <strong>'+(S.N-stored)+'</strong>隻</div><div class="sock-grid">'+(correct()&&S.N%2?'<div class="pair-bay">🧦<br>單襪暫放區：1隻</div>':sockPool(S.closetChosen,S.selected))+'</div><div class="pair-bay">'+(S.selected.length===2?'<strong>🧦＋🧦＝1雙</strong><div>點右邊的衣櫃收好</div>':S.selected.length===1?'再挑一隻襪子':'點兩隻襪子配成一雙')+'</div></div><div class="info"><h3>🚪 整理衣櫃</h3>'+info+'</div></div>';
 }
 function render6(){
 const i=S.qIndex,q=S.questions[i];if(!q)return '<div class="feedback good">六題完成！</div>';
@@ -174,14 +176,14 @@ else if(action==='loadBasket'&&phase===3){if(S.basketsLoaded>=Math.floor(S.N/10)
 else if(action==='loadLoose'&&phase===3){if(S.basketsLoaded<Math.floor(S.N/10)){mistake('先把裝滿10隻的籃子倒進去。');return;}if(S.looseLoaded>=S.N%10)return;S.looseLoaded++;increment(S.actions,3);const total=S.basketsLoaded*10+S.looseLoaded;say(String(total));notice('放進一隻，現在有'+total+'隻。','good');}
 else if(action==='unload'&&phase===4){if(S.unloaded>=S.N)return;S.unloaded++;increment(S.actions,4);const remaining=S.N-S.unloaded;say(remaining?'剩下'+remaining+'隻':'剩下零隻，洗衣機空了');notice('拿出1隻，洗衣機還剩'+remaining+'隻。','good');}
 else if(action==='store'&&phase===5){if(S.selected.length!==2){mistake('請先點選兩隻乾淨襪子。');return;}for(const i of S.selected)S.closetChosen.add(i);S.selected=[];S.closetPairs++;increment(S.actions,5);const n=S.closetPairs*2;say(String(n));notice('衣櫃已收好'+n+'隻。'+(S.closetPairs%5===0?'五雙裝滿一櫃，共10隻！':''),'good');}
-else if(action==='compare'&&phase===6){const q=S.questions[S.qIndex];if(!q)return;const right=id===q.answer;if(!S.qAnswered){S.answers.push({q:S.qIndex,first:right,assisted:(S.hints[6]||0)>0||S.mode==='demo'});S.qAnswered=true;}if(!right){mistake('再看看哪邊比較多。也可能一樣多喔。');}else{increment(S.actions,6);notice('答對了！'+q.a+' 和 '+q.b+'，'+(q.answer==='equal'?'一樣多。':q.a>q.b?'左邊比較多。':'右邊比較多。'),'good');say('答對了！');S.qIndex++;S.qAnswered=false;}}
+else if(action==='compare'&&phase===6){const q=S.questions[S.qIndex];if(!q)return;const right=id===q.answer;if(!S.qAnswered){S.answers.push({q:S.qIndex,first:right,assisted:S.qHelpForCurrent||S.mode==='demo'||S.showHint});S.qAnswered=true;}if(!right){mistake('再看看哪邊比較多。也可能一樣多喔。');}else{increment(S.actions,6);notice('答對了！'+q.a+' 和 '+q.b+'，'+(q.answer==='equal'?'一樣多。':q.a>q.b?'左邊比較多。':'右邊比較多。'),'good');say('答對了！');S.qIndex++;S.qAnswered=false;S.qHelpForCurrent=false;}}
 else if(action==='toggleRoad'){S.roadOpen=!S.roadOpen;S.showHint=true;}
 else if(action==='toggleReverse'){S.roadBackOpen=!S.roadBackOpen;S.showHint=true;}
-else if(action==='forwardNum'){if(k!==S.roadNext){mistake('請依照順序找下一個數字。');return;}S.roadNext++;if(S.roadNext===31){S.forwardPass=true;notice('太棒了！你走完1到30的數字路。','good');}say(String(k));}
-else if(action==='backNum'){if(k!==S.reverseNext){mistake('請找前一個數字，一個一個倒著數。');return;}S.reverseNext--;if(S.reverseNext===0){S.reversePass=true;notice('太棒了！你完成倒數數字路。','good');}say(String(k));}
+else if(action==='forwardNum'){if(k!==S.roadNext){mistake('請依照順序找下一個數字。');return;}S.roadNext++;if(S.roadNext===31){S.forwardPass=S.roadStart===1;notice('太棒了！你完成這次的順數數字路。','good');}say(String(k));}
+else if(action==='backNum'){if(k!==S.reverseNext){mistake('請找前一個數字，一個一個倒著數。');return;}S.reverseNext--;if(S.reverseNext===0){S.reversePass=S.reverseStart===30;notice('太棒了！你完成這次的倒數數字路。','good');}say(String(k));}
 render();
 }
-function showHint(){if(!S)return;increment(S.hints,S.phase);S.showHint=true;render();notice('已顯示本關的操作提示。')}
+function showHint(){if(!S)return;increment(S.hints,S.phase);if(S.phase===6)S.qHelpForCurrent=true;S.showHint=true;render();notice('已顯示本關的操作提示。')}
 function demoStep(){
 if(!S||correct()){stopAuto();return;}
 const phase=S.phase;
