@@ -305,7 +305,31 @@ else if(phase===2||phase===5){
  }
 }
 }else if(action==='cancelPair'&&(phase===2||phase===5)){S.selected=[];notice('已取消選取，可以重新挑兩隻襪子。');}
-else if(action==='answerTotal'&&phase===1){if(k===S.N){S.firstDone=true;increment(S.actions,1);say('答對了！一共有'+S.N+'隻襪子');notice('答對！共 '+S.N+' 隻。','good');}else mistake('再數數看，最後唸到的數字就是總數。');}
+else if(action==='reviewBasket'&&phase===2&&correct()){
+ const max=Math.floor(S.N/10);
+ if(!Number.isInteger(k)||k<0||k>=max)return;
+ if(!S.reviewBaskets.has(k)){
+   S.reviewBaskets.add(k);
+   S.reviewBasketNumbers[k]=10*S.reviewBaskets.size;
+ }
+ const total=S.reviewBasketNumbers[k];
+ say(String(total));notice('這個籃子一起數：'+total+'隻。','good');
+}else if(action==='reviewLoose'&&phase===2&&correct()){
+ if(!Number.isInteger(k)||k<0||k>=S.N%10)return;
+ if(S.reviewBaskets.size<Math.floor(S.N/10)){
+   notice('先把每個10隻的籃子點數完，再一隻一隻數旁邊的襪子。','warn');return;
+ }
+ if(!S.reviewLoose.has(k)){
+   S.reviewLoose.add(k);
+   S.reviewLooseNumbers[k]=10*S.reviewBaskets.size+S.reviewLoose.size;
+ }
+ const total=S.reviewLooseNumbers[k];
+ say(String(total));notice('再數1隻，數到'+total+'隻。','good');
+}else if(action==='reviewReset'&&phase===2&&correct()){
+ S.reviewBaskets.clear();S.reviewLoose.clear();
+ S.reviewBasketNumbers={};S.reviewLooseNumbers={};
+ notice('已重新開始，請點籃子，再點旁邊的零散襪子。');
+}else if(action==='answerTotal'&&phase===1){if(k===S.N){S.firstDone=true;increment(S.actions,1);say('答對了！一共有'+S.N+'隻襪子');notice('答對！共 '+S.N+' 隻。','good');}else mistake('再數數看，最後唸到的數字就是總數。');}
 else if(action==='pack'&&phase===2){
  if(S.packedPairs>=Math.floor(S.N/10)*5||S.selected.length!==2){mistake('請先在原本的位置選滿兩隻襪子。');return;}
  for(const i of S.selected)S.chosen.add(i);S.selected=[];S.packedPairs++;increment(S.actions,2);
