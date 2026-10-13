@@ -696,7 +696,12 @@ body.reading-fullscreen{overflow:hidden}
 .quiz-table-wrap{overflow:auto}.quiz-table-wrap table{width:100%;border-collapse:collapse;min-width:650px}.quiz-table-wrap th,.quiz-table-wrap td{padding:12px;border:1px solid #d8e5e9;text-align:left;vertical-align:top}.quiz-table-wrap th{background:#edf6f7}
 #quizReviewDialog{border:0;border-radius:20px;padding:18px;width:min(1000px,calc(100vw - 50px));max-height:90dvh;box-sizing:border-box}#quizReviewDialog::backdrop{background:#173342aa}.quiz-review-head{display:flex;justify-content:space-between;align-items:center;gap:12px}#quizReviewDialog img{display:block;width:100%;height:65dvh;object-fit:contain}
 @media(max-width:600px){#chineseQuizPage{padding:10px 86px 24px 12px}.quiz-card{padding:14px}.quiz-answers{gap:10px;grid-template-columns:repeat(2,minmax(0,1fr))}.quiz-settings{gap:14px}.quiz-answer{aspect-ratio:1}.quiz-review-head{flex-wrap:wrap}#chineseQuizPage button{padding:8px 10px}}
-</style></head>
+</style><style>
+#mathCount30Page{width:min(1370px,98vw);max-width:none}
+#sockLaundryFrame{display:block;width:100%;height:max(680px,calc(100vh - 215px));min-height:680px;border:2px solid #d7e7ee;border-radius:22px;background:#f3f9fc}
+@media(max-width:700px){#mathCount30Page{width:98vw;padding-left:0;padding-right:0}#sockLaundryFrame{height:82vh;min-height:650px}}
+</style>
+</head>
 <body>
 <div id="homeBackdrop" aria-hidden="true" hidden><div class="home-photo"></div><div class="home-photo"></div></div>
 
@@ -805,7 +810,8 @@ body.reading-fullscreen{overflow:hidden}
 <a class="math-back" href="#math-1">← 返回1年級單元選擇</a>
 <p class="math-unit-label">1年級數學</p>
 <h1 tabindex="-1">數到30</h1>
-<section class="guide-block" aria-label="數到30教學內容"><p>此單元的互動教學內容準備中。</p></section>
+<p class="lead">襪子洗洗樂｜一個一個數、兩個配一雙、十個一組，完成六關生活數學任務。</p>
+<iframe id="sockLaundryFrame" src="sock-laundry.html" title="襪子洗洗樂：數到30互動遊戲" loading="lazy" allow="autoplay"></iframe>
 </main>
 <main id="mathPartsPage" class="portal-help" hidden>
 <a class="math-back" href="#math-1">← 返回1年級單元選擇</a>
@@ -2522,6 +2528,8 @@ function showPortalPage(){
     document.getElementById('gradeOneUnits').hidden=gradeMatch[1]!=='1';
     document.getElementById('otherGradeContent').hidden=gradeMatch[1]==='1';
   }
+  const sockFrame=document.getElementById('sockLaundryFrame');
+  if(route!=='mathCount30'&&sockFrame&&sockFrame.contentWindow){sockFrame.contentWindow.postMessage('sockGamePause',location.origin);}
   if(route!=='learn') setPracticeExpanded(false);
   stop();
   if ('speechSynthesis' in window) speechSynthesis.cancel();
