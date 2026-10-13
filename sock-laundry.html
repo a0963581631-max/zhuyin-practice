@@ -15,7 +15,7 @@ h2{margin:3px 0 12px;font-size:clamp(22px,2.7vw,29px)}h3{margin:0 0 10px;font-si
 .progress{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:5px;margin:14px 0}.step{background:#e8f1f5;color:#516879;border-radius:11px;padding:9px 3px;text-align:center;font-size:13px;font-weight:750;line-height:1.35}.step.active{background:#1c8195;color:#fff}.step.done{background:#cdeede;color:#205d4b}
 .stageTop{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}.stageTop h2{margin:0}.pill{display:inline-flex;gap:6px;align-items:center;background:#e2f3f8;color:#16748a;border-radius:40px;font-size:15px;font-weight:850;padding:8px 13px}
 .board{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(250px,.75fr);gap:15px;margin-top:15px;align-items:stretch}.scene,.info{border:2px solid #d7e8ec;border-radius:19px;padding:15px;background:#f6fbfc;min-width:0}.scene{min-height:325px}.info{background:#fff}.scene h3{color:#396579}.info p{line-height:1.65}.counter{background:#e1f1f6;border-radius:15px;padding:12px;text-align:center;font-size:21px;font-weight:900;margin-bottom:14px}.counter strong{font-size:34px;color:#076d91;font-variant-numeric:tabular-nums}.big-number{font-size:clamp(44px,9vw,74px);line-height:1.25;color:#147c96;font-weight:950;text-align:center;font-variant-numeric:tabular-nums}
-.sock-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:7px;align-content:start}.sock{border:2px solid #c6d8e5;border-radius:12px;background:white;min-height:66px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:1px;font-size:31px;transition:background .1s,border-color .1s;position:relative}.sock:hover:not(:disabled){border-color:var(--a);background:#eaf8fa}.sock small{font-size:12px;font-weight:850;color:#40637a}.sock.counted,.sock.stored{background:#d9f1e7;border-color:#4da58a}.sock.selected{background:#ffefcd;border:3px solid #d89528}.sock.counted{cursor:default}
+.sock-grid{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:5px;align-content:start;min-width:600px}.sock-grid-wrap{width:100%;overflow-x:auto;overscroll-behavior-x:contain;padding:2px 1px 10px}.sock-grid .sock{min-width:0;min-height:65px;padding:4px 1px}.sock-grid .sock-svg{width:31px;height:43px}.sock{border:2px solid #c6d8e5;border-radius:12px;background:white;min-height:66px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:1px;font-size:31px;transition:background .1s,border-color .1s;position:relative}.sock:hover:not(:disabled){border-color:var(--a);background:#eaf8fa}.sock small{font-size:12px;font-weight:850;color:#40637a}.sock.counted,.sock.stored{background:#d9f1e7;border-color:#4da58a}.sock.selected{background:#ffefcd;border:3px solid #d89528}.sock.counted{cursor:default}
 .feedback{min-height:49px;border-radius:13px;background:#eef7f9;padding:11px 13px;font-weight:750;color:#246175;line-height:1.5;margin-top:12px}.feedback.good{background:#ddf4e5;color:#236640}.feedback.warn{background:#fff0d5;color:#83570a}
 .help-text{padding:12px;border-radius:13px;border:1px dashed #8cb6c3;background:#fffdf2;line-height:1.7;margin-top:10px}
 .action-bar{margin-top:13px;display:flex;align-items:center;gap:9px;flex-wrap:wrap;background:#edf6f7;border-radius:16px;padding:11px}.action-bar .push{margin-left:auto}
@@ -30,7 +30,7 @@ h2{margin:3px 0 12px;font-size:clamp(22px,2.7vw,29px)}h3{margin:0 0 10px;font-si
 .number-road{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:4px;margin-top:12px}.number-road button{border:1px solid #bfd8df;background:#fff;border-radius:8px;min-height:38px;padding:4px 0;font-size:16px;font-weight:850}.number-road button.passed{background:#c8eedf}.number-road button.expected{border:3px solid #2497a5;background:#e0f6fa}.road-controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:12px}.road-controls select{padding:8px;border-radius:9px;border:1px solid #a9cbd5;background:white}
 .result-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.result{background:#e9f7f5;border-radius:14px;padding:15px}.result strong{font-size:26px;color:#167a70}.result p{margin:4px 0 0;color:#547184}.report{width:100%;border-collapse:collapse;margin:12px 0}.report th,.report td{padding:9px 6px;border-bottom:1px solid #d1e5e9;text-align:left;font-size:14px}.print-only{display:none}.note{line-height:1.7;border-left:4px solid #7ab2b4;padding-left:13px}
 dialog{width:min(570px,90vw);border:2px solid #add8d6;border-radius:22px;box-shadow:0 22px 60px #163b5c55;padding:25px}dialog::backdrop{background:#123e527d}
-@media(max-width:710px){.board{grid-template-columns:1fr}.scene{min-height:220px}.form-grid{grid-template-columns:1fr}.progress{grid-template-columns:repeat(3,1fr)}.sock{min-height:55px;font-size:27px}.sock-grid{grid-template-columns:repeat(5,1fr)}.action-bar .push{margin-left:0}.result-grid{grid-template-columns:1fr}.number-road{grid-template-columns:repeat(5,1fr)}}@media(max-width:410px){.compare-card .objects{grid-template-columns:repeat(4,1fr)}.hero h1{font-size:23px}.choice{font-size:21px;min-width:61px}}
+@media(max-width:710px){.board{grid-template-columns:1fr}.scene{min-height:220px}.form-grid{grid-template-columns:1fr}.progress{grid-template-columns:repeat(3,1fr)}.sock{min-height:55px;font-size:27px}.sock-grid{grid-template-columns:repeat(10,minmax(0,1fr))}.action-bar .push{margin-left:0}.result-grid{grid-template-columns:1fr}.number-road{grid-template-columns:repeat(5,1fr)}}@media(max-width:410px){.compare-card .objects{grid-template-columns:repeat(4,1fr)}.hero h1{font-size:23px}.choice{font-size:21px;min-width:61px}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
 @media print{.hero-actions,.progress,.action-bar,#setup,.no-print{display:none!important}.card{box-shadow:none}.print-only{display:block}}
 /* One SVG depicts exactly one sock. Two socks are separate SVGs in one container. */
@@ -69,7 +69,27 @@ dialog{width:min(570px,90vw);border:2px solid #add8d6;border-radius:22px;box-sha
 .compare-card .objects span{display:grid;place-items:center}
 .compare-card .objects .sock-svg{width:25px;height:33px}
 .washer .drum .sock-svg{width:64px;height:78px}
+
+/* Keep every original position stable while the student selects two socks. */
+.sock-grid .sock-pair-inline{border:3px solid #d89130;background:#fff2cd;display:flex;flex-direction:column;gap:1px;color:#81531a}
+.sock-grid .sock-pair-inline .sock-collection{gap:0}
+.sock-grid .sock-pair-inline .sock-svg{width:21px;height:29px}
+.sock-grid .sock-pair-inline strong{font-size:14px;line-height:1.1}
+.sock-grid .sock-selected-slot{border:3px solid #d6a74b;background:#fff4d6}
+.sock-grid .sock-merged-slot{font-size:11px;color:#a56c20;background:#fffbef;border:2px dashed #deb66f}
+.sock-grid .sock-sorted-place{background:#edf5f5;border:1px dashed #cfdee0;color:#7b9298;font-size:12px}
+.ten-building{border:2px dashed #82b9bf;border-radius:17px;background:#edf8f9;padding:11px;min-width:180px;max-width:240px;text-align:center;flex:1 1 155px}
+.ten-building .building-number{font-size:40px;font-weight:900;color:#28758a}
+.ten-building .unit-groups{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;margin:8px 0}
+.ten-building .dot-group{min-height:38px}
+.loose-display{padding:10px 0;background:transparent;border:none;min-width:145px;flex:1 1 175px}
+.loose-display .loose-number{font-size:40px;font-weight:900;color:#246e85}
+.loose-socks{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px}
+.loose-socks .sock-svg{width:26px;height:38px}
+.loose-socks .loose-one{background:transparent;border:1px dashed #bfd9df;border-radius:9px;padding:2px;display:flex;justify-content:center}
+.loose-description{font-size:13px;color:#527080}
 @media(max-width:710px){.basket-zone{gap:9px}.basket-card{min-width:136px;max-width:100%}}
+
 </style>
 </head>
 <body>
@@ -84,7 +104,7 @@ dialog{width:min(570px,90vw);border:2px solid #add8d6;border-radius:22px;box-sha
 <div class="wrap">
 <header class="hero"><div><h1>🧺 襪子洗洗樂</h1><p>數到30・兩隻一組，十隻一籃！</p></div><div class="hero-actions"><button class="btn" id="backBtn" type="button">← 返回單元</button><button class="btn" id="helpBtn" type="button">❔ 玩法說明</button></div></header>
 <section id="setup" class="card">
-<h2>老師，先設定這次的任務</h2><p class="subtitle">可以玩完整六關，也能選擇其中一關練習。所有操作皆支援直接點擊，不必拖曳。</p>
+<h2>老師，先設定這次的任務</h2><p class="subtitle">可以玩完整六關，也能選擇單關練習。襪子每10個排列成一排；只有湊滿10隻才出現籃子，不足10隻的襪子逐隻整理。</p>
 <div class="form-grid">
 <div class="setting"><label for="countMode">襪子數量範圍</label><select id="countMode"><option value="30">1～30隨機</option><option value="10">1～10隨機</option><option value="20">11～20隨機</option><option value="high">21～30隨機</option><option value="custom" selected>自訂數量</option></select><label for="sockCount" style="margin-top:9px">自訂襪子數量</label><input id="sockCount" type="number" min="1" max="30" value="23"></div>
 <div class="setting"><label for="mode">教學模式</label><select id="mode"><option value="guided" selected>引導操作</option><option value="demo">教師示範（可逐步或自動）</option><option value="independent">獨立挑戰</option></select><label for="hintLevel" style="margin-top:9px">預設提示程度</label><select id="hintLevel"><option value="full">完整提示</option><option value="partial" selected>部分提示</option><option value="none">不顯示提示</option></select></div>
@@ -96,14 +116,14 @@ dialog{width:min(570px,90vw);border:2px solid #add8d6;border-radius:22px;box-sha
 <div class="action-bar"><button class="btn" type="button" id="hintBtn">💡 看提示</button><button class="btn" type="button" id="readBtn">🔊 聽說明</button><button class="btn" type="button" id="demoBtn">▶ 示範下一步</button><button class="btn" type="button" id="autoBtn">⏵ 自動示範</button><button class="btn ghost" type="button" id="restartBtn">重新開始</button><button class="btn green push" type="button" id="nextBtn" disabled>下一關 →</button></div>
 <div class="feedback" id="globalFeedback" role="status" aria-live="polite">準備開始囉！</div></section>
 <section id="results" class="card" hidden></section>
-<dialog id="helpDialog"><h2>🧺 遊戲玩法</h2><p class="note">先把地上的襪子一隻一隻數清楚，每點兩隻就合成同一組，再把每組2隻放進籃子。每籃最多10隻，集滿5組時可以整籃投入洗衣機；剩下的襪子逐隻投入。洗好後每點一次洗衣機會排出一隻，再把襪子配對收進衣櫃，最後完成大小比較。</p><p>每一關都有「看提示」、「聽說明」、「示範下一步」。遇到單數量時，最後一隻襪子可以放入單襪暫放區，不會判錯。</p><p>數字小路可以額外練習1到30順數，或30到1倒數。口頭朗讀能力請由教師實際觀察。</p><button class="btn primary" id="closeHelp" type="button">知道了</button></dialog>
+<dialog id="helpDialog"><h2>🧺 遊戲玩法</h2><p class="note">先把地上的襪子一隻一隻數清楚，每次點兩隻後，它們會在原來的襪子區合成同一個框。繼續兩個一起數，集滿10隻才出現籃子；不足10隻的襪子逐隻點數，放到籃子旁邊，不另用籃子。洗衣時整籃倒入10隻，其他逐隻投入。洗好後每點一次洗衣機會排出一隻，再把襪子配對收進衣櫃，最後完成大小比較。</p><p>每一關都有「看提示」、「聽說明」、「示範下一步」。遇到單數量時，最後一隻襪子可以放入單襪暫放區，不會判錯。</p><p>數字小路可以額外練習1到30順數，或30到1倒數。口頭朗讀能力請由教師實際觀察。</p><button class="btn primary" id="closeHelp" type="button">知道了</button></dialog>
 </div>
 <script>
 (()=>{
 'use strict';
 const $=id=>document.getElementById(id);
 const names=['','房間找襪子','兩隻一組裝籃','襪子洗一洗','乾淨襪子出來了','襪子收進衣櫃','誰的襪子比較多'];
-const descriptions=['','找出房間有幾隻襪子，一個一個數清楚。','每點兩隻襪子就合成一個框，再放進洗衣籃；每籃裝10隻。','每個滿籃有10隻，先整籃倒入，零散的逐隻放。','點一下洗衣機拿出一隻，注意剩餘數字。','每點兩隻乾淨襪子就合成一組，再放進衣櫃；每櫃裝10隻。','觀察誰比較多、比較少，或一樣多。'];
+const descriptions=['','找出房間有幾隻襪子，一個一個數清楚。','每次選兩隻就在原位合成一框；滿10隻才有籃子，不足10隻逐隻整理。','每個滿籃有10隻，先整籃倒入，零散的逐隻放。','點一下洗衣機拿出一隻，注意剩餘數字。','每次選兩隻就在原位合組；滿10隻形成完整衣櫃，剩餘逐隻整理。','觀察誰比較多、比較少，或一樣多。'];
 let S=null,timer=null,spoken='';
 const num=(n,min,max)=>Math.min(max,Math.max(min,Math.trunc(Number(n))||min));
 const shuffle=a=>{const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b};
@@ -114,8 +134,8 @@ function makeQuestions(){const max=S.maxCompare;const rand=(min,hi)=>min+Math.fl
 function newState(){
 const n=settingsN(),single=$('lessonMode').value,mode=$('mode').value;
 S={N:n,phase:single==='full'?1:Number(single),single:single!=='full',enableCompare:$('compareEnabled').checked,mode,hintLevel:$('hintLevel').value,
-counted:new Set(),firstDone:false,chosen:new Set(),selected:[],packedPairs:0,
-basketsLoaded:0,looseLoaded:0,unloaded:0,closetChosen:new Set(),closetPairs:0,
+counted:new Set(),firstDone:false,chosen:new Set(),selected:[],packedPairs:0,looseSorted:new Set(),
+basketsLoaded:0,looseLoaded:0,unloaded:0,closetChosen:new Set(),closetPairs:0,closetLoose:new Set(),
 questions:[],qIndex:0,qAnswered:false,qHelpForCurrent:false,answers:[],mistakes:{},hints:{},actions:{},
 roadOpen:false,roadNext:1,roadStart:1,roadBackOpen:false,reverseNext:30,reverseStart:30,forwardPass:false,reversePass:false,
 showHint:false,completed:new Set(),maxCompare:$('countMode').value==='10'?10:$('countMode').value==='20'?20:30};
@@ -124,10 +144,10 @@ S.questions=makeQuestions();if(mode==='demo')S.showHint=true;stopAuto();
 function increment(obj,k){obj[k]=(obj[k]||0)+1}
 function correct(){if(!S)return false;switch(S.phase){
 case 1:return S.firstDone;
-case 2:return S.packedPairs===Math.floor(S.N/2);
+case 2:return S.packedPairs===Math.floor(S.N/10)*5&&S.looseSorted.size===S.N%10;
 case 3:return S.basketsLoaded*10+S.looseLoaded===S.N;
 case 4:return S.unloaded===S.N;
-case 5:return S.closetPairs===Math.floor(S.N/2);
+case 5:return S.closetPairs===Math.floor(S.N/10)*5&&S.closetLoose.size===S.N%10;
 case 6:return S.qIndex===S.questions.length;
 default:return false;
 }}
@@ -136,7 +156,25 @@ function badge(text){return '<span class="pill">'+text+'</span>'}
 function oneSock(){return '<svg class="sock-svg" viewBox="0 0 72 94" aria-hidden="true" focusable="false"><use href="#oneSock"></use></svg>'}
 function twoSocks(){return '<span class="sock-collection" aria-hidden="true">'+oneSock()+oneSock()+'</span>'}
 function soc(id,kind){return '<button type="button" class="sock '+(kind||'')+'" data-action="sock" data-id="'+id+'" aria-label="第'+(id+1)+'隻襪子">'+oneSock()+(S.phase===1&&S.counted.has(id)?'<small>'+S.countedOrder.get(id)+'</small>':'')+'</button>'}
-function sockPool(used,selected){let out='';for(let i=0;i<S.N;i++)if(!used.has(i)&&!selected.includes(i))out+=soc(i,'');return out||'<p class="tiny">待選的襪子都整理好了！</p>'}
+function sockWorkGrid(used,looseSorted,selected,action){
+const inPairs=action==='pack'?S.packedPairs<Math.floor(S.N/10)*5:S.closetPairs<Math.floor(S.N/10)*5;
+const sorted=new Set([...used,...looseSorted]);
+let slots='';
+for(let id=0;id<S.N;id++){
+ if(sorted.has(id)){slots+='<div class="sock sock-sorted-place" aria-label="這隻已收好">✓</div>';continue;}
+ if(inPairs&&selected.length===2&&id===selected[0]){slots+='<button type="button" class="sock sock-pair-inline" data-action="'+action+'" aria-label="已在原位置合成2隻一組，點擊將這兩隻整理好">'+twoSocks()+'<strong>2隻</strong></button>';continue;}
+ if(inPairs&&selected.length===2&&id===selected[1]){slots+='<div class="sock sock-merged-slot" aria-label="這隻襪子已經和另一隻合成一組">已合組</div>';continue;}
+ slots+=soc(id,selected.includes(id)?'sock-selected-slot':'');
+}
+return '<div class="sock-grid-wrap"><div class="sock-grid">'+slots+'</div></div>';
+}
+function looseDisplay(count,totalComplete){
+return '<div class="loose-display" aria-label="未裝進籃子的零散襪子'+count+'隻"><div class="loose-number">'+count+'</div><strong>隻零散襪子（沒有籃子）</strong><div class="loose-socks">'+Array.from({length:count},()=>'<span class="loose-one">'+oneSock()+'</span>').join('')+'</div><p class="loose-description">'+(totalComplete*10)+'隻裝在完整的籃子裡，另外'+count+'隻單獨放著</p></div>';
+}
+function pendingTen(count){
+return '<div class="ten-building" aria-label="尚未湊滿10隻，目前'+count+'隻"><div class="building-number">'+count+'</div><strong>正在湊10隻（還不是籃子）</strong><div class="unit-groups">'+Array.from({length:5},(_,i)=>'<span class="dot-group '+(i*2<count?'':'empty')+'">'+(i*2<count?'<i class="dot"></i><i class="dot"></i>':'')+'</span>').join('')+'</div><span class="loose-description">每兩個點放進同一組，集滿10隻才出現籃子</span></div>';
+}
+
 function icons(n){return Array.from({length:n},()=>'<span aria-label="1隻襪子">'+oneSock()+'</span>').join('')}
 function dotGroups(count){return '<div class="basket-dots" aria-label="'+count+'個點，每兩個點一組">'+Array.from({length:5},(_,i)=>'<span class="dot-group '+(i*2<count?'':'empty')+'">'+(i*2<count?'<i class="dot"></i><i class="dot"></i>':'')+'</span>').join('')+'</div>'}
 function basketCard(count,label,action='',ready=false){
@@ -167,20 +205,21 @@ if(S.roadOpen)right+=renderRoad(false);
 return '<div class="board"><div class="scene"><h3>🏠 房間地板</h3><div class="sock-grid">'+Array.from({length:S.N},(_,i)=>soc(i,S.counted.has(i)?'counted':'')).join('')+'</div></div><div class="info">'+right+'</div></div>';
 }
 function render2(){
-const pairs=Math.floor(S.N/2),usedCount=S.packedPairs*2,remaining=S.N-usedCount,complete=Math.floor(S.packedPairs/5),partial=S.packedPairs%5;
-let main='<div class="counter">已整理 <strong>'+usedCount+'</strong> 隻襪子</div>';
-main+='<div class="sock-grid">'+sockPool(S.chosen,S.selected)+'</div>'+pairBay('pack');
-let bs='<div class="basket-zone">'+Array.from({length:complete},(_,i)=>basketCard(10,'第'+(i+1)+'籃｜已裝滿')).join('');
-if(remaining>=2)bs+=basketCard(partial*2,'第'+(complete+1)+'籃｜點此放入2隻','pack',S.selected.length===2);
-else if(partial)bs+=basketCard(partial*2,'第'+(complete+1)+'籃｜尚未滿10隻');
-bs+='</div>';
-let info='<div class="counter">裝滿10隻的籃子 <strong>'+complete+'</strong> 籃</div>';
-info+='<p>這個籃子每次多2隻：<strong>'+Array.from({length:partial},(_,i)=>(i+1)*2).join('、')+(partial===0?'請放入2隻':'')+'</strong></p>'+bs;
-info+='<p class="tiny">每個小框代表2隻襪子。裝滿5個小框，就是10隻襪子。</p>';
-if(effectiveHint())info+='<div class="help-text">先點兩隻襪子，看到兩隻合進同一框，再點那個框或籃子把2隻放入。籃子上方的數字會變成2、4、6、8、10。</div>';
-if(pairs===0)info+='<p>目前只有1隻襪子，無法組成2隻，直接進下一關即可。</p>';
-if(correct())info+='<p class="feedback good">整理完成！'+complete+'籃各有10隻，還有'+(S.N%10)+'隻未滿10隻的襪子。</p>';
-return '<div class="board"><div class="scene"><h3>待整理襪子（剩'+remaining+'隻）</h3>'+main+'</div><div class="info">'+info+'</div></div>';
+const maxPairs=Math.floor(S.N/10)*5,complete=Math.floor(S.packedPairs/5),pendingPairs=S.packedPairs%5;
+const pairMode=S.packedPairs<maxPairs,usedCount=S.packedPairs*2+S.looseSorted.size,remaining=S.N-usedCount;
+let items='<div class="counter">已整理 <strong>'+usedCount+'</strong> 隻襪子</div>';
+items+=sockWorkGrid(S.chosen,S.looseSorted,S.selected,'pack');
+items+='<div class="help-text">'+(pairMode?(S.selected.length===2?'兩隻已在原來的位置合在同一框！點框框，就能放進整理區。':S.selected.length===1?'已選1隻，請在原本的襪子區再選1隻。':'先點2隻襪子，讓它們在原本的區域合成一組。'):'現在剩下的襪子不夠湊成10隻。請每次點1隻，移到右邊的零散襪子區。')+'</div>';
+let groups='<div class="basket-zone">'+Array.from({length:complete},(_,i)=>basketCard(10,'第'+(i+1)+'籃｜10隻')).join('');
+if(pairMode&&pendingPairs>0)groups+=pendingTen(pendingPairs*2);
+if(!pairMode&&S.N%10>0)groups+=looseDisplay(S.looseSorted.size,complete);
+groups+='</div>';
+let info='<div class="counter">已裝滿 <strong>'+complete+'</strong> 個10隻的籃子</div>'+groups;
+if(pairMode)info+='<p>先每2隻一組，累計2、4、6、8、10。<strong>只有達到10隻，才會出現一個籃子。</strong></p>';
+else info+='<p>現在逐隻數：'+(complete*10)+'、'+Array.from({length:S.looseSorted.size},(_,i)=>complete*10+i+1).join('、')+'。不足10隻的襪子不裝籃。</p>';
+if(effectiveHint())info+='<div class="help-text">'+(pairMode?'第一隻和第二隻都在原地合組。點這個框完成這2隻；五組共10隻才變成籃子。':'每點1隻，它就會移到籃子旁的散放區；例如23隻＝兩個10隻的籃子，旁邊散放3隻。')+'</div>';
+if(correct())info+='<p class="feedback good">整理完成！'+complete+'個籃子（'+complete*10+'隻）＋'+S.looseSorted.size+'隻零散襪子，共'+S.N+'隻。</p>';
+return '<div class="board"><div class="scene"><h3>原本的襪子區（還有'+remaining+'隻）</h3>'+items+'</div><div class="info"><h3>🧺 整理成果區</h3>'+info+'</div></div>';
 }
 function machine(canClick,label){return '<button type="button" class="washer '+(S.phase===4?'active':'')+'" '+(canClick?'data-action="'+(S.phase===4?'unload':'')+'"':'disabled')+' aria-label="'+label+'"><span class="display">'+label+'</span><span class="drum">'+oneSock()+'</span><small>洗衣機</small></button>'}
 function render3(){
@@ -199,17 +238,17 @@ const tag=action?'button':'div';
 return '<'+tag+' '+(action?'type="button" data-action="'+action+'" ':'')+'class="closet-card" aria-label="'+label+'，目前'+count+'隻襪子"><span class="closet-count">'+count+'</span><span class="basket-units">隻襪子</span><div class="closet-shelf">'+Array.from({length:5},(_,i)=>'<span class="closet-slot '+(i*2<count?'':'empty')+'">'+(i*2<count?twoSocks():'')+'</span>').join('')+'</div><span class="closet-caption">'+label+'</span></'+tag+'>';
 }
 function render5(){
-const pairMax=Math.floor(S.N/2),stored=S.closetPairs*2,full=Math.floor(S.closetPairs/5),partial=S.closetPairs%5;
-let closets='<div class="basket-zone">'+Array.from({length:full},(_,j)=>closetCard(10,'第'+(j+1)+'櫃｜已裝滿')).join('');
-if(S.closetPairs<pairMax)closets+=closetCard(partial*2,'第'+(full+1)+'櫃｜點此放入2隻','store');
-else if(partial)closets+=closetCard(partial*2,'第'+(full+1)+'櫃｜尚未滿10隻');
+const maxPairs=Math.floor(S.N/10)*5,complete=Math.floor(S.closetPairs/5),pendingPairs=S.closetPairs%5;
+const pairMode=S.closetPairs<maxPairs,stored=S.closetPairs*2+S.closetLoose.size,remain=S.N-stored;
+let closets='<div class="basket-zone">'+Array.from({length:complete},(_,i)=>closetCard(10,'第'+(i+1)+'櫃｜10隻')).join('');
+if(pairMode&&pendingPairs)closets+=pendingTen(pendingPairs*2);
+if(!pairMode&&S.N%10)closets+=looseDisplay(S.closetLoose.size,complete);
 closets+='</div>';
-let info='<div class="counter">已收進衣櫃 <strong>'+stored+'</strong> 隻</div>'+closets;
-if(correct())info+='<p class="feedback good">收納完成！'+full+'櫃各有10隻，另外還有'+(S.N%10)+'隻不足10隻的襪子。</p>';
-if(effectiveHint())info+='<div class="help-text">一樣先點2隻襪子，讓它們合在同一個框；再點這一組或衣櫃收納。每次增加2隻，一櫃最多10隻。</div>';
-const lone=correct()&&S.N%2;
-const pool=lone?'<div class="pair-bay">'+oneSock()+'<strong>單襪暫放區：1隻</strong></div>':sockPool(S.closetChosen,S.selected);
-return '<div class="board"><div class="scene"><h3>乾淨襪子待收區</h3><div class="counter">還有 <strong>'+(S.N-stored)+'</strong> 隻</div><div class="sock-grid">'+pool+'</div>'+pairBay('store')+'</div><div class="info"><h3>🚪 整理衣櫃</h3>'+info+'</div></div>';
+let info='<div class="counter">已整理 <strong>'+stored+'</strong> 隻</div>'+closets;
+if(effectiveHint())info+='<div class="help-text">'+(pairMode?'在原地每次選2隻合成一框，點框收好；湊滿10隻才形成一個完整的衣櫃。':'不足10隻的襪子，請一隻一隻點選，放到衣櫃旁的散放區。')+'</div>';
+if(correct())info+='<p class="feedback good">收納完成！'+complete+'個完整10隻的衣櫃，另外'+S.closetLoose.size+'隻散放，共'+S.N+'隻。</p>';
+const selection='<div class="counter">剩下 <strong>'+remain+'</strong> 隻</div>'+sockWorkGrid(S.closetChosen,S.closetLoose,S.selected,'store')+'<div class="help-text">'+(pairMode?(S.selected.length===2?'兩隻已在原本的區域合成同一個框，點框收納。':S.selected.length===1?'已選一隻，再選第二隻。':'點兩隻襪子，在同一位置把它們合成一組。'):'剩下不滿10隻，請逐隻移到衣櫃旁邊，不另外出現衣櫃。')+'</div>';
+return '<div class="board"><div class="scene"><h3>乾淨襪子原位置</h3>'+selection+'</div><div class="info"><h3>🚪 衣櫃與散放區</h3>'+info+'</div></div>';
 }
 function render6(){
 const i=S.qIndex,q=S.questions[i];if(!q)return '<div class="feedback good">六題完成！</div>';
@@ -234,14 +273,40 @@ function act(action,id){
 if(!S)return;const phase=S.phase,k=Number(id);
 if(action==='sock'){
 if(phase===1){if(S.counted.has(k)){notice('這隻已經數過了，找另一隻。');return;}S.counted.add(k);S.countedOrder.set(k,S.counted.size);increment(S.actions,phase);say(String(S.counted.size));notice('數到 '+S.counted.size+' 隻。','good');}
-else if(phase===2||phase===5){const used=phase===2?S.chosen:S.closetChosen;if(used.has(k))return;if(S.selected.includes(k))S.selected=S.selected.filter(x=>x!==k);else if(S.selected.length<2)S.selected.push(k);else{notice('已選兩隻，請先把這2隻放入籃子或衣櫃。');return;}notice(S.selected.length===2?'兩隻襪子已經合成同一個框框！點框框或容器把2隻放進去。':'已選'+S.selected.length+'隻襪子。');if(S.selected.length===2)say('兩隻，一組');}
+else if(phase===2||phase===5){
+ const used=phase===2?S.chosen:S.closetChosen,loose=phase===2?S.looseSorted:S.closetLoose;
+ if(used.has(k)||loose.has(k))return;
+ const pairMode=phase===2?S.packedPairs<Math.floor(S.N/10)*5:S.closetPairs<Math.floor(S.N/10)*5;
+ if(!pairMode){
+  loose.add(k);increment(S.actions,phase);
+  const count=(phase===2?S.packedPairs:S.closetPairs)*2+loose.size;
+  say(String(count));notice('逐隻數到'+count+'，這隻襪子放在籃子旁的散放區，不使用籃子。','good');
+ }else{
+  if(S.selected.includes(k))S.selected=S.selected.filter(id=>id!==k);
+  else if(S.selected.length<2)S.selected.push(k);
+  else{notice('請先點原位置的兩隻一組框，把這組整理好。');return;}
+  notice(S.selected.length===2?'已在原本位置合成同一框！點這個框，完成這2隻。':S.selected.length===1?'第一隻已選，請再點一隻。':'請選兩隻襪子。');
+  if(S.selected.length===2)say('兩隻，一組');
+ }
+}
 }else if(action==='cancelPair'&&(phase===2||phase===5)){S.selected=[];notice('已取消選取，可以重新挑兩隻襪子。');}
 else if(action==='answerTotal'&&phase===1){if(k===S.N){S.firstDone=true;increment(S.actions,1);say('答對了！一共有'+S.N+'隻襪子');notice('答對！共 '+S.N+' 隻。','good');}else mistake('再數數看，最後唸到的數字就是總數。');}
-else if(action==='pack'&&phase===2){if(S.selected.length!==2){mistake('請先選兩隻襪子，讓它們合成同一組。');return;}for(const i of S.selected)S.chosen.add(i);S.selected=[];S.packedPairs++;increment(S.actions,2);const subtotal=S.packedPairs*2;say(String(subtotal));notice('已整理'+subtotal+'隻。這一籃有'+(S.packedPairs%5===0?10:(S.packedPairs%5)*2)+'隻。'+(S.packedPairs%5===0?'10隻裝滿一籃！':''),'good');}
+else if(action==='pack'&&phase===2){
+ if(S.packedPairs>=Math.floor(S.N/10)*5||S.selected.length!==2){mistake('請先在原本的位置選滿兩隻襪子。');return;}
+ for(const i of S.selected)S.chosen.add(i);S.selected=[];S.packedPairs++;increment(S.actions,2);
+ const subtotal=S.packedPairs*2,subTen=subtotal%10||10;
+ say(String(subtotal));
+ notice(subtotal%10===0?'數到'+subtotal+'！湊滿10隻，出現一個完整的籃子。':'目前累計'+subtotal+'隻；正在湊10隻，還沒有形成籃子。','good');
+}
 else if(action==='loadBasket'&&phase===3){if(S.basketsLoaded>=Math.floor(S.N/10))return;S.basketsLoaded++;increment(S.actions,3);const total=S.basketsLoaded*10+S.looseLoaded;say(String(total));notice('倒入10隻，現在有'+total+'隻。','good');}
 else if(action==='loadLoose'&&phase===3){if(S.basketsLoaded<Math.floor(S.N/10)){mistake('先把裝滿10隻的籃子倒進去。');return;}if(S.looseLoaded>=S.N%10)return;S.looseLoaded++;increment(S.actions,3);const total=S.basketsLoaded*10+S.looseLoaded;say(String(total));notice('放進一隻，現在有'+total+'隻。','good');}
 else if(action==='unload'&&phase===4){if(S.unloaded>=S.N)return;S.unloaded++;increment(S.actions,4);const remaining=S.N-S.unloaded;say(remaining?'剩下'+remaining+'隻':'剩下零隻，洗衣機空了');notice('拿出1隻，洗衣機還剩'+remaining+'隻。','good');}
-else if(action==='store'&&phase===5){if(S.selected.length!==2){mistake('請先選兩隻乾淨襪子，讓它們合成同一組。');return;}for(const i of S.selected)S.closetChosen.add(i);S.selected=[];S.closetPairs++;increment(S.actions,5);const n=S.closetPairs*2;say(String(n));notice('衣櫃已收好'+n+'隻。'+(S.closetPairs%5===0?'這一櫃有10隻，裝滿了！':''),'good');}
+else if(action==='store'&&phase===5){
+ if(S.closetPairs>=Math.floor(S.N/10)*5||S.selected.length!==2){mistake('先在原位置選滿兩隻襪子。');return;}
+ for(const i of S.selected)S.closetChosen.add(i);S.selected=[];S.closetPairs++;increment(S.actions,5);
+ const total=S.closetPairs*2;say(String(total));
+ notice(total%10===0?'數到'+total+'，湊滿10隻，完成一個完整衣櫃！':'目前累計'+total+'隻，繼續湊滿10隻。','good');
+}
 else if(action==='compare'&&phase===6){const q=S.questions[S.qIndex];if(!q)return;const right=id===q.answer;if(!S.qAnswered){S.answers.push({q:S.qIndex,first:right,assisted:S.qHelpForCurrent||S.mode==='demo'||S.showHint});S.qAnswered=true;}if(!right){mistake('再看看哪邊比較多。也可能一樣多喔。');}else{increment(S.actions,6);notice('答對了！'+q.a+' 和 '+q.b+'，'+(q.answer==='equal'?'一樣多。':q.a>q.b?'左邊比較多。':'右邊比較多。'),'good');say('答對了！');S.qIndex++;S.qAnswered=false;S.qHelpForCurrent=false;}}
 else if(action==='toggleRoad'){S.roadOpen=!S.roadOpen;S.showHint=true;}
 else if(action==='toggleReverse'){S.roadBackOpen=!S.roadBackOpen;S.showHint=true;}
@@ -254,7 +319,14 @@ function demoStep(){
 if(!S||correct()){stopAuto();return;}
 const phase=S.phase;
 if(phase===1){const next=Array.from({length:S.N},(_,i)=>i).find(i=>!S.counted.has(i));if(next!==undefined)act('sock',next);else act('answerTotal',S.N);}
-if(phase===2||phase===5){const used=phase===2?S.chosen:S.closetChosen;if(S.selected.length<2){const next=Array.from({length:S.N},(_,i)=>i).find(i=>!used.has(i)&&!S.selected.includes(i));if(next!==undefined)act('sock',next);}else act(phase===2?'pack':'store');}
+if(phase===2||phase===5){
+ const used=phase===2?S.chosen:S.closetChosen,loose=phase===2?S.looseSorted:S.closetLoose;
+ const pairMode=phase===2?S.packedPairs<Math.floor(S.N/10)*5:S.closetPairs<Math.floor(S.N/10)*5;
+ if(!pairMode||S.selected.length<2){
+  const next=Array.from({length:S.N},(_,i)=>i).find(i=>!used.has(i)&&!loose.has(i)&&!S.selected.includes(i));
+  if(next!==undefined)act('sock',next);
+ }else act(phase===2?'pack':'store');
+}
 if(phase===3){act(S.basketsLoaded<Math.floor(S.N/10)?'loadBasket':'loadLoose');}
 if(phase===4)act('unload');
 if(phase===6){const q=S.questions[S.qIndex];if(q)act('compare',q.answer);}
@@ -267,7 +339,7 @@ const finished=[...S.completed].sort((a,b)=>a-b),answerCorrect=S.answers.filter(
 let tbl='<table class="report"><thead><tr><th>活動</th><th>完成操作</th><th>需要提示</th><th>錯誤嘗試</th></tr></thead><tbody>';
 for(const p of finished)tbl+='<tr><td>'+names[p]+'</td><td>'+(S.actions[p]||0)+'</td><td>'+(S.hints[p]||0)+'</td><td>'+(S.mistakes[p]||0)+'</td></tr>';
 tbl+='</tbody></table>';
-$('results').innerHTML='<h2>🎉 襪子整理完成！</h2><p class="subtitle">這一回合整理了 '+S.N+' 隻襪子，謝謝你幫忙完成任務！</p><div class="result-grid"><div class="result"><strong>'+S.N+'</strong><p>本回合襪子數</p></div><div class="result"><strong>'+Math.floor(S.N/2)+'</strong><p>完整的2隻一組</p></div><div class="result"><strong>'+Math.floor(S.N/10)+'</strong><p>每10隻為一組的組數</p></div></div><h3 style="margin-top:20px">教師觀察與操作紀錄</h3>'+tbl+'<p class="tiny">數字路：順數'+(S.forwardPass?'已完成':'尚未完整檢核')+'；倒數'+(S.reversePass?'已完成':'尚未完整檢核')+'。比較挑戰第一次未求助即答對：'+answerCorrect+'／'+S.answers.length+'題。點擊操作不代表已確認口語數數能力。</p><div class="setting"><strong>教師口語觀察（可自行勾選）</strong><div class="toggles"><label><input type="checkbox"> 能獨立順數</label><label><input type="checkbox"> 能獨立倒數</label><label><input type="checkbox"> 能以2個一數</label><label><input type="checkbox"> 能以10個一數</label></div></div><p class="note">紀錄僅顯示本次頁面的操作狀況，不保存學生姓名或個人資料。示範模式與使用提示後的作答，不應視為獨立掌握。</p><div class="setup-footer no-print"><button class="btn" id="printResults" type="button">列印本次紀錄</button><button class="btn" id="sameGame" type="button">相同數量重玩</button><button class="btn primary" id="newGame" type="button">重新選擇活動</button></div>';
+$('results').innerHTML='<h2>🎉 襪子整理完成！</h2><p class="subtitle">這一回合整理了 '+S.N+' 隻襪子，謝謝你幫忙完成任務！</p><div class="result-grid"><div class="result"><strong>'+S.N+'</strong><p>本回合襪子數</p></div><div class="result"><strong>'+Math.floor(S.N/10)*5+'</strong><p>用來湊成10隻的2隻一組</p></div><div class="result"><strong>'+Math.floor(S.N/10)+'</strong><p>每10隻為一組的組數</p></div></div><h3 style="margin-top:20px">教師觀察與操作紀錄</h3>'+tbl+'<p class="tiny">數字路：順數'+(S.forwardPass?'已完成':'尚未完整檢核')+'；倒數'+(S.reversePass?'已完成':'尚未完整檢核')+'。比較挑戰第一次未求助即答對：'+answerCorrect+'／'+S.answers.length+'題。點擊操作不代表已確認口語數數能力。</p><div class="setting"><strong>教師口語觀察（可自行勾選）</strong><div class="toggles"><label><input type="checkbox"> 能獨立順數</label><label><input type="checkbox"> 能獨立倒數</label><label><input type="checkbox"> 能以2個一數</label><label><input type="checkbox"> 能以10個一數</label></div></div><p class="note">紀錄僅顯示本次頁面的操作狀況，不保存學生姓名或個人資料。示範模式與使用提示後的作答，不應視為獨立掌握。</p><div class="setup-footer no-print"><button class="btn" id="printResults" type="button">列印本次紀錄</button><button class="btn" id="sameGame" type="button">相同數量重玩</button><button class="btn primary" id="newGame" type="button">重新選擇活動</button></div>';
 $('printResults').onclick=()=>window.print();$('newGame').onclick=backSetup;$('sameGame').onclick=()=>{$('countMode').value='custom';$('sockCount').value=S.N;start()};
 window.scrollTo({top:0,behavior:'smooth'});
 }
