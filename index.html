@@ -2634,14 +2634,73 @@ root.innerHTML=`<style>
 @media(max-width:600px){#rail{right:4px;width:68px;padding:5px}#rail .icon{font-size:24px}.panel{right:80px;width:calc(100vw - 90px);padding:12px}#board{inset:8px 80px 8px 8px}#board .head{flex-wrap:wrap;padding:8px}output.big{font-size:48px}.dots{gap:3px}}
 #number{display:block;width:100%;max-width:100%;text-align:center;font-size:64px;font-weight:750;color:#237b88;font-variant-numeric:tabular-nums;background:transparent;border:1px dashed #a8d2d8;border-radius:12px;appearance:textfield}#number::-webkit-inner-spin-button,#number::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}#count.enlarged{inset:20px 102px 20px 20px;transform:none;width:auto;max-height:none;display:flex;flex-direction:column}#count.enlarged #number{font-size:clamp(64px,12vh,130px)}#count.enlarged .dots{flex:1;min-height:0;max-height:none;align-content:start;grid-template-columns:repeat(10,minmax(0,1fr));width:min(100%,650px);margin:auto}#count.enlarged .dot{max-height:40px;width:100%;aspect-ratio:auto;height:clamp(12px,3vh,40px)}#count.enlarged .count-actions button{min-width:90px;font-size:32px}#boardCanvas{pointer-events:none}#boardCanvas.active{pointer-events:auto}#board .board-panel{position:absolute;inset:80px 12px auto auto;transform:none;width:min(340px,calc(100% - 24px));max-height:calc(100% - 100px);z-index:2}#stopwatchClock{font-size:clamp(26px,4vw,48px);white-space:nowrap}
 @media(max-width:600px){#number{font-size:48px}#count.enlarged{inset:8px 80px 8px 8px}#count.enlarged #number{font-size:64px}#board .board-panel{top:155px;max-height:calc(100% - 170px)}#board .head .row{gap:4px}#board .head button{padding:6px 8px}}
+
+/* Teacher teaching aids: hundred charts */
+#aids .chart-list{display:grid;gap:12px}
+#aids .chart-choice{display:flex;align-items:center;gap:12px;width:100%;min-height:100px;text-align:left;border:2px solid #bfdce3;border-radius:15px;padding:9px;background:#fff}
+#aids .chart-choice:hover,#aids .chart-choice:focus-visible{border-color:#167f94;background:#eaf9f6}
+#aids .chart-thumb{display:block;width:76px;height:78px;object-fit:contain;border-radius:6px;border:1px solid #dbe7eb;flex:none;background:white}
+#aids .chart-option-text{font-size:15px;font-weight:800;line-height:1.5}
+#aids .chart-option-text small{display:block;color:#597786;font-size:12px;font-weight:500}
+#hundredOverlay{pointer-events:auto;position:fixed;inset:0;background:rgba(18,44,57,.76);z-index:120;display:grid;place-items:center;padding:12px}
+#hundredStage{width:min(970px,calc(100vw - 26px));height:min(98dvh,1050px);max-height:calc(100dvh - 24px);display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;background:#fff;border:2px solid #c9e5eb;border-radius:20px;overflow:hidden;box-shadow:0 25px 80px #102f475b;pointer-events:auto}
+#hundredStage .hundred-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;background:#e8f6f7;padding:9px 15px;flex:none}
+#hundredStage .hundred-head strong{font-size:20px;line-height:1.3}
+#hundredStage .hundred-actions{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+#hundredStage .hundred-actions button{font-size:14px;min-height:39px;padding:6px 10px}
+#hundredStage .hundred-switch{display:flex;gap:7px;justify-content:center;flex-wrap:wrap;padding:7px 12px;background:#f7fbfc;flex:none}
+#hundredStage .hundred-switch button{font-size:14px;font-weight:750;min-height:36px;padding:5px 10px}
+#hundredStage .hundred-switch button[aria-pressed=true]{background:#caeae2;border-color:#458b89}
+#hundredStage .hundred-image-area{flex:1;min-height:0;display:grid;place-items:center;padding:6px;background:#fff;overflow:hidden}
+#hundredStage img#hundredImage{display:block;width:100%;height:100%;max-height:100%;object-fit:contain;user-select:none}
+#hundredStage:fullscreen{width:100vw;height:100vh;max-height:none;border-radius:0;border:0;background:white}
+#hundredStage:fullscreen .hundred-image-area{padding:4px}
+@media(max-width:640px){#aids .chart-thumb{width:60px;height:66px}#hundredStage .hundred-head{padding:7px}#hundredStage .hundred-head strong{font-size:17px}#hundredStage .hundred-actions button{font-size:12px;padding:4px 7px}}
 </style>
 <canvas id="ink" hidden aria-label="頁面畫筆區"></canvas>
 <section id="board" hidden aria-label="白板"><div class="head"><h2>白板</h2><div class="row"><button id="boardMouse" aria-pressed="true">↖ 滑鼠</button><button id="boardPen" aria-pressed="false">✎ 畫筆</button><button id="boardErase" aria-pressed="false">▱ 橡皮擦</button><button id="boardUndo">復原</button><button id="boardGrid" aria-pressed="false">格線</button><button class="close" data-close aria-label="關閉白板">×</button></div></div><div id="boardArea"><canvas id="boardCanvas" aria-label="白板書寫區"></canvas></div></section>
 <button id="handle" class="glass" aria-label="展開教學功能欄" aria-expanded="false" aria-controls="rail" title="教學工具">◀</button>
-<aside id="rail" class="glass" hidden aria-label="教學功能欄"><button id="collapse" aria-label="隱藏教學功能欄">×</button><button data-tool="mouse" aria-pressed="true"><span class="icon">↖</span><span class="label">滑鼠</span></button><button data-tool="pen" aria-pressed="false"><span class="icon">✎</span><span class="label">畫筆</span></button><button data-tool="eraser" aria-pressed="false"><span class="icon">▱</span><span class="label">橡皮擦</span></button><button data-tool="count" aria-pressed="false"><span class="icon">①</span><span class="label">數數</span></button><button data-tool="timer" aria-pressed="false"><span class="icon">⏱</span><span class="label">計時器</span></button><button data-tool="board" aria-pressed="false"><span class="icon">▤</span><span class="label">白板</span></button></aside>
+<aside id="rail" class="glass" hidden aria-label="教學功能欄"><button id="collapse" aria-label="隱藏教學功能欄">×</button><button data-tool="mouse" aria-pressed="true"><span class="icon">↖</span><span class="label">滑鼠</span></button><button data-tool="pen" aria-pressed="false"><span class="icon">✎</span><span class="label">畫筆</span></button><button data-tool="eraser" aria-pressed="false"><span class="icon">▱</span><span class="label">橡皮擦</span></button><button data-tool="count" aria-pressed="false"><span class="icon">①</span><span class="label">數數</span></button><button data-tool="timer" aria-pressed="false"><span class="icon">⏱</span><span class="label">計時器</span></button><button data-tool="board" aria-pressed="false"><span class="icon">▤</span><span class="label">白板</span></button><button data-tool="aids" aria-pressed="false"><span class="icon">▦</span><span class="label">教具</span></button></aside>
 <section id="pen" class="panel" hidden aria-label="畫筆工具"><div class="head"><h2>畫筆設定</h2><button class="close" data-close aria-label="關閉畫筆">×</button></div><p class="muted">設定完成後按「確認」，收起面板並開始繪畫。</p><div class="row"><label>顏色 <input id="penColor" type="color" value="#e15060"></label><label>粗細 <select id="penWidth"><option value="3">細筆</option><option value="6" selected>中筆</option><option value="12">粗筆</option></select></label></div><div class="row"><label>線條／圖形 <select id="penShape"><option value="free">曲線（自由畫）</option><option value="line">直線</option><option value="square">方形（自由長寬）</option><option value="circle">圓形／橢圓</option></select></label></div><div class="row"><label>圖形填色 <select id="penFill" disabled><option value="outline">空心</option><option value="solid">實心</option></select></label></div><p class="muted">拖曳自由控制圖形長寬；方形與圓形可選實心或空心。</p><div class="row"><button id="penConfirm">確認</button><button id="penUndo">復原上一筆</button></div><p class="muted">按側欄「滑鼠」即可操作教材。換頁或捲動會清除畫記，避免錯位。</p></section>
 <section id="eraser" class="panel" hidden aria-label="橡皮擦工具"><div class="head"><h2>橡皮擦</h2><button class="close" data-close aria-label="關閉橡皮擦">×</button></div><label for="eraseSize">擦除直徑：<output id="eraseSizeLabel">32</output> px</label><div class="row"><input id="eraseSize" type="range" min="8" max="120" step="4" value="32" style="width:100%"></div><div class="row"><button id="eraseConfirm">確認</button><button id="eraseClear">全部清除</button><button id="eraseUndo">復原上一筆</button></div><p class="muted">按確認後拖曳擦除畫記；按「滑鼠」回復網頁操作。</p></section>
 <section id="count" class="panel" hidden aria-label="數數工具"><div class="head"><h2>數數</h2><button id="countZoom" aria-label="放大數數" aria-pressed="false">放大 ⛶</button><button class="close" data-close aria-label="關閉數數">×</button></div><input id="number" type="number" min="0" max="100" step="1" value="0" inputmode="numeric" aria-label="數數數字，可直接輸入 0 到 100"><div class="row count-actions"><button id="minus" aria-label="減一">−</button><button id="plus" aria-label="加一">＋</button></div><div id="dots" class="dots" aria-hidden="true"></div><div class="row"><button id="countReset">歸零</button><label><input id="readCount" type="checkbox"> 朗讀數字</label></div><p class="muted">點上方數字可直接輸入，按 Enter 或點其他位置套用。範圍 0–100，每排 10 顆。</p></section>
+
+<section id="aids" class="panel" hidden aria-label="教具">
+  <div class="head"><h2>教具</h2><button class="close" data-close aria-label="關閉教具">×</button></div>
+  <p class="muted">選擇百數表。按下後會在畫面中央放大，可再切換全螢幕，方便帶領學生觀察數字排列。</p>
+  <h3 style="margin:14px 0 10px;font-size:18px">百數表</h3>
+  <div class="chart-list">
+    <button class="chart-choice" type="button" data-chart-choice="2" aria-label="開啟每2個一數百數表">
+      <img class="chart-thumb" src="assets/teaching-tools/hundreds-chart-by-2.svg" alt="" loading="lazy"/>
+      <span class="chart-option-text">每2個一數<small>黃色：2、4、6、8、10……</small></span>
+    </button>
+    <button class="chart-choice" type="button" data-chart-choice="5" aria-label="開啟每5個一數百數表">
+      <img class="chart-thumb" src="assets/teaching-tools/hundreds-chart-by-5.svg" alt="" loading="lazy"/>
+      <span class="chart-option-text">每5個一數<small>粉紅色：5、10、15、20……</small></span>
+    </button>
+    <button class="chart-choice" type="button" data-chart-choice="3" aria-label="開啟每3個一數百數表">
+      <img class="chart-thumb" src="assets/teaching-tools/hundreds-chart-by-3.svg" alt="" loading="lazy"/>
+      <span class="chart-option-text">每3個一數<small>橘黃色：3、6、9、12……</small></span>
+    </button>
+  </div>
+</section>
+<section id="hundredOverlay" hidden aria-label="百數表放大檢視">
+  <div id="hundredStage" role="dialog" aria-modal="true" aria-label="百數表" tabindex="-1">
+    <div class="hundred-head">
+      <strong id="hundredTitle">百數表</strong>
+      <div class="hundred-actions">
+        <button id="hundredFullscreen" type="button" aria-label="將百數表切換到全螢幕">⛶ 全螢幕</button>
+        <button id="hundredClose" type="button" aria-label="關閉百數表">× 關閉</button>
+      </div>
+    </div>
+    <nav class="hundred-switch" aria-label="切換百數表版本">
+      <button type="button" data-hundred-select="2" aria-pressed="false">每2個一數</button>
+      <button type="button" data-hundred-select="5" aria-pressed="false">每5個一數</button>
+      <button type="button" data-hundred-select="3" aria-pressed="false">每3個一數</button>
+    </nav>
+    <div class="hundred-image-area"><img id="hundredImage" alt="百數表，數字1到100" width="960" height="940"/></div>
+  </div>
+</section>
 <section id="timer" class="panel" hidden aria-label="計時器工具"><div class="head"><h2>計時器</h2><button class="close" data-close aria-label="關閉計時器">×</button></div><div class="row"><button id="countdownTab" aria-pressed="true">倒數計時</button><button id="stopwatchTab" aria-pressed="false">碼錶</button></div><div id="countdownPane"><output id="clock" class="big">05:00</output><div class="row"><label><input id="minutes" type="number" min="0" max="99" value="5"> 分</label><label><input id="seconds" type="number" min="0" max="59" value="0"> 秒</label></div><div class="row"><button id="start">開始</button><button id="resetTimer">重設</button></div><p id="timerStatus" role="status">設定時間後按開始</p><p class="muted">收起工具後仍會繼續計時；時間到會顯示提醒並響鈴。</p></div><div id="stopwatchPane" hidden><output id="stopwatchClock" class="big" aria-label="碼錶時間">00:00.00</output><div class="row"><button id="stopwatchStart">開始</button><button id="stopwatchReset">歸零</button></div><p id="stopwatchStatus" role="status">按開始啟動碼錶</p><p class="muted">分：秒．百分秒。切換模式或收起工具後仍持續計時。</p></div></section>`;
 const $=id=>root.getElementById(id);
 for(const [source,prefix] of [['pen','wbPen'],['eraser','wbErase']]){
@@ -2654,6 +2713,43 @@ for(const [source,prefix] of [['pen','wbPen'],['eraser','wbErase']]){
  $('board').append(panel);
 }
 let active='',opened=false,count=0,penMode='mouse';
+
+const hundredChartData={
+ '2':{title:'百數表｜每2個一數',src:'assets/teaching-tools/hundreds-chart-by-2.svg',alt:'1到100，每隔兩個一數，2、4、6、8、10等數字以黃色標示'},
+ '5':{title:'百數表｜每5個一數',src:'assets/teaching-tools/hundreds-chart-by-5.svg',alt:'1到100，5、10、15、20等每5個一數的數字以粉紅色標示'},
+ '3':{title:'百數表｜每3個一數',src:'assets/teaching-tools/hundreds-chart-by-3.svg',alt:'1到100，3、6、9、12等每3個一數的數字以橘黃色標示'}
+};
+function showHundred(type){
+ const chart=hundredChartData[type];if(!chart)return;
+ $('hundredImage').src=chart.src;$('hundredImage').alt=chart.alt;$('hundredTitle').textContent=chart.title;
+ root.querySelectorAll('[data-hundred-select]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.hundredSelect===type)));
+ $('hundredOverlay').hidden=false;
+ $('hundredStage').focus();
+}
+function closeHundred(){
+ if(!$('hundredOverlay').hidden){$('hundredOverlay').hidden=true;}
+ if(root.fullscreenElement===$('hundredStage')||document.fullscreenElement===host){document.exitFullscreen?.().catch(()=>{});}
+}
+root.querySelectorAll('[data-chart-choice]').forEach(b=>b.onclick=()=>showHundred(b.dataset.chartChoice));
+root.querySelectorAll('[data-hundred-select]').forEach(b=>b.onclick=()=>showHundred(b.dataset.hundredSelect));
+$('hundredClose').onclick=()=>{closeHundred();root.querySelector('[data-tool="aids"]')?.focus()};
+$('hundredOverlay').addEventListener('click',e=>{if(e.target===$('hundredOverlay'))closeHundred()});
+function syncHundredFullScreen(){
+ const full=root.fullscreenElement===$('hundredStage');
+ $('hundredFullscreen').textContent=full?'⛶ 退出全螢幕':'⛶ 全螢幕';
+ $('hundredFullscreen').setAttribute('aria-label',full?'退出百數表全螢幕':'將百數表切換到全螢幕');
+}
+$('hundredFullscreen').onclick=()=>{
+ const panel=$('hundredStage');
+ if(root.fullscreenElement===panel){
+  document.exitFullscreen?.().catch(()=>{});
+ }else if(typeof panel.requestFullscreen==='function'){
+  panel.requestFullscreen().catch(()=>{syncHundredFullScreen();});
+ }
+};
+root.addEventListener('fullscreenchange',syncHundredFullScreen);
+document.addEventListener('fullscreenchange',syncHundredFullScreen);
+
 function updateMode(){
  $('ink').classList.toggle('active',!active&&penMode!=='mouse');
  const selected=active||penMode;
@@ -2665,11 +2761,11 @@ function updateMode(){
  }else $('ink').style.cursor='crosshair';
 }
 function setOpen(v){opened=v;$('rail').hidden=!v;$('handle').hidden=v;$('handle').setAttribute('aria-expanded',String(v));if(!v){setTool('');$('handle').focus();}}
-function setTool(name){pen.finish();setBoardMode('mouse');active=name==='mouse'?'':name;penMode='mouse';for(const n of ['pen','eraser','count','timer','board'])$(n).hidden=n!==active;updateMode();if(name==='board')requestAnimationFrame(()=>board.resize());}
+function setTool(name){pen.finish();setBoardMode('mouse');active=name==='mouse'?'':name;penMode='mouse';if(name!=='aids')closeHundred();for(const n of ['pen','eraser','count','timer','board','aids'])$(n).hidden=n!==active;updateMode();if(name==='board')requestAnimationFrame(()=>board.resize());}
 $('handle').onclick=()=>{setOpen(true);$('collapse').focus()};$('collapse').onclick=()=>setOpen(false);
 root.querySelectorAll('[data-tool]').forEach(b=>b.onclick=()=>setTool(active===b.dataset.tool?'':b.dataset.tool));
 root.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>{const old=active;setTool('');root.querySelector('[data-tool="'+old+'"]').focus()});
-root.addEventListener('keydown',e=>{if(e.key==='Escape'){e.stopPropagation();if(active||penMode!=='mouse')setTool('');else setOpen(false)}});
+root.addEventListener('keydown',e=>{if(e.key==='Escape'){e.stopPropagation();if(!$('hundredOverlay').hidden){closeHundred();return;}if(active||penMode!=='mouse')setTool('');else setOpen(false)}});
 function drawing(canvas,color,width){let strokes=[],current=null;const ctx=canvas.getContext('2d');let w=0,h=0;
 function paint(){ctx.clearRect(0,0,w,h);for(const s of strokes){
  ctx.globalCompositeOperation=s.erase?'destination-out':'source-over';ctx.strokeStyle=s.color;ctx.fillStyle=s.color;ctx.lineWidth=s.width;ctx.lineCap='round';ctx.lineJoin='round';ctx.beginPath();
