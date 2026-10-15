@@ -2632,9 +2632,72 @@ root.innerHTML=`<style>
 #rail{pointer-events:auto;position:fixed;right:10px;top:50%;transform:translateY(-50%);padding:8px;display:flex;flex-direction:column;gap:8px;border-radius:22px;max-height:95dvh;overflow:auto;width:82px}#rail button{border:0;background:transparent;padding:6px 2px;flex-shrink:0}#rail button:hover,#rail button[aria-pressed=true]{background:#cdecef}#rail .icon{display:block;font-size:27px;line-height:1.2}#rail .label{font-size:13px;font-weight:700}#rail #collapse{font-size:24px;min-height:36px}
 .panel{pointer-events:auto;position:fixed;right:102px;top:50%;transform:translateY(-50%);width:min(340px,calc(100vw - 116px));max-height:90dvh;overflow:auto;border-radius:20px;padding:18px;background:#f7fcfd;box-shadow:0 10px 40px #20485830;border:1px solid #d1e6e9}.head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}.head h2{font-size:19px;margin:0}.close{font-size:22px;padding:0 10px}.row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:12px 0}.muted{font-size:13px;color:#5b7782;margin:8px 0}input[type=color]{width:46px;height:44px;padding:3px;border:1px solid #b9d6dd;border-radius:10px}select,input[type=number]{border:1px solid #b9d6dd;border-radius:9px;background:white;padding:8px;max-width:100%}input[type=number]{width:75px}output.big{display:block;text-align:center;font-size:64px;font-weight:750;font-variant-numeric:tabular-nums;line-height:1.3;color:#237b88}.count-actions{justify-content:center}.count-actions button{font-size:25px;min-width:64px}.dots{display:grid;grid-template-columns:repeat(10,1fr);gap:5px;max-height:160px;overflow:auto}.dot{aspect-ratio:1;background:#42a9af;border-radius:50%}.dot:nth-child(10n+6),.dot:nth-child(10n+7),.dot:nth-child(10n+8),.dot:nth-child(10n+9),.dot:nth-child(10n+10){background:#77bacf}#timerStatus{min-height:24px;text-align:center}#timerStatus.done{color:#a44c15;font-weight:bold}#ink{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;touch-action:none}#ink.active{pointer-events:auto;cursor:crosshair}#board{pointer-events:auto;position:fixed;inset:16px 102px 16px 16px;border-radius:20px;overflow:hidden;background:white;box-shadow:0 10px 45px #16394b40;border:1px solid #c9e3e9;display:flex;flex-direction:column}#board .head{padding:12px 16px;margin:0;background:#eef8fa;flex-shrink:0}#board .row{margin:0}#boardArea{position:relative;flex:1;min-height:100px}#boardCanvas{width:100%;height:100%;display:block;touch-action:none;cursor:crosshair}.grid{background-image:linear-gradient(#dce9ef 1px,transparent 1px),linear-gradient(90deg,#dce9ef 1px,transparent 1px);background-size:32px 32px}
 @media(max-width:600px){#rail{right:4px;width:68px;padding:5px}#rail .icon{font-size:24px}.panel{right:80px;width:calc(100vw - 90px);padding:12px}#board{inset:8px 80px 8px 8px}#board .head{flex-wrap:wrap;padding:8px}output.big{font-size:48px}.dots{gap:3px}}
-.count-step-label{font-size:14px;font-weight:800;color:#426b7a;margin:6px 0 7px}.count-steps{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}.count-steps button{min-width:0;padding:8px 2px;font-size:14px;font-weight:800;min-height:44px}.count-step-hint{display:block;min-height:22px;margin:8px 0 5px;text-align:center;font-size:13px;color:#54737e}.dots.grouped .dot{background:#298fa2}.dots.grouped .dot.group-alt{background:#8cc9cc}
-#number{display:block;width:100%;max-width:100%;text-align:center;font-size:64px;font-weight:750;color:#237b88;font-variant-numeric:tabular-nums;background:transparent;border:1px dashed #a8d2d8;border-radius:12px;appearance:textfield}#number::-webkit-inner-spin-button,#number::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}#count.enlarged{inset:20px 102px 20px 20px;transform:none;width:auto;max-height:none;display:flex;flex-direction:column}#count.enlarged #number{font-size:clamp(64px,12vh,130px)}#count.enlarged .dots{flex:1;min-height:0;max-height:none;align-content:start;grid-template-columns:repeat(10,minmax(0,1fr));width:min(100%,650px);margin:auto}#count.enlarged .dot{max-height:40px;width:100%;aspect-ratio:auto;height:clamp(12px,3vh,40px)}#count.enlarged .count-actions button{min-width:90px;font-size:32px}#boardCanvas{pointer-events:none}#boardCanvas.active{pointer-events:auto}#board .board-panel{position:absolute;inset:80px 12px auto auto;transform:none;width:min(340px,calc(100% - 24px));max-height:calc(100% - 100px);z-index:2}#stopwatchClock{font-size:clamp(26px,4vw,48px);white-space:nowrap}
-@media(max-width:600px){#number{font-size:48px}#count.enlarged{inset:8px 80px 8px 8px}#count.enlarged #number{font-size:64px}#board .board-panel{top:155px;max-height:calc(100% - 170px)}#board .head .row{gap:4px}#board .head button{padding:6px 8px}}
+/* Counting tool: compact vertical slider and always-visible 10x10 dots */
+.dots.grouped .dot{background:#298fa2}.dots.grouped .dot.group-alt{background:#8cc9cc}
+#count{width:min(460px,calc(100vw - 116px));height:min(700px,92dvh);max-height:92dvh;display:flex;padding:0;overflow:hidden}
+#count .count-shell{display:grid;grid-template-columns:96px minmax(0,1fr);width:100%;height:100%;min-width:0;min-height:0}
+#count .count-side{display:flex;flex-direction:column;align-items:center;gap:9px;min-width:0;min-height:0;padding:12px 7px;background:#eaf6f8;border-right:1px solid #c7e1e7;overflow:hidden}
+#count .count-view-controls{display:flex;flex-direction:column;gap:7px;width:100%;flex:none}
+#count .count-view-controls button{font-size:12px;line-height:1.2;font-weight:750;min-height:40px;padding:5px 2px}
+#count .count-step-area{display:flex;align-items:center;flex-direction:column;flex:1;min-height:0;width:100%}
+#count .count-step-label{font-size:13px;font-weight:800;color:#426b7a;flex:none;margin:2px 0 5px}
+#count .count-step-selector{display:flex;flex:1;min-height:78px;max-height:320px;align-items:stretch;justify-content:center;gap:4px;width:100%}
+#countStepSlider{display:block;writing-mode:vertical-lr;direction:rtl;appearance:auto;accent-color:#248e9d;cursor:pointer;min-height:0;width:28px;height:100%;margin:0;padding:0}
+#count .count-step-ticks{display:flex;flex-direction:column;align-items:stretch;justify-content:space-between;height:100%;min-width:27px;padding:2px 0}
+#count .count-step-ticks span{display:block;text-align:center;font-variant-numeric:tabular-nums;font-size:14px;font-weight:750;line-height:1.2;padding:1px;border-radius:6px;cursor:pointer;user-select:none}
+#count .count-step-ticks span.selected{background:#b5e5e2;color:#125d69}
+#count #countReset{width:100%;font-size:13px;min-height:40px;padding:4px 2px;flex:none}
+#count .count-speech{display:flex;align-items:center;justify-content:center;gap:2px;white-space:nowrap;font-size:12px;min-height:28px;cursor:pointer;flex:none}
+#count .count-speech input{margin:0 2px 0 0}
+#count .count-stage{position:relative;display:flex;flex-direction:column;align-items:stretch;gap:8px;min-width:0;min-height:0;padding:39px 14px 14px}
+#count .count-close{position:absolute;top:7px;right:8px;font-size:22px;line-height:1;min-height:28px;padding:1px 10px}
+#count #number{flex:none;display:block;width:100%;max-width:100%;height:clamp(72px,15vh,110px);text-align:center;font-size:clamp(46px,8vh,92px);font-weight:800;line-height:1.1;color:#237b88;font-variant-numeric:tabular-nums;background:transparent;border:1px dashed #a8d2d8;border-radius:12px;appearance:textfield;padding:0 4px}
+#count #number::-webkit-inner-spin-button,#count #number::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+#count .count-actions{flex:none;justify-content:center;gap:12px;margin:0}
+#count .count-actions button{font-size:25px;min-width:74px;min-height:46px;padding:5px 12px;font-weight:800}
+#count .dots{display:grid;flex:1 1 auto;min-height:0;min-width:0;width:100%;height:auto;max-height:none;overflow:hidden;gap:var(--count-dot-gap,4px);grid-template-columns:repeat(10,var(--count-dot-size,12px));grid-template-rows:repeat(10,var(--count-dot-size,12px));justify-content:center;align-content:center;margin:0;padding:0}
+#count .dot,#count.enlarged .dot{display:block;width:var(--count-dot-size,12px);height:var(--count-dot-size,12px);max-height:none;aspect-ratio:1;border-radius:50%}
+#count .dot.is-empty{visibility:hidden}
+#count.enlarged{inset:12px 102px 12px 12px;width:auto;height:auto;max-height:none;transform:none}
+#count.enlarged .count-shell{grid-template-columns:110px minmax(0,1fr)}
+#count.enlarged #number{height:clamp(90px,20vh,155px);font-size:clamp(70px,12vh,140px)}
+#count.enlarged .count-actions button{font-size:30px;min-width:90px}
+#count.fullscreen{inset:0;width:auto;height:auto;max-height:none;border-radius:0;border:0;transform:none;box-shadow:none}
+:host(.rail-open) #count.fullscreen{right:94px}
+#count.fullscreen .count-shell{grid-template-columns:120px minmax(0,1fr)}
+#count.fullscreen #number{height:clamp(110px,23vh,200px);font-size:clamp(82px,16vh,172px)}
+#count.fullscreen .count-actions button{font-size:33px;min-width:100px}
+@media(max-width:600px){
+ #count{right:80px;width:calc(100vw - 90px)}
+ #count .count-shell{grid-template-columns:65px minmax(0,1fr)}
+ #count .count-side{padding:7px 3px;gap:5px}
+ #count .count-view-controls{gap:5px}
+ #count .count-view-controls button{font-size:11px;min-height:36px;white-space:normal;padding:4px 1px}
+ #count .count-step-selector{gap:0}
+ #countStepSlider{width:25px}
+ #count .count-step-ticks{min-width:23px}
+ #count .count-step-ticks span{font-size:12px}
+ #count .count-stage{padding:34px 5px 7px;gap:6px}
+ #count #number{font-size:clamp(38px,8vh,65px);height:clamp(60px,14vh,92px)}
+ #count .count-actions button{min-width:52px;font-size:20px;padding:4px 7px;min-height:40px}
+ #count.enlarged{inset:5px 74px 5px 5px}
+ #count.enlarged .count-shell,#count.fullscreen .count-shell{grid-template-columns:70px minmax(0,1fr)}
+ #count.enlarged #number,#count.fullscreen #number{height:clamp(67px,15vh,110px);font-size:clamp(52px,12vh,100px)}
+ #count.fullscreen{inset:0}
+ :host(.rail-open) #count.fullscreen{right:74px}
+ #count.enlarged .count-actions button,#count.fullscreen .count-actions button{font-size:23px;min-width:62px}
+}
+@media(max-height:480px){
+ #count .count-side{gap:4px;padding-top:5px;padding-bottom:5px}
+ #count .count-view-controls button{min-height:29px;padding:2px;font-size:11px}
+ #count .count-stage{padding-top:27px;gap:4px;padding-bottom:5px}
+ #count #number,#count.enlarged #number,#count.fullscreen #number{height:clamp(42px,16vh,70px);font-size:clamp(38px,13vh,64px)}
+ #count .count-actions button,#count.enlarged .count-actions button,#count.fullscreen .count-actions button{min-height:32px;padding:1px 8px;font-size:19px}
+ #count #countReset{min-height:30px}
+ #count .count-speech{min-height:23px}
+}
+#boardCanvas{pointer-events:none}#boardCanvas.active{pointer-events:auto}#board .board-panel{position:absolute;inset:80px 12px auto auto;transform:none;width:min(340px,calc(100% - 24px));max-height:calc(100% - 100px);z-index:2}#stopwatchClock{font-size:clamp(26px,4vw,48px);white-space:nowrap}
+@media(max-width:600px){#board .board-panel{top:155px;max-height:calc(100% - 170px)}#board .head .row{gap:4px}#board .head button{padding:6px 8px}}
 
 /* Teacher teaching aids: hundred charts */
 #aids .chart-list{display:grid;gap:12px}
@@ -2676,7 +2739,33 @@ root.innerHTML=`<style>
 <aside id="rail" class="glass" hidden aria-label="教學功能欄"><button id="collapse" aria-label="隱藏教學功能欄">×</button><button data-tool="mouse" aria-pressed="true"><span class="icon">↖</span><span class="label">滑鼠</span></button><button data-tool="pen" aria-pressed="false"><span class="icon">✎</span><span class="label">畫筆</span></button><button data-tool="eraser" aria-pressed="false"><span class="icon">▱</span><span class="label">橡皮擦</span></button><button data-tool="count" aria-pressed="false"><span class="icon">①</span><span class="label">數數</span></button><button data-tool="timer" aria-pressed="false"><span class="icon">⏱</span><span class="label">計時器</span></button><button data-tool="board" aria-pressed="false"><span class="icon">▤</span><span class="label">白板</span></button><button data-tool="aids" aria-pressed="false"><span class="icon">▦</span><span class="label">教具</span></button></aside>
 <section id="pen" class="panel" hidden aria-label="畫筆工具"><div class="head"><h2>畫筆設定</h2><button class="close" data-close aria-label="關閉畫筆">×</button></div><p class="muted">設定完成後按「確認」，收起面板並開始繪畫。</p><div class="row"><label>顏色 <input id="penColor" type="color" value="#e15060"></label><label>粗細 <select id="penWidth"><option value="3">細筆</option><option value="6" selected>中筆</option><option value="12">粗筆</option></select></label></div><div class="row"><label>線條／圖形 <select id="penShape"><option value="free">曲線（自由畫）</option><option value="line">直線</option><option value="square">方形（自由長寬）</option><option value="circle">圓形／橢圓</option></select></label></div><div class="row"><label>圖形填色 <select id="penFill" disabled><option value="outline">空心</option><option value="solid">實心</option></select></label></div><p class="muted">拖曳自由控制圖形長寬；方形與圓形可選實心或空心。</p><div class="row"><button id="penConfirm">確認</button><button id="penUndo">復原上一筆</button></div><p class="muted">按側欄「滑鼠」即可操作教材。換頁或捲動會清除畫記，避免錯位。</p></section>
 <section id="eraser" class="panel" hidden aria-label="橡皮擦工具"><div class="head"><h2>橡皮擦</h2><button class="close" data-close aria-label="關閉橡皮擦">×</button></div><label for="eraseSize">擦除直徑：<output id="eraseSizeLabel">32</output> px</label><div class="row"><input id="eraseSize" type="range" min="8" max="120" step="4" value="32" style="width:100%"></div><div class="row"><button id="eraseConfirm">確認</button><button id="eraseClear">全部清除</button><button id="eraseUndo">復原上一筆</button></div><p class="muted">按確認後拖曳擦除畫記；按「滑鼠」回復網頁操作。</p></section>
-<section id="count" class="panel" hidden aria-label="數數工具"><div class="head"><h2>數數</h2><button id="countZoom" aria-label="放大數數" aria-pressed="false">放大 ⛶</button><button class="close" data-close aria-label="關閉數數">×</button></div><div class="count-step-label">每次數幾個？</div><div id="countSteps" class="count-steps" role="group" aria-label="選擇每次數幾個"><button type="button" data-count-step="1" aria-pressed="true">1個</button><button type="button" data-count-step="2" aria-pressed="false">2個</button><button type="button" data-count-step="3" aria-pressed="false">3個</button><button type="button" data-count-step="5" aria-pressed="false">5個</button><button type="button" data-count-step="10" aria-pressed="false">10個</button></div><output id="countStepHint" class="count-step-hint" aria-live="polite">每次增加或減少 1 個</output><input id="number" type="number" min="0" max="100" step="1" value="0" inputmode="numeric" aria-label="數數數字，可直接輸入 0 到 100"><div class="row count-actions"><button id="minus" aria-label="減少1個">−1</button><button id="plus" aria-label="增加1個">＋1</button></div><div id="dots" class="dots" aria-hidden="true"></div><div class="row"><button id="countReset">歸零</button><label><input id="readCount" type="checkbox"> 朗讀數字</label></div><p class="muted">選擇每次數幾個，按 ＋ 或 − 依照固定間隔數數。切換數法會歸零，也可直接輸入 0–100；每排 10 顆圓點。</p></section>
+<section id="count" class="panel" hidden aria-label="數數工具">
+ <div class="count-shell">
+  <aside class="count-side" aria-label="數數控制">
+   <div class="count-view-controls">
+    <button id="countZoom" type="button" aria-label="放大數數" aria-pressed="false">⤢ 放大</button>
+    <button id="countFullscreen" type="button" aria-label="數數全螢幕" aria-pressed="false">⛶ 全螢幕</button>
+   </div>
+   <div class="count-step-area">
+    <label class="count-step-label" for="countStepSlider">跳數</label>
+    <div class="count-step-selector">
+     <input id="countStepSlider" type="range" min="0" max="4" step="1" value="0" aria-label="每次數幾個" aria-valuetext="每次數1個" />
+     <div class="count-step-ticks" aria-hidden="true">
+      <span data-count-step-index="4">10</span><span data-count-step-index="3">5</span><span data-count-step-index="2">3</span><span data-count-step-index="1">2</span><span data-count-step-index="0" class="selected">1</span>
+     </div>
+    </div>
+   </div>
+   <button id="countReset" type="button">歸零</button>
+   <label class="count-speech"><input id="readCount" type="checkbox"> 朗讀</label>
+  </aside>
+  <div class="count-stage">
+   <button class="close count-close" type="button" data-close aria-label="關閉數數">×</button>
+   <input id="number" type="number" min="0" max="100" step="1" value="0" inputmode="numeric" aria-label="目前數字，可直接輸入0到100"/>
+   <div class="row count-actions"><button id="minus" type="button" aria-label="減少1個">−1</button><button id="plus" type="button" aria-label="增加1個">＋1</button></div>
+   <div id="dots" class="dots" aria-hidden="true"></div>
+  </div>
+ </div>
+</section>
 
 <section id="aids" class="panel" hidden aria-label="教具">
   <div class="head"><h2>教具</h2><button class="close" data-close aria-label="關閉教具">×</button></div>
@@ -2787,12 +2876,12 @@ function updateMode(){
   $('ink').style.cursor='url("data:image/svg+xml,'+encodeURIComponent(svg)+'") '+size/2+' '+size/2+', crosshair';
  }else $('ink').style.cursor='crosshair';
 }
-function setOpen(v){opened=v;$('rail').hidden=!v;$('handle').hidden=v;$('handle').setAttribute('aria-expanded',String(v));if(!v){setTool('');$('handle').focus();}}
-function setTool(name){pen.finish();setBoardMode('mouse');active=name==='mouse'?'':name;penMode='mouse';for(const n of ['pen','eraser','count','timer','board','aids'])$(n).hidden=n!==active;updateMode();if(name==='board')requestAnimationFrame(()=>board.resize());}
+function setOpen(v){opened=v;host.classList.toggle('rail-open',v);$('rail').hidden=!v;$('handle').hidden=v;$('handle').setAttribute('aria-expanded',String(v));if(!v){setTool('');$('handle').focus();}}
+function setTool(name){if(active==='count'&&name!=='count')leaveCountFullscreen();pen.finish();setBoardMode('mouse');active=name==='mouse'?'':name;penMode='mouse';for(const n of ['pen','eraser','count','timer','board','aids'])$(n).hidden=n!==active;updateMode();if(name==='board')requestAnimationFrame(()=>board.resize());if(name==='count')requestAnimationFrame(fitCountDots);}
 $('handle').onclick=()=>{setOpen(true);$('collapse').focus()};$('collapse').onclick=()=>setOpen(false);
 root.querySelectorAll('[data-tool]').forEach(b=>b.onclick=()=>setTool(active===b.dataset.tool?'':b.dataset.tool));
 root.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>{const old=active;setTool('');root.querySelector('[data-tool="'+old+'"]').focus()});
-root.addEventListener('keydown',e=>{if(e.key==='Escape'){e.stopPropagation();if(!$('hundredOverlay').hidden){closeHundred();return;}if(active||penMode!=='mouse')setTool('');else setOpen(false)}});
+root.addEventListener('keydown',e=>{if(e.key==='Escape'){e.stopPropagation();if($('count').classList.contains('fullscreen')){leaveCountFullscreen();return;}if(!$('hundredOverlay').hidden){closeHundred();return;}if(active||penMode!=='mouse')setTool('');else setOpen(false)}});
 function drawing(canvas,color,width){let strokes=[],current=null;const ctx=canvas.getContext('2d');let w=0,h=0;
 function paint(){ctx.clearRect(0,0,w,h);for(const s of strokes){
  ctx.globalCompositeOperation=s.erase?'destination-out':'source-over';ctx.strokeStyle=s.color;ctx.fillStyle=s.color;ctx.lineWidth=s.width;ctx.lineCap='round';ctx.lineJoin='round';ctx.beginPath();
@@ -2829,26 +2918,73 @@ $('wbPenShape').onchange=()=>{$('wbPenFill').disabled=!['square','circle'].inclu
 $('wbEraseSize').oninput=()=>{$('wbEraseSizeLabel').textContent=$('wbEraseSize').value};
 $('boardUndo').onclick=$('wbPenUndo').onclick=$('wbEraseUndo').onclick=()=>board.undo();$('wbEraseClear').onclick=()=>board.clear();
 $('boardGrid').onclick=()=>{$('boardGrid').setAttribute('aria-pressed',String($('boardArea').classList.toggle('grid')))};
+const countSteps=[1,2,3,5,10];
+function fitCountDots(){
+ const dots=$('dots');
+ if(dots.clientWidth<10||dots.clientHeight<10)return;
+ const style=getComputedStyle(dots),gap=parseFloat(style.columnGap)||4;
+ const cell=Math.max(1,Math.floor(Math.min((dots.clientWidth-9*gap)/10,(dots.clientHeight-9*gap)/10)));
+ dots.style.setProperty('--count-dot-size',cell+'px');
+}
+new ResizeObserver(fitCountDots).observe($('dots'));
 function showCount(speak=true){
  $('number').value=count;
  $('dots').classList.toggle('grouped',countStep>1);
- $('dots').innerHTML=Array.from({length:count},(_,i)=>'<i class="dot'+(countStep>1&&Math.floor(i/countStep)%2?' group-alt':'')+'"></i>').join('');
+ $('dots').innerHTML=Array.from({length:100},(_,i)=>'<i class="dot'+(i<count?'':' is-empty')+(countStep>1&&Math.floor(i/countStep)%2?' group-alt':'')+'"></i>').join('');
  $('minus').disabled=count-countStep<0;$('plus').disabled=count+countStep>100;
  $('minus').textContent='−'+countStep;$('plus').textContent='＋'+countStep;
  $('minus').setAttribute('aria-label','減少'+countStep+'個');$('plus').setAttribute('aria-label','增加'+countStep+'個');
  if(speak&&$('readCount').checked&&'speechSynthesis'in window){speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(String(count));u.lang='zh-TW';speechSynthesis.speak(u)}
 }
-root.querySelectorAll('[data-count-step]').forEach(b=>b.onclick=()=>{
- const next=Number(b.dataset.countStep);if(next===countStep)return;
+function selectCountStep(index){
+ const next=countSteps[index];
+ if(next===undefined||next===countStep)return;
  countStep=next;count=0;
- root.querySelectorAll('[data-count-step]').forEach(x=>x.setAttribute('aria-pressed',String(Number(x.dataset.countStep)===countStep)));
- $('countStepHint').textContent='每次增加或減少 '+countStep+' 個'+(countStep>1?'，圓點每 '+countStep+' 個為一組':'');
+ $('countStepSlider').value=String(index);
+ $('countStepSlider').setAttribute('aria-valuetext','每次數'+countStep+'個');
+ root.querySelectorAll('[data-count-step-index]').forEach(t=>t.classList.toggle('selected',Number(t.dataset.countStepIndex)===index));
  showCount(false);
-});
+}
+$('countStepSlider').oninput=e=>selectCountStep(Number(e.target.value));
+root.querySelectorAll('[data-count-step-index]').forEach(t=>t.onclick=()=>selectCountStep(Number(t.dataset.countStepIndex)));
 function commitCount(){const raw=$('number').value.trim(),value=Number(raw);if(raw!==''&&Number.isFinite(value))count=Math.max(0,Math.min(100,Math.floor(value)));showCount()}
 $('number').onchange=commitCount;$('number').onfocus=()=>$('number').select();$('number').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();$('number').blur()}else if(e.key==='Escape'){e.stopPropagation();showCount(false);$('number').blur()}};
-$('countZoom').onclick=()=>{const large=$('count').classList.toggle('enlarged');$('countZoom').textContent=large?'縮小 ⛶':'放大 ⛶';$('countZoom').setAttribute('aria-label',large?'縮小數數':'放大數數');$('countZoom').setAttribute('aria-pressed',String(large))};
-$('plus').onclick=()=>{if(count+countStep<=100){count+=countStep;showCount()}};$('minus').onclick=()=>{if(count-countStep>=0){count-=countStep;showCount()}};$('countReset').onclick=()=>{count=0;showCount()};showCount(false);
+function syncCountViewButtons(){
+ const big=$('count').classList.contains('enlarged'),full=$('count').classList.contains('fullscreen');
+ $('countZoom').textContent=big?'⤡ 縮小':'⤢ 放大';
+ $('countZoom').setAttribute('aria-label',big?'縮小數數':'放大數數');$('countZoom').setAttribute('aria-pressed',String(big));
+ $('countFullscreen').textContent=full?'⛶ 退出全螢幕':'⛶ 全螢幕';
+ $('countFullscreen').setAttribute('aria-label',full?'退出數數全螢幕':'數數全螢幕');$('countFullscreen').setAttribute('aria-pressed',String(full));
+ requestAnimationFrame(fitCountDots);
+}
+function leaveCountFullscreen(){
+ if(!$('count').classList.contains('fullscreen'))return;
+ $('count').classList.remove('fullscreen');
+ syncCountViewButtons();
+ if(document.fullscreenElement===host&&$('hundredOverlay').hidden)document.exitFullscreen?.().catch(()=>{});
+}
+$('countZoom').onclick=()=>{
+ $('count').classList.toggle('enlarged');
+ syncCountViewButtons();
+};
+$('countFullscreen').onclick=()=>{
+ const activeFull=$('count').classList.contains('fullscreen');
+ if(activeFull){leaveCountFullscreen();return;}
+ $('count').classList.add('fullscreen');
+ syncCountViewButtons();
+ if(document.fullscreenElement!==host&&typeof host.requestFullscreen==='function'){
+  host.requestFullscreen().catch(()=>{syncCountViewButtons()});
+ }
+};
+document.addEventListener('fullscreenchange',()=>{
+ if(document.fullscreenElement!==host&&$('count').classList.contains('fullscreen')){
+  $('count').classList.remove('fullscreen');syncCountViewButtons();
+ }
+});
+$('plus').onclick=()=>{if(count+countStep<=100){count+=countStep;showCount()}};
+$('minus').onclick=()=>{if(count-countStep>=0){count-=countStep;showCount()}};
+$('countReset').onclick=()=>{count=0;showCount()};
+showCount(false);
 let stopwatchElapsed=0,stopwatchSince=0,stopwatchRunning=false,stopwatchTicker=null;
 function stopwatchValue(){return stopwatchElapsed+(stopwatchRunning?performance.now()-stopwatchSince:0)}
 function renderStopwatch(){const cs=Math.floor(stopwatchValue()/10),sec=Math.floor(cs/100);$('stopwatchClock').textContent=String(Math.floor(sec/60)).padStart(2,'0')+':'+String(sec%60).padStart(2,'0')+'.'+String(cs%100).padStart(2,'0');$('stopwatchStart').textContent=stopwatchRunning?'暫停':stopwatchElapsed?'繼續':'開始'}
