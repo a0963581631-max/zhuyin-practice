@@ -745,6 +745,7 @@ body.reading-fullscreen{overflow:hidden}
 <nav id="chineseFirstLessons" class="grade-grid" aria-label="上學期課文">
 <a class="grade-choice" href="#chinese-1-first-pretty">好漂亮</a>
 <a class="grade-choice" href="#chinese-1-first-scissors-rock-paper">剪刀石頭布</a>
+<a class="grade-choice" href="#chinese-1-first-tadpole-mom">小蝌蚪找媽媽</a>
 </nav>
 <section id="chineseSecondLessons" class="guide-block" hidden><p>下學期課文準備中。</p></section>
 </main>
@@ -2493,7 +2494,8 @@ function showPortalPage(){
   const chineseTermMatch=/^chinese-1-(first|second)$/.exec(hash);
   const isPretty=hash==='chinese-1-first-pretty';
   const isScissors=hash==='chinese-1-first-scissors-rock-paper';
-  const isReading=isPretty||isScissors;
+  const isTadpole=hash==='chinese-1-first-tadpole-mom';
+  const isReading=isPretty||isScissors||isTadpole;
   const chineseGradeMatch=/^chinese-([1-6])$/.exec(hash);
   const gradeMatch=/^math-([1-6])$/.exec(hash);
   const topicMatch=/^math-1-parts-(split|join|practice)$/.exec(hash);
@@ -2520,7 +2522,7 @@ function showPortalPage(){
   }
   document.body.classList.toggle('reading-active',isReading);
   if(isReading){
-    document.querySelector('#chineseReadingPage h1').textContent=(isScissors?'剪刀石頭布':'好漂亮')+'｜課文理解';
+    document.querySelector('#chineseReadingPage h1').textContent=(isTadpole?'小蝌蚪找媽媽':isScissors?'剪刀石頭布':'好漂亮')+'｜課文理解';
     document.querySelector('#chineseReadingPage .reading-quiz').hidden=!isPretty;
   }
   if(gradeMatch){
@@ -2547,7 +2549,7 @@ function showPortalPage(){
     if(a.dataset.route===route) a.setAttribute('aria-current','page');
     else a.removeAttribute('aria-current');
   });
-  document.title='教學互動學習網站｜'+(hash==='chinese-1-first-pretty-quiz'?'好漂亮｜小測驗':isScissors?'剪刀石頭布｜課文理解':isPretty?'好漂亮｜課文理解':chineseTermMatch?'一年級'+(chineseTermMatch[1]==='first'?'上學期':'下學期')+'｜課文選擇':topicMatch?'1年級數學・分與合・'+topicTitles[topicMatch[1]]:gradeMatch?gradeMatch[1]+'年級數學':chineseGradeMatch?chineseGradeMatch[1]+'年級國語科':{chinese:'國語科',home:'首頁',learn:'注音學習',help:'幫助',math:'數學',mathParts:'1年級數學・分與合',mathCount30:'1年級數學・數到30'}[route]);
+  document.title='教學互動學習網站｜'+(hash==='chinese-1-first-pretty-quiz'?'好漂亮｜小測驗':isTadpole?'小蝌蚪找媽媽｜課文理解':isScissors?'剪刀石頭布｜課文理解':isPretty?'好漂亮｜課文理解':chineseTermMatch?'一年級'+(chineseTermMatch[1]==='first'?'上學期':'下學期')+'｜課文選擇':topicMatch?'1年級數學・分與合・'+topicTitles[topicMatch[1]]:gradeMatch?gradeMatch[1]+'年級數學':chineseGradeMatch?chineseGradeMatch[1]+'年級國語科':{chinese:'國語科',home:'首頁',learn:'注音學習',help:'幫助',math:'數學',mathParts:'1年級數學・分與合',mathCount30:'1年級數學・數到30'}[route]);
   window.scrollTo(0,0);
   (pages[route].querySelector('h1') || pages[route].querySelector('a')).focus({preventScroll:true});
   if(route==='learn'&&!learningStarted){
@@ -2565,7 +2567,7 @@ showPortalPage();
  const layers=[...backdrop.querySelectorAll('.home-photo')];
  let index=0, active=0, timer=null, warmTimer=null, busy=false, started=false;
  const animations=[null,null], cache=new Map();
- const home=()=>!['learn','help','math','chinese','math-1-parts','math-1-count30'].includes(location.hash.slice(1))&&!/^chinese-[1-6](?:-(?:first|second)(?:-(?:pretty(?:-quiz)?|scissors-rock-paper))?)?$/.test(location.hash.slice(1))&&!/^math-[1-6]$/.test(location.hash.slice(1))&&!/^math-1-parts-(split|join|practice)$/.test(location.hash.slice(1));
+ const home=()=>!['learn','help','math','chinese','math-1-parts','math-1-count30'].includes(location.hash.slice(1))&&!/^chinese-[1-6](?:-(?:first|second)(?:-(?:pretty(?:-quiz)?|scissors-rock-paper|tadpole-mom))?)?$/.test(location.hash.slice(1))&&!/^math-[1-6]$/.test(location.hash.slice(1))&&!/^math-1-parts-(split|join|practice)$/.test(location.hash.slice(1));
  const running=()=>home()&&!document.hidden;
  function load(n,priority='low'){
    if(cache.has(n))return cache.get(n);
@@ -3000,12 +3002,13 @@ function beep(){try{if(!audio)return;for(let i=0;i<3;i++){const o=audio.createOs
 function tick(){if(!running)return;remaining=Math.max(0,deadline-Date.now());if(!remaining){running=false;started=false;clearInterval(ticker);$('timerStatus').textContent='時間到！';$('timerStatus').className='done';if(!host.hidden){setOpen(true);setTool('timer');timerMode('countdown')}beep()}renderTime()}
 $('start').onclick=()=>{if(running){remaining=Math.max(0,deadline-Date.now());running=false;clearInterval(ticker);$('timerStatus').textContent='已暫停'}else{if(!started)remaining=configured();if(!remaining){$('timerStatus').textContent='請設定大於 0 秒的時間';return}try{audio=audio||new(window.AudioContext||window.webkitAudioContext)();audio.resume().catch(()=>{})}catch{}started=running=true;deadline=Date.now()+remaining;clearInterval(ticker);ticker=setInterval(tick,150);$('timerStatus').className='';$('timerStatus').textContent='計時中'}renderTime()};
 $('resetTimer').onclick=()=>{clearInterval(ticker);running=started=false;remaining=configured();$('timerStatus').className='';$('timerStatus').textContent='設定時間後按開始';renderTime()};for(const id of ['minutes','seconds'])$(id).onchange=()=>{if(!started){remaining=configured();renderTime()}};document.addEventListener('visibilitychange',tick);
-function route(){const h=location.hash.slice(1);host.hidden=!(h==='learn'||h==='chinese'||/^chinese-[1-6](?:-(?:first|second)(?:-(?:pretty(?:-quiz)?|scissors-rock-paper))?)?$/.test(h)||h==='math'||/^math-[1-6]$/.test(h)||/^math-1-(?:parts(?:-(?:split|join|practice))?|count30)$/.test(h));closeHundred();pen.clear();$('ink').hidden=true;setTool('');if(host.hidden){opened=false;$('rail').hidden=true;$('handle').hidden=false;$('handle').setAttribute('aria-expanded','false')}}
+function route(){const h=location.hash.slice(1);host.hidden=!(h==='learn'||h==='chinese'||/^chinese-[1-6](?:-(?:first|second)(?:-(?:pretty(?:-quiz)?|scissors-rock-paper|tadpole-mom))?)?$/.test(h)||h==='math'||/^math-[1-6]$/.test(h)||/^math-1-(?:parts(?:-(?:split|join|practice))?|count30)$/.test(h));closeHundred();pen.clear();$('ink').hidden=true;setTool('');if(host.hidden){opened=false;$('rail').hidden=true;$('handle').hidden=false;$('handle').setAttribute('aria-expanded','false')}}
 window.addEventListener('readingimagechange',()=>pen.clear());window.addEventListener('hashchange',route);window.addEventListener('scroll',()=>pen.clear(),{passive:true});route();
 })();
 
 </script>
 <script src="lesson-scissors-rock-paper.js"></script>
+<script src="lesson-tadpole-mom.js"></script>
 <script id="prettyReadingScript">
 (()=>{
 const prettySlides=window.prettyLessonSlides=[
@@ -3017,7 +3020,8 @@ const prettySlides=window.prettyLessonSlides=[
 ];
 let slides=prettySlides,index=0;
 const newLesson=window.scissorsRockPaperLesson;
-const readingRoutes=['#chinese-1-first-pretty',newLesson.route];
+const tadpoleLesson=window.tadpoleMomLesson;
+const readingRoutes=['#chinese-1-first-pretty',newLesson.route,tadpoleLesson.route];
 const isReadingRoute=()=>readingRoutes.includes(location.hash);
 // Warm the first card from the Chinese menu; queue the lesson only when relevant.
 const warmedLessonImages=new Set();
@@ -3071,11 +3075,11 @@ const sourceCanvas=document.createElement('canvas');sourceCanvas.width=canvasWid
 const sourceContext=sourceCanvas.getContext('2d',{willReadFrequently:true});
 let maskIndex=-1,sourcePixels=null,selectedSyllables=[];
 function selectLesson(){
- const scissors=location.hash===newLesson.route;
- slides=scissors?newLesson.slides:prettySlides;
- readingGroups=scissors?newLesson.groups:prettyReadingGroups;
- syllableRects=scissors?newLesson.syllableRects:prettySyllableRects;
- canvasWidth=scissors?newLesson.width:1448;canvasHeight=scissors?newLesson.height:1086;
+ const selected=location.hash===tadpoleLesson.route?tadpoleLesson:location.hash===newLesson.route?newLesson:null;
+ slides=selected?selected.slides:prettySlides;
+ readingGroups=selected?selected.groups:prettyReadingGroups;
+ syllableRects=selected?selected.syllableRects:prettySyllableRects;
+ canvasWidth=selected?selected.width:1448;canvasHeight=selected?selected.height:1086;
  highlight.width=sourceCanvas.width=canvasWidth;highlight.height=sourceCanvas.height=canvasHeight;
  index=0;maskIndex=-1;sourcePixels=null;selectedSyllables=[];
 }
