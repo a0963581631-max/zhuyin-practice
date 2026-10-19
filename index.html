@@ -706,6 +706,7 @@ body.reading-fullscreen{overflow:hidden}
 @media(max-width:700px){#mathCount30Page{width:98vw;padding-left:0;padding-right:0}#sockLaundryFrame{height:82vh;min-height:650px}}
 </style>
 <link rel="stylesheet" href="teaching-order.css">
+<link rel="stylesheet" href="vocab-image-upload.css">
 </head>
 <body>
 <div id="homeBackdrop" aria-hidden="true" hidden><div class="home-photo"></div><div class="home-photo"></div></div>
@@ -1055,6 +1056,7 @@ body.reading-fullscreen{overflow:hidden}
       <button id="vocabCloseBtn" class="vocab-close" type="button" aria-label="關閉詞彙">×</button>
     </div>
     <div id="vocabNote" class="vocab-note">點選詞卡可聽詞彙，並觀察國字與直式注音的對應關係。</div>
+    <div id="vocabUploadStatus" class="vocab-upload-status" role="status" aria-live="polite"></div>
     <div id="vocabGrid" class="vocab-grid"></div>
   </div>
 </div>
@@ -1100,6 +1102,7 @@ body.reading-fullscreen{overflow:hidden}
 </div>
 
 <script src="teaching-order.js"></script>
+<script src="vocab-image-upload.js"></script>
 <script>
 const groups={
  initials:["ㄅ","ㄆ","ㄇ","ㄈ","ㄉ","ㄊ","ㄋ","ㄌ","ㄍ","ㄎ","ㄏ","ㄐ","ㄑ","ㄒ","ㄓ","ㄔ","ㄕ","ㄖ","ㄗ","ㄘ","ㄙ"],
@@ -1494,22 +1497,42 @@ function renderVocabularyModal(){
     return;
   }
 
-  vocabNote.textContent = "使用網站預設的直式注音排版；輕聲點位於注音上方，紅色注音提示目前學習的符號。";
+  vocabNote.textContent = "點選 emoji 圖片可上傳自己的插圖；詞彙下方可點選朗讀。直式注音和紅字提示維持原本設定。";
   vocabGrid.innerHTML = items.map((item, index) => `
-    <button class="vocab-card" type="button" data-word="${escapeHtml(item.word)}" aria-label="詞彙 ${escapeHtml(item.word)}">
-      <div class="vocab-emoji" aria-hidden="true">${item.emoji}</div>
+    <div class="vocab-card" data-word="${escapeHtml(item.word)}" data-symbol="${escapeHtml(currentSymbol)}">
+      <label class="vocab-emoji vocab-image-picker" title="點選這裡更換「${escapeHtml(item.word)}」的圖片">
+        <span class="vocab-default-emoji" aria-hidden="true">${item.emoji}</span>
+        <img class="vocab-uploaded-image" alt="" hidden>
+        <span class="vocab-image-change-hint" aria-hidden="true">📷 更換圖片</span>
+        <input class="vocab-image-input" type="file" accept="image/png,image/jpeg,image/webp,image/avif" aria-label="上傳「${escapeHtml(item.word)}」的圖片">
+      </label>
+      <button class="vocab-reset-image" type="button" hidden>↩ 還原原本的 emoji</button>
       <div class="vocab-word-wrap">
         ${renderWordWithBopomofo(item)}
       </div>
       <div class="vocab-subtext">詞彙 ${index+1}　${item.tip ? escapeHtml(item.tip) : "點一下可以再聽一次"}</div>
-    </button>
+      <button class="vocab-audio-button" type="button" aria-label="播放「${escapeHtml(item.word)}」的讀音">🔊 聽詞彙</button>
+    </div>
   `).join("");
 
   vocabGrid.querySelectorAll(".vocab-card").forEach(card => {
-    card.addEventListener("click", () => {
-      const word = card.dataset.word || "";
-      speakText(word, 0.76, true);
+    const word=card.dataset.word||"";
+    const play=()=>speakText(word,0.76,true);
+    card.querySelector(".vocab-audio-button").addEventListener("click",play);
+    // Clicking the written word or empty card space still plays the vocabulary.
+    // Clicking the image or restoring its emoji never triggers the voice.
+    card.addEventListener("click",event=>{
+      if(event.target.closest(".vocab-image-picker,.vocab-reset-image,.vocab-audio-button"))return;
+      play();
     });
+    const picker=card.querySelector(".vocab-image-input");
+    picker.addEventListener("change",()=>{
+      const file=picker.files&&picker.files[0];
+      if(file)VocabImageUpload.upload(card,file);
+      picker.value="";
+    });
+    card.querySelector(".vocab-reset-image").addEventListener("click",()=>VocabImageUpload.reset(card));
+    VocabImageUpload.mount(card);
   });
 }
 
@@ -1518,6 +1541,7 @@ function openVocab(){
   if(helpBackdrop.classList.contains("show")){
     helpBackdrop.classList.remove("show");
   }
+  document.getElementById("vocabUploadStatus").textContent="";
   renderVocabularyModal();
   vocabBackdrop.classList.add("show");
   vocabCloseBtn.focus();
