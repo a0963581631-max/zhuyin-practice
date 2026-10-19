@@ -17,12 +17,6 @@
   position:absolute;inset:0;width:100%;height:100%;
   opacity:0;cursor:pointer;z-index:3;
 }
-.vocab-image-change-hint{
-  position:absolute;bottom:0;left:0;right:0;
-  background:rgba(35,53,78,.80);color:white;
-  font-size:12px;font-weight:800;line-height:1.55;
-  padding:3px 4px;text-align:center;pointer-events:none;z-index:2;
-}
 .vocab-uploaded-image[hidden],.vocab-default-emoji[hidden],.vocab-reset-image[hidden]{display:none!important}
 .vocab-reset-image,.vocab-audio-button{
   font:inherit;font-size:13px;font-weight:700;cursor:pointer;
