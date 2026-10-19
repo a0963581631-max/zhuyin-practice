@@ -26,48 +26,12 @@
 .order-actions button:disabled{opacity:.4;cursor:not-allowed}
 @media(max-width:620px){.order-entry{grid-template-columns:1fr}.order-entry button{min-height:87px}.teaching-order-dialog{padding:16px}}
 
-
-/* Two-step Zhuyin setup: font first, lesson order second. */
-.learning-font-dialog .learning-font-step{
-  display:inline-flex;
-  align-items:center;
-  color:#265e80;
-  background:#e9f3fa;
-  border-radius:9px;
-  padding:5px 10px;
-  margin-bottom:12px;
-  font-size:14px;
-  font-weight:800;
-}
-.learning-font-dialog .learning-font-choices button{
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  min-height:140px;
-  gap:8px;
-}
-.learning-font-dialog .learning-font-choices small{
-  line-height:1.65;
-  margin:0;
-}
-.learning-font-dialog .learning-font-status{
-  margin:12px 0 0;
-  min-height:26px;
-  color:#275d80;
-  font-weight:700;
-}
-.learning-font-dialog .learning-font-status:empty{display:none}
-.learning-font-dialog .learning-font-status.is-error{color:#b13f3f}
-.learning-font-dialog .learning-font-choices button:disabled{
-  cursor:wait;
-  opacity:.6;
-}
-body.zihi-teaching-font #learningPage .grid .symbol,
-body.zihi-teaching-font #learningPage #bigSymbol{
-  font-family:"ZihiVocabulary","Noto Sans TC",sans-serif;
-  font-weight:400;
-}
-@media(max-width:620px){
-  .learning-font-dialog .learning-font-choices button{min-height:98px}
-  .learning-font-dialog .learning-font-step{font-size:13px}
+/* Preserve the existing default-font light-tone placement exactly as before. */
+.bopo-syllable.has-neutral{padding-top:21px}
+.bopo-syllable.has-neutral .neutral-tone{
+  top:0;
+  left:50%;
+  transform:translateX(-50%);
+  font-size:.76em;
+  line-height:1;
 }
