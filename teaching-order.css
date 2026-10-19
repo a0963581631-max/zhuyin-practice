@@ -26,12 +26,3 @@
 .order-actions button:disabled{opacity:.4;cursor:not-allowed}
 @media(max-width:620px){.order-entry{grid-template-columns:1fr}.order-entry button{min-height:87px}.teaching-order-dialog{padding:16px}}
 
-/* Preserve the existing default-font light-tone placement exactly as before. */
-.bopo-syllable.has-neutral{padding-top:21px}
-.bopo-syllable.has-neutral .neutral-tone{
-  top:0;
-  left:50%;
-  transform:translateX(-50%);
-  font-size:.76em;
-  line-height:1;
-}
