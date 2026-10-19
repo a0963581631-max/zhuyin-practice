@@ -141,9 +141,15 @@
     if(!editing){e.preventDefault();if(!builder.hidden)intro();}
   });
   function onRoute(route){
-    if(route!=="learn"&&dialog.open)dialog.close();
-    if(route==="learn"&&lastRoute!=="learn")open(false);
+    if(route!=="learn"){
+      if(dialog.open)dialog.close();
+      if(window.LearningFontChoice)window.LearningFontChoice.onLeave();
+    }
+    if(route==="learn"&&lastRoute!=="learn"){
+      if(window.LearningFontChoice)window.LearningFontChoice.openFirst();
+      else open(false);
+    }
     lastRoute=route;
   }
-  window.TeachingOrder={order,beforeSelect,syncStatus,onRoute};
+  window.TeachingOrder={order,beforeSelect,syncStatus,onRoute,openIntro:()=>open(false)};
 })();
