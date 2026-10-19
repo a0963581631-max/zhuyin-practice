@@ -2244,7 +2244,7 @@ async function completeCurrentPracticeStroke(){
   }
 
   // 當前組件完成
-  if(componentIndex < components.length - 1){
+  if(!compoundPhase && componentIndex < components.length - 1){
     const next = componentIndex + 1;
     statusEl.textContent = `很好！接下來練習「${components[next]}」`;
     await loadComponent(next,true);
