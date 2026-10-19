@@ -39,10 +39,22 @@
   display:block;
   color:#c94347;
   overflow:hidden;
-  clip-path:inset(0 0 0 66.6667%);
   pointer-events:none;
   white-space:nowrap;
+  /* The annotated glyph includes ALL notes and the tone: show only one note.
+     Font glyph metrics: 1536-unit advance; note shapes in x=1024..1325,
+     while the tone symbols begin at x≈1326 (87% of advance). */
+  clip-path:inset(100%);
 }
+/* Each teaching target occupies one horizontal row of the native note stack.
+   Clip the duplicate native glyph to THAT row only, excluding the tone column.
+   Y coordinates track the font's 1-, 2- and 3-symbol annotation layouts. */
+.zihi-annotation-highlight.note-1-0{clip-path:inset(36% 13.8% 24% 66.65%)}
+.zihi-annotation-highlight.note-2-0{clip-path:inset(26% 13.8% 46% 66.65%)}
+.zihi-annotation-highlight.note-2-1{clip-path:inset(52% 13.8% 22% 66.65%)}
+.zihi-annotation-highlight.note-3-0{clip-path:inset(18% 13.8% 56% 66.65%)}
+.zihi-annotation-highlight.note-3-1{clip-path:inset(40% 13.8% 36% 66.65%)}
+.zihi-annotation-highlight.note-3-2{clip-path:inset(61% 13.8% 14% 66.65%)}
 .zihi-word-glyph .zihi-annotation-highlight,
 .zihi-word-glyph .zihi-base{
   font:inherit;
@@ -65,15 +77,15 @@
   color:#2d4055;
   pointer-events:none;
 }
-.zihi-word-glyph .zihi-manual-annotation.target{
-  color:#c94347;
-}
 .zihi-manual-annotation .zihi-manual-note{
   font-size:0.35em;
   line-height:1.02;
   display:flex;
   flex-direction:column;
   align-items:center;
+}
+.zihi-manual-annotation .zihi-manual-note .target{
+  color:#c94347;
 }
 .zihi-manual-annotation .zihi-manual-neutral{
   font-size:0.3em;
