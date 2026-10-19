@@ -4,7 +4,8 @@
  */
 @font-face{
   font-family:"ZihiVocabulary";
-  src:url("https://cdn.jsdelivr.net/gh/oikasu1/fonts@main/BpmfZihiKaiStd-Regular.woff2") format("woff2");
+  src:url("https://cdn.jsdelivr.net/gh/oikasu1/fonts@main/BpmfZihiKaiStd-Regular.woff2") format("woff2"),
+      url("https://oikasu1.github.io/fonts/BpmfZihiKaiStd-Regular.woff2") format("woff2");
   font-style:normal;
   font-weight:400;
   font-display:swap;
