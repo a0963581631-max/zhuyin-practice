@@ -1,0 +1,42 @@
+/* Uploadable vocabulary pictures. Other lesson content/phonetic layouts untouched. */
+.vocab-card{cursor:default}
+.vocab-card:hover,.vocab-card:focus-within{
+  outline:none;transform:translateY(-2px);background:#faf6ff;border-color:#bda4e4
+}
+.vocab-image-picker{
+  position:relative;flex:none;overflow:hidden;cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+}
+.vocab-image-picker:focus-within{outline:3px solid #5d87b6;outline-offset:3px}
+.vocab-image-picker .vocab-default-emoji{display:block;line-height:1.1}
+.vocab-image-picker .vocab-uploaded-image{
+  display:block;width:100%;height:100%;object-fit:contain;
+  padding:7px;box-sizing:border-box;
+}
+.vocab-image-picker .vocab-image-input{
+  position:absolute;inset:0;width:100%;height:100%;
+  opacity:0;cursor:pointer;z-index:3;
+}
+.vocab-image-change-hint{
+  position:absolute;bottom:0;left:0;right:0;
+  background:rgba(35,53,78,.80);color:white;
+  font-size:12px;font-weight:800;line-height:1.55;
+  padding:3px 4px;text-align:center;pointer-events:none;z-index:2;
+}
+.vocab-uploaded-image[hidden],.vocab-default-emoji[hidden],.vocab-reset-image[hidden]{display:none!important}
+.vocab-reset-image,.vocab-audio-button{
+  font:inherit;font-size:13px;font-weight:700;cursor:pointer;
+  border:1px solid #baa9d4;border-radius:11px;
+  background:#fff;color:#72528f;padding:6px 12px;
+}
+.vocab-reset-image{margin-top:-10px;margin-bottom:4px}
+.vocab-audio-button{margin-top:6px;background:#ebe0fa}
+.vocab-reset-image:hover,.vocab-audio-button:hover{background:#efe5fc}
+.vocab-reset-image:focus-visible,.vocab-audio-button:focus-visible{outline:3px solid #6b8ed6;outline-offset:2px}
+.vocab-picture-busy .vocab-image-picker{opacity:.6}
+.vocab-upload-status{
+  text-align:center;font-size:14px;line-height:1.5;
+  color:#326d55;min-height:0;font-weight:700
+}
+.vocab-upload-status:not(:empty){margin:-6px 0 12px}
+.vocab-upload-status.is-error{color:#ad3b3b}
