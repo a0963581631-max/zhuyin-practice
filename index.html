@@ -1098,6 +1098,7 @@ body.reading-fullscreen{overflow:hidden}
 
 <script src="teaching-order.js"></script>
 <script src="zihi-vocabulary.js"></script>
+<script src="learning-font-choice.js"></script>
 <script>
 const groups={
  initials:["ㄅ","ㄆ","ㄇ","ㄈ","ㄉ","ㄊ","ㄋ","ㄌ","ㄍ","ㄎ","ㄏ","ㄐ","ㄑ","ㄒ","ㄓ","ㄔ","ㄕ","ㄖ","ㄗ","ㄘ","ㄙ"],
@@ -1399,12 +1400,12 @@ function renderVocabularyModal(){
     return;
   }
 
-  vocabNote.textContent = ZihiVocabulary.ready ? "使用字嗨注音標楷的直式注音與標準聲調位置；紅色注音提示目前學習的符號。" : "正在載入字嗨注音標楷，暫時顯示已調整輕聲位置的備用直式注音。";
+  vocabNote.textContent = LearningFontChoice.useZihi() && ZihiVocabulary.ready ? "使用字嗨注音標楷的直式注音與標準聲調位置；紅色注音提示目前學習的符號。" : "使用網站預設的直式注音排版；輕聲點位於注音上方，紅色注音提示目前學習的符號。";
   vocabGrid.innerHTML = items.map((item, index) => `
     <button class="vocab-card" type="button" data-word="${escapeHtml(item.word)}" aria-label="詞彙 ${escapeHtml(item.word)}">
       <div class="vocab-emoji" aria-hidden="true">${item.emoji}</div>
-      <div class="vocab-word-wrap${ZihiVocabulary.ready ? " zihi-word-wrap" : ""}">
-        ${ZihiVocabulary.ready ? ZihiVocabulary.render(item,currentSymbol) : renderWordWithBopomofo(item)}
+      <div class="vocab-word-wrap${LearningFontChoice.useZihi() && ZihiVocabulary.ready ? " zihi-word-wrap" : ""}">
+        ${LearningFontChoice.useZihi() && ZihiVocabulary.ready ? ZihiVocabulary.render(item,currentSymbol) : renderWordWithBopomofo(item)}
       </div>
       <div class="vocab-subtext">詞彙 ${index+1}　點一下可以再聽一次</div>
     </button>
@@ -1425,7 +1426,7 @@ function openVocab(){
   }
   renderVocabularyModal();
   vocabBackdrop.classList.add("show");
-  ZihiVocabulary.ensure();
+  if(LearningFontChoice.useZihi())ZihiVocabulary.ensure();
   vocabCloseBtn.focus();
 }
 
