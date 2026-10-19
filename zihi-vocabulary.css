@@ -78,8 +78,9 @@
   font-size:0.3em;
   line-height:1;
   position:absolute;
-  top:-0.13em;
-  left:0.50em;
+  top:0;
+  left:50%;
+  transform:translateX(-50%);
 }
 /* Fallback for offline loading: keep the older HTML annotation visible,
  * but remove its excessive top displacement for neutral tone.
