@@ -29,13 +29,16 @@
     }).join("");
   }
   function ensure(){
-    if(ready||request||!document.fonts)return;
-    request=document.fonts.load('70px "ZihiVocabulary"',"包子泡泡狗狗掃把蘿蔔");
-    request.then(function(faces){
-      if(!faces.length)return;
+    if(ready)return Promise.resolve(true);
+    if(request)return request;
+    if(!document.fonts)return Promise.resolve(false);
+    request=document.fonts.load('70px "ZihiVocabulary"',"包子泡泡狗狗掃把蘿蔔").then(function(faces){
+      if(!faces.length){request=null;return false;}
       ready=true;
       if(vocabBackdrop.classList.contains("show"))renderVocabularyModal();
-    }).catch(function(){request=null;});
+      return true;
+    }).catch(function(){request=null;return false;});
+    return request;
   }
   window.ZihiVocabulary={
     get ready(){return ready;},
