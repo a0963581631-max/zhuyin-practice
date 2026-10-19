@@ -29,11 +29,17 @@
         }).join("");
         return '<span class="zihi-word-glyph"><span class="zihi-base">'+display+'</span><span class="zihi-manual-annotation" aria-hidden="true"><span class="zihi-manual-neutral">˙</span><span class="zihi-manual-note">'+notes+'</span></span></span>';
       }
-      // Recolor exactly one native note glyph; the neighboring notes and
-      // the tone remain untouched. Native note layouts contain 1–3 symbols.
-      const targetClass=(targetIndex>=0 && noteCount>=1 && noteCount<=3)
-        ? ' note-'+noteCount+'-'+targetIndex : '';
-      return '<span class="zihi-word-glyph"><span class="zihi-base">'+display+'</span>'+(targetClass?'<span class="zihi-annotation-highlight'+targetClass+'" aria-hidden="true">'+display+'</span>':'')+'</span>';
+      // Render ONLY the selected letter's actual native font outline.
+      // No rectangle clipping: adjacent syllable components and tone glyphs
+      // are never part of this SVG path, so they cannot become red.
+      const outline=window.ZihiNoteOutlines && window.ZihiNoteOutlines[targetSymbol];
+      const positions={1:[180],2:[380,30],3:[500,210,-80]};
+      const neutralPositions={1:[120],2:[320,-30],3:[440,150,-140]};
+      const offsets=phonetic.tone==="˙" ? neutralPositions[noteCount] : positions[noteCount];
+      const vector=(targetIndex>=0 && offsets && outline)
+        ? '<svg class="zihi-exact-highlight" viewBox="0 0 1536 1024" focusable="false" aria-hidden="true"><path fill="#c94347" transform="translate(1024 '+(900-offsets[targetIndex])+') scale(1 -1)" d="'+outline+'"></path></svg>'
+        : '';
+      return '<span class="zihi-word-glyph"><span class="zihi-base">'+display+'</span>'+vector+'</span>';
     }).join("");
   }
   function ensure(){
