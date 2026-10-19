@@ -1102,6 +1102,7 @@ body.reading-fullscreen{overflow:hidden}
 </div>
 
 <script src="teaching-order.js"></script>
+<script src="compound-grid-practice.js"></script>
 <script src="vocab-image-upload.js"></script>
 <script>
 const groups={
@@ -1390,6 +1391,10 @@ let mode="play"; // play | practice
 let hintLevel=2; // 0: 無提示 1: 部分提示 2: 完全提示
 let isDrawing=false;
 let studentPoints=[];
+let compoundPhase=false;       // only after both symbols are individually practised
+let compoundLoading=false;
+let compoundRanges=[];
+let practiceEpoch=0;            // ignore stale asynchronous combined-load results
 
 function cpHex(ch){return ch.codePointAt(0).toString(16);}
 function cacheKey(ch){return CACHE_PREFIX+cpHex(ch);}
@@ -1621,6 +1626,10 @@ function drawCrossGrid(){
 
 function render(active=null,progress=0){
   stage.innerHTML="";
+  if(compoundPhase){
+    const activePart=strokes[Math.min(strokeIndex,strokes.length-1)]?.combinedPart ?? 1;
+    CompoundGridPractice.drawGuides(stage,svgEl,components,activePart);
+  }
   drawCrossGrid();
 
   const defs=svgEl("defs");
@@ -1698,7 +1707,7 @@ function renderPracticeOverlay(){
     for(let i=1;i<studentPoints.length;i++) d += `L ${studentPoints[i].x} ${studentPoints[i].y} `;
     const line = svgEl("path",{
       d, fill:"none", stroke:"var(--student)",
-      "stroke-width":"48", "stroke-linecap":"round","stroke-linejoin":"round", opacity:"0.85"
+      "stroke-width":compoundPhase?"36":"48", "stroke-linecap":"round","stroke-linejoin":"round", opacity:"0.85"
     });
     practiceLayer.appendChild(line);
   }
@@ -1707,7 +1716,7 @@ function renderPracticeOverlay(){
   if(hintLevel>=1 && strokes[strokeIndex] && strokes[strokeIndex].track && strokes[strokeIndex].track.length){
     const start = strokes[strokeIndex].track[0];
     const dot = svgEl("circle",{
-      cx:start.x, cy:start.y, r:"28", fill:"#49a76b", opacity:"0.9"
+      cx:start.x, cy:start.y, r:compoundPhase?"22":"28", fill:"#49a76b", opacity:"0.9"
     });
     practiceLayer.appendChild(dot);
   }
@@ -1720,13 +1729,22 @@ function duration(){
 
 function updateProgress(){
   if(!strokes.length){progressEl.textContent="沒有可用筆順資料";return;}
+  if(compoundPhase){
+    if(strokeIndex>=strokes.length){
+      progressEl.textContent=`${currentSymbol}：第三階段／同格書寫全部完成！`;
+    }else{
+      const s=strokes[strokeIndex];
+      progressEl.textContent=`第三階段／同格書寫：${s.combinedPart===0?"上面":"下面"}「${components[s.combinedPart]}」第 ${s.partStroke} 畫／共 ${s.partStrokeTotal} 畫`;
+    }
+    return;
+  }
   const comp=components[componentIndex];
 
   if(mode==="practice"){
     if(strokeIndex>=strokes.length){
       progressEl.textContent=`${comp}：練習完成`;
     }else{
-      const prefix=components.length>1?`${currentSymbol} 中的「${comp}」　`:"";
+      const prefix=components.length>1?`第 ${componentIndex+1} 階段／個別練習：「${comp}」　`:"";
       progressEl.textContent=`${prefix}請練習第 ${strokeIndex+1} 畫／共 ${strokes.length} 畫`;
     }
     return;
@@ -1772,6 +1790,42 @@ async function loadComponent(index,reset=true){
     statusEl.textContent="筆順資料未成功載入；為避免誤教，本網站不會顯示猜測筆順。請確認網路後重新點選。";
     progressEl.textContent="標準筆順資料載入失敗";
     console.error(err);
+  }
+}
+
+/* 第三階段：兩個注音都在各自的大格練習過後，
+   才將標準筆順縮放並排到同一個十字格的上、下兩區。 */
+async function enterCombinedPractice(){
+  if(components.length!==2 || mode!=="practice" || compoundLoading)return;
+  const epoch=practiceEpoch, symbol=currentSymbol;
+  compoundLoading=true;
+  stop();clearStudentTrace();setEnabled(false);
+  statusEl.textContent=`前兩階段都完成了！現在練習把「${components[0]}」寫上面、「${components[1]}」寫下面。`;
+  progressEl.textContent="正在準備第三階段：兩個注音一起寫在同一格";
+  try{
+    const originals=await Promise.all(components.map(getStrokeData));
+    if(epoch!==practiceEpoch || currentSymbol!==symbol || mode!=="practice")return;
+    const built=CompoundGridPractice.build(components,originals);
+    strokes=built.strokes;
+    compoundRanges=built.ranges;
+    compoundPhase=true;
+    componentIndex=0;
+    strokeIndex=0;
+    render();
+    renderPracticeOverlay();
+    updateProgress();
+    setEnabled(true);
+    updateModeUI();
+    statusEl.textContent=`同格書寫：先在上半格寫「${components[0]}」，再在下半格寫「${components[1]}」。請注意兩個注音的上下位置。`;
+  }catch(error){
+    if(epoch!==practiceEpoch)return;
+    strokes=[];strokeIndex=0;compoundPhase=false;compoundRanges=[];
+    render();renderPracticeOverlay();setEnabled(false);
+    statusEl.textContent="同格練習需要兩個注音的標準筆順資料；目前載入失敗，請重新選擇注音後再試。";
+    progressEl.textContent="同格筆順資料未成功載入";
+    console.error(error);
+  }finally{
+    if(epoch===practiceEpoch)compoundLoading=false;
   }
 }
 
@@ -1958,6 +2012,10 @@ function launchConfetti(){
 /* 導覽 */
 async function selectSymbol(sym){
   clearConfetti();
+  practiceEpoch++;
+  compoundPhase=false;
+  compoundLoading=false;
+  compoundRanges=[];
   TeachingOrder.beforeSelect(sym,currentSymbol);
   currentSymbol=sym;components=Array.from(sym);componentIndex=0;
   bigSymbol.textContent=sym;
@@ -2003,6 +2061,15 @@ function animateStroke(i,done){
 function playCurrent(){
   closeVocab(false);
   clearConfetti();
+  if(compoundPhase || compoundLoading){
+    practiceEpoch++;
+    compoundPhase=false;compoundLoading=false;compoundRanges=[];
+    mode="play";updateModeUI();
+    loadComponent(0,true).then(()=>{
+      if(strokes.length)playCurrent();
+    });
+    return;
+  }
   if(!strokes.length||playing) return;
   mode="play";updateModeUI();clearStudentTrace();
   stop();playing=true;
@@ -2027,6 +2094,15 @@ function playCurrent(){
 function nextStrokePlayback(){
   closeVocab(false);
   clearConfetti();
+  if(compoundPhase || compoundLoading){
+    practiceEpoch++;
+    compoundPhase=false;compoundLoading=false;compoundRanges=[];
+    mode="play";updateModeUI();
+    loadComponent(0,true).then(()=>{
+      if(strokes.length)nextStrokePlayback();
+    });
+    return;
+  }
   mode="play";updateModeUI();clearStudentTrace();
   stop();
   if(strokeIndex>=strokes.length) strokeIndex=0;
@@ -2037,6 +2113,8 @@ function nextStrokePlayback(){
 async function enterPracticeMode(){
   closeVocab(false);
   clearConfetti();
+  practiceEpoch++;
+  compoundPhase=false;compoundLoading=false;compoundRanges=[];
   mode="practice";
   updateModeUI();
   stop();
@@ -2100,16 +2178,17 @@ function evaluateStudentTrace(student, targetTrack){
   const studentLen = polylineLength(student);
   const targetLen = polylineLength(targetTrack);
 
-  if(studentLen < Math.max(120, targetLen*0.35)){
+  if(studentLen < Math.max(compoundPhase?45:120, targetLen*0.35)){
     return {ok:false, message:"這一畫寫得太短，請再試一次"};
   }
   if(studentLen > targetLen*3.2){
     return {ok:false, message:"這一畫超出太多，請沿著字形再試一次"};
   }
 
-  const startTol = 220;
-  const endTol = 260;
-  const coverTol = 180;
+  const scale=compoundPhase?(strokes[strokeIndex]?.combinedScale||0.6):1;
+  const startTol = compoundPhase?Math.max(85,Math.round(240*scale)):220;
+  const endTol = compoundPhase?Math.max(100,Math.round(280*scale)):260;
+  const coverTol = compoundPhase?Math.max(80,Math.round(200*scale)):180;
 
   if(dist(student[0], targetTrack[0]) > startTol){
     return {ok:false, message:"請從正確的起筆位置開始"};
@@ -2150,7 +2229,17 @@ async function completeCurrentPracticeStroke(){
   updateProgress();
 
   if(strokeIndex < strokes.length){
-    statusEl.textContent = `很好！這一筆正確，請繼續寫第 ${strokeIndex+1} 畫`;
+    if(compoundPhase && strokes[strokeIndex]?.combinedPart!==strokes[strokeIndex-1]?.combinedPart){
+      statusEl.textContent=`上面的「${components[0]}」完成了！接著在下半格寫「${components[1]}」。`;
+    }else{
+      statusEl.textContent = `很好！這一筆正確，請繼續寫第 ${compoundPhase?strokes[strokeIndex].partStroke:strokeIndex+1} 畫`;
+    }
+    return;
+  }
+
+  // 個別練習完成後，先處理兩個注音的下一個階段
+  if(!compoundPhase && componentIndex===components.length-1 && components.length===2){
+    await enterCombinedPractice();
     return;
   }
 
@@ -2163,8 +2252,12 @@ async function completeCurrentPracticeStroke(){
     renderPracticeOverlay();
     updateProgress();
   } else {
-    statusEl.textContent = `太棒了！你已完成 ${currentSymbol} 的筆順練習`;
-    progressEl.textContent = `${currentSymbol}：全部筆順練習完成`;
+    statusEl.textContent = compoundPhase
+      ? `太棒了！你已把「${components[0]}」和「${components[1]}」依照上下順序寫在同一格！`
+      : `太棒了！你已完成 ${currentSymbol} 的筆順練習`;
+    progressEl.textContent = compoundPhase
+      ? `${currentSymbol}：個別練習＋同格書寫全部完成`
+      : `${currentSymbol}：全部筆順練習完成`;
     // 整個注音完成後播放鼓掌與彩帶獎勵
     setTimeout(()=>{
       playApplauseSound();
@@ -2174,7 +2267,7 @@ async function completeCurrentPracticeStroke(){
 }
 
 async function finishPracticeAttempt(){
-  if(mode!=="practice" || !strokes[strokeIndex]) return;
+  if(mode!=="practice" || compoundLoading || !strokes[strokeIndex]) return;
   const result = evaluateStudentTrace(studentPoints, strokes[strokeIndex].track);
   if(result.ok){
     await completeCurrentPracticeStroke();
@@ -2190,7 +2283,7 @@ async function finishPracticeAttempt(){
 
 practiceLayer.addEventListener("pointerdown", (evt)=>{
   getAudioContext();
-  if(mode!=="practice" || !strokes.length || strokeIndex>=strokes.length) return;
+  if(mode!=="practice" || compoundLoading || !strokes.length || strokeIndex>=strokes.length) return;
   stop();
   isDrawing = true;
   studentPoints = [getSvgPointFromEvent(evt)];
@@ -2225,6 +2318,8 @@ async function replayAction(){
   closeVocab(false);
   clearConfetti();
   stop();
+  practiceEpoch++;
+  compoundPhase=false;compoundLoading=false;compoundRanges=[];
   if(mode==="practice"){
     componentIndex=0;
     strokeIndex=0;
@@ -2245,11 +2340,16 @@ function clearAction(){
   clearConfetti();
   stop();
   if(mode==="practice"){
+    if(compoundPhase && strokeIndex>=strokes.length){
+      strokeIndex=0;
+      statusEl.textContent=`重新開始同格書寫：上面寫「${components[0]}」，下面寫「${components[1]}」。`;
+    }else{
+      statusEl.textContent = `已清除目前這一筆，請再試一次`;
+    }
     clearStudentTrace();
     render();
     renderPracticeOverlay();
     updateProgress();
-    statusEl.textContent = `已清除目前這一筆，請再試一次`;
   }else{
     strokeIndex=0;
     render();
