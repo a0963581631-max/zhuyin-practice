@@ -701,6 +701,7 @@ body.reading-fullscreen{overflow:hidden}
 #sockLaundryFrame{display:block;width:100%;height:max(680px,calc(100vh - 215px));min-height:680px;border:2px solid #d7e7ee;border-radius:22px;background:#f3f9fc}
 @media(max-width:700px){#mathCount30Page{width:98vw;padding-left:0;padding-right:0}#sockLaundryFrame{height:82vh;min-height:650px}}
 </style>
+<link rel="stylesheet" href="teaching-order.css">
 </head>
 <body>
 <div id="homeBackdrop" aria-hidden="true" hidden><div class="home-photo"></div><div class="home-photo"></div></div>
@@ -1094,6 +1095,7 @@ body.reading-fullscreen{overflow:hidden}
   </div>
 </div>
 
+<script src="teaching-order.js"></script>
 <script>
 const groups={
  initials:["ㄅ","ㄆ","ㄇ","ㄈ","ㄉ","ㄊ","ㄋ","ㄌ","ㄍ","ㄎ","ㄏ","ㄐ","ㄑ","ㄒ","ㄓ","ㄔ","ㄕ","ㄖ","ㄗ","ㄘ","ㄙ"],
@@ -1317,9 +1319,11 @@ function setEnabled(ok){
 }
 
 function updateNavigationButtons(){
-  const index=navigationOrder.indexOf(currentSymbol);
+  const order=TeachingOrder.order();
+  const index=order.indexOf(currentSymbol);
   prevSymbolBtn.disabled=index<=0;
-  nextSymbolBtn.disabled=index<0 || index>=navigationOrder.length-1;
+  nextSymbolBtn.disabled=index<0 || index>=order.length-1;
+  TeachingOrder.syncStatus(currentSymbol);
 }
 
 function updateHintLevelUI(){
@@ -1834,6 +1838,7 @@ function launchConfetti(){
 /* 導覽 */
 async function selectSymbol(sym){
   clearConfetti();
+  TeachingOrder.beforeSelect(sym,currentSymbol);
   currentSymbol=sym;components=Array.from(sym);componentIndex=0;
   bigSymbol.textContent=sym;
   document.querySelectorAll(".symbol").forEach(b=>b.classList.toggle("active",b.dataset.symbol===sym));
@@ -1846,14 +1851,16 @@ async function selectSymbol(sym){
 }
 async function goToPreviousSymbol(){
   clearConfetti();
-  const index=navigationOrder.indexOf(currentSymbol);
-  if(index>0) await selectSymbol(navigationOrder[index-1]);
+  const order=TeachingOrder.order();
+  const index=order.indexOf(currentSymbol);
+  if(index>0) await selectSymbol(order[index-1]);
 }
 async function goToNextSymbol(){
   clearConfetti();
-  const index=navigationOrder.indexOf(currentSymbol);
-  if(index>=0 && index<navigationOrder.length-1){
-    await selectSymbol(navigationOrder[index+1]);
+  const order=TeachingOrder.order();
+  const index=order.indexOf(currentSymbol);
+  if(index>=0 && index<order.length-1){
+    await selectSymbol(order[index+1]);
   }
 }
 
@@ -2488,7 +2495,6 @@ const JoinGame=(()=>{
 })();
 
 
-let learningStarted = false;
 function showPortalPage(){
   const hash=location.hash.slice(1);
   const chineseTermMatch=/^chinese-1-(first|second)$/.exec(hash);
@@ -2552,10 +2558,7 @@ function showPortalPage(){
   document.title='教學互動學習網站｜'+(hash==='chinese-1-first-pretty-quiz'?'好漂亮｜小測驗':isTadpole?'小蝌蚪找媽媽｜課文理解':isScissors?'剪刀石頭布｜課文理解':isPretty?'好漂亮｜課文理解':chineseTermMatch?'一年級'+(chineseTermMatch[1]==='first'?'上學期':'下學期')+'｜課文選擇':topicMatch?'1年級數學・分與合・'+topicTitles[topicMatch[1]]:gradeMatch?gradeMatch[1]+'年級數學':chineseGradeMatch?chineseGradeMatch[1]+'年級國語科':{chinese:'國語科',home:'首頁',learn:'注音學習',help:'幫助',math:'數學',mathParts:'1年級數學・分與合',mathCount30:'1年級數學・數到30'}[route]);
   window.scrollTo(0,0);
   (pages[route].querySelector('h1') || pages[route].querySelector('a')).focus({preventScroll:true});
-  if(route==='learn'&&!learningStarted){
-    learningStarted=true;
-    selectSymbol('ㄅ');
-  }
+  TeachingOrder.onRoute(route);
 }
 window.addEventListener('hashchange',showPortalPage);
 showPortalPage();
