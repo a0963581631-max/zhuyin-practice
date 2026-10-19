@@ -269,24 +269,26 @@ h1{text-align:center;font-size:clamp(30px,5vw,46px);margin:0 0 8px}
   font-size:86px;margin-bottom:18px
 }
 .vocab-word-wrap{
-  display:flex;align-items:flex-start;justify-content:center;gap:22px;margin-top:8px;
+  display:flex;align-items:center;justify-content:center;gap:22px;margin-top:8px;
   flex-wrap:wrap
 }
 .word-unit{
-  display:flex;align-items:flex-start;justify-content:center;gap:8px;
+  display:flex;align-items:center;justify-content:center;gap:8px;
   min-width:92px
 }
 .han-char{
   font-size:60px;font-weight:900;color:#2d4055;line-height:1;
-  padding-top:10px
+  padding-top:0;
+  flex:none
 }
+/* Three note-height slots are reserved so 1/2/3-symbol syllables share one
+   vertical center with the Han character. Children use their actual length. */
 .bopo-syllable{
   position:relative;
-  display:inline-flex;flex-direction:column;align-items:center;
+  display:inline-flex;flex-direction:column;justify-content:center;align-items:center;
   font-size:27px;line-height:1.02;color:#3e5670;
-  min-width:34px;
-  padding-top:10px;
-  padding-right:10px
+  min-width:34px;height:3.15em;flex:none;
+  padding:0 10px 0 0
 }
 .bopo-char{
   position:relative;
@@ -308,16 +310,18 @@ h1{text-align:center;font-size:clamp(30px,5vw,46px);margin:0 0 8px}
   color:#3e5670;
   font-weight:700
 }
-/* 輕聲：直式注音標在整個字音上方 */
-.neutral-tone{
+/* 輕聲點跟隨第一個注音，不再參照整個三格高度的容器。
+   因此只有一個注音時，點與注音會一起維持在中央附近。 */
+.bopo-char .neutral-tone{
   position:absolute;
-  top:-0.18em;
+  top:-0.48em;
   left:50%;
-  transform:translate(-50%,-100%);
-  font-size:.78em;
+  transform:translateX(-50%);
+  font-size:.70em;
   line-height:1;
   color:#3e5670;
-  font-weight:900
+  font-weight:900;
+  pointer-events:none
 }
 .vocab-subtext{
   margin-top:16px;text-align:center;font-size:15px;color:#6a7280;line-height:1.55
@@ -1365,14 +1369,13 @@ function renderBopoSyllable(syllable, targetSymbol){
     const toneHtml = (isLast && regularTone)
       ? `<span class="tone-mark" aria-hidden="true">${regularTone}</span>`
       : "";
-    return `<span class="${cls}">${escapeHtml(ch)}${toneHtml}</span>`;
+    const neutralHtml = neutral && idx === 0
+      ? `<span class="neutral-tone" aria-hidden="true">˙</span>`
+      : "";
+    return `<span class="${cls}">${escapeHtml(ch)}${toneHtml}${neutralHtml}</span>`;
   }).join("");
 
-  const neutralHtml = neutral
-    ? `<span class="neutral-tone" aria-hidden="true">˙</span>`
-    : "";
-
-  return `<span class="bopo-syllable${neutral ? " has-neutral" : ""}">${neutralHtml}${charsHtml}</span>`;
+  return `<span class="bopo-syllable" data-note-count="${base.length}">${charsHtml}</span>`;
 }
 
 function renderWordWithBopomofo(item){
