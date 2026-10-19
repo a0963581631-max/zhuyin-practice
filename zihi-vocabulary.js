@@ -17,15 +17,23 @@
     return Array.from(item.word).map(function(char,index){
       const syllable=item.bopomofo[index]||"";
       const phonetic=parseBopomofoSyllable(syllable);
-      const target=phonetic.base.includes(targetSymbol);
+      const targetIndex=phonetic.base.indexOf(targetSymbol);
+      const noteCount=phonetic.base.length;
       const manual=manualNeutral.has(char+"|"+syllable);
       const selector=manual?"\u{E01E0}":((ivsReadings[char]||{})[syllable]||"");
       const display=escapeHtml(char+selector);
       if(manual){
-        const notes=phonetic.base.map(function(s){return "<span>"+escapeHtml(s)+"</span>";}).join("");
-        return '<span class="zihi-word-glyph"><span class="zihi-base">'+display+'</span><span class="zihi-manual-annotation'+(target?' target':'')+'" aria-hidden="true"><span class="zihi-manual-neutral">˙</span><span class="zihi-manual-note">'+notes+'</span></span></span>';
+        // The tone dot and all other notes stay dark; only the selected note is red.
+        const notes=phonetic.base.map(function(s){
+          return '<span'+(s===targetSymbol?' class="target"':'')+'>'+escapeHtml(s)+'</span>';
+        }).join("");
+        return '<span class="zihi-word-glyph"><span class="zihi-base">'+display+'</span><span class="zihi-manual-annotation" aria-hidden="true"><span class="zihi-manual-neutral">˙</span><span class="zihi-manual-note">'+notes+'</span></span></span>';
       }
-      return '<span class="zihi-word-glyph"><span class="zihi-base">'+display+'</span>'+(target?'<span class="zihi-annotation-highlight" aria-hidden="true">'+display+'</span>':'')+'</span>';
+      // Recolor exactly one native note glyph; the neighboring notes and
+      // the tone remain untouched. Native note layouts contain 1–3 symbols.
+      const targetClass=(targetIndex>=0 && noteCount>=1 && noteCount<=3)
+        ? ' note-'+noteCount+'-'+targetIndex : '';
+      return '<span class="zihi-word-glyph"><span class="zihi-base">'+display+'</span>'+(targetClass?'<span class="zihi-annotation-highlight'+targetClass+'" aria-hidden="true">'+display+'</span>':'')+'</span>';
     }).join("");
   }
   function ensure(){
