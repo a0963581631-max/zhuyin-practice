@@ -1297,7 +1297,7 @@ const vocabularyBank = {
     {word:"太陽", emoji:"☀️", bopomofo:["ㄊㄞˋ","ㄧㄤˊ"]}
   ],
   "ㄧㄥ":[
-    {word:"影子", emoji:"🕴️", bopomofo:["ㄧㄥˇ","ㄗ˙"]},
+    {word:"影子", emoji:"🕴️", image:"assets/vocabulary/shadow-puppet.webp", bopomofo:["ㄧㄥˇ","ㄗ˙"]},
     {word:"櫻桃", emoji:"🍒", bopomofo:["ㄧㄥ","ㄊㄠˊ"]}
   ],
   "ㄨㄚ":[
@@ -1338,7 +1338,7 @@ const vocabularyBank = {
   ],
   "ㄩㄢ":[
     {word:"公園", emoji:"🛝", bopomofo:["ㄍㄨㄥ","ㄩㄢˊ"]},
-    {word:"湯圓", emoji:"🍡", bopomofo:["ㄊㄤ","ㄩㄢˊ"]}
+    {word:"湯圓", emoji:"🍡", image:"assets/vocabulary/tangyuan.webp", bopomofo:["ㄊㄤ","ㄩㄢˊ"]}
   ],
   "ㄩㄣ":[
     {word:"雲朵", emoji:"☁️", bopomofo:["ㄩㄣˊ","ㄉㄨㄛˇ"]},
@@ -1499,14 +1499,13 @@ function renderVocabularyModal(){
 
   vocabNote.textContent = "點選 emoji 圖片可上傳自己的插圖；詞彙下方可點選朗讀。直式注音和紅字提示維持原本設定。";
   vocabGrid.innerHTML = items.map((item, index) => `
-    <div class="vocab-card" data-word="${escapeHtml(item.word)}" data-symbol="${escapeHtml(currentSymbol)}">
-      <label class="vocab-emoji vocab-image-picker" title="點選這裡更換「${escapeHtml(item.word)}」的圖片">
-        <span class="vocab-default-emoji" aria-hidden="true">${item.emoji}</span>
-        <img class="vocab-uploaded-image" alt="" hidden>
-        <span class="vocab-image-change-hint" aria-hidden="true">📷 更換圖片</span>
+    <div class="vocab-card" data-word="${escapeHtml(item.word)}" data-symbol="${escapeHtml(currentSymbol)}" data-default-image="${escapeHtml(item.image||"")}">
+      <label class="vocab-emoji vocab-image-picker">
+        <span class="vocab-default-emoji" aria-hidden="true" ${item.image?"hidden":""}>${item.emoji}</span>
+        <img class="vocab-uploaded-image" ${item.image?`src="${escapeHtml(item.image)}"`:"hidden"} alt="">
         <input class="vocab-image-input" type="file" accept="image/png,image/jpeg,image/webp,image/avif" aria-label="上傳「${escapeHtml(item.word)}」的圖片">
       </label>
-      <button class="vocab-reset-image" type="button" hidden>↩ 還原原本的 emoji</button>
+      <button class="vocab-reset-image" type="button" hidden>${item.image?"↩ 還原預設插圖":"↩ 還原原本的 emoji"}</button>
       <div class="vocab-word-wrap">
         ${renderWordWithBopomofo(item)}
       </div>
