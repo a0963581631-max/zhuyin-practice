@@ -1,0 +1,27 @@
+
+.teaching-order-toolbar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin:8px 0 12px}
+.teaching-order-status{font-weight:800;color:#285f84;font-size:14px}
+.teaching-order-edit{font:inherit;font-weight:800;cursor:pointer;background:#fff;border:2px solid #accddd;color:#285f84;border-radius:12px;padding:8px 12px}
+.teaching-order-dialog{width:min(760px,calc(100vw - 30px));max-height:87dvh;overflow:auto;border:2px solid #c6deea;border-radius:23px;box-shadow:0 20px 75px #123b5466;padding:22px;color:#243447;background:#fff}
+.teaching-order-dialog::backdrop{background:#142f428c}
+.teaching-order-dialog h2{font-size:clamp(23px,3vw,29px);color:#235c80;margin:0 0 10px}
+.teaching-order-dialog p{line-height:1.65;color:#52697f;margin:0 0 16px}
+.order-entry{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.order-entry button{font:inherit;text-align:left;min-height:116px;padding:18px;cursor:pointer;border:2px solid #b6d1e0;background:#f0f8fc;color:#235e86;border-radius:16px;font-size:20px;font-weight:900}
+.order-entry button+button{background:#effaf2;border-color:#b6d8c2;color:#32754d}
+.order-entry small{display:block;font-size:14px;font-weight:500;line-height:1.5;margin-top:8px}
+.order-picked{display:flex;gap:8px;flex-wrap:wrap;align-items:center;min-height:66px;background:#f1f8fd;border:2px dashed #c3dbe9;border-radius:14px;padding:10px;margin:12px 0}
+.order-picked .chip{display:flex;align-items:center;gap:4px;background:#fff;border:1px solid #abcbdc;border-radius:9px;padding:4px}
+.order-picked .chip strong{font-size:22px;color:#245d7d}
+.order-picked .chip button{min-width:27px;min-height:30px;background:#e7f3fa;border:0;border-radius:6px;color:#275b7c;cursor:pointer}
+.order-picked .chip button:disabled{opacity:.3;cursor:default}
+.order-group{margin:12px 0}
+.order-group h3{font-size:17px;margin:7px 0;color:#356982}
+.order-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(62px,1fr));gap:7px}
+.order-grid button{font:inherit;cursor:pointer;font-size:26px;min-height:52px;border:2px solid #d4e3ef;border-radius:10px;background:#fff;color:#285b80}
+.order-grid button.selected{background:#dcf1e3;border-color:#66a582;color:#276044}
+.order-actions{display:flex;justify-content:flex-end;flex-wrap:wrap;gap:9px;margin-top:18px}
+.order-actions button{font:inherit;font-weight:800;cursor:pointer;border:2px solid #bcd0df;border-radius:11px;padding:10px 14px;background:#fff;color:#345d76}
+.order-actions button.primary{background:#286f9f;border-color:#286f9f;color:#fff}
+.order-actions button:disabled{opacity:.4;cursor:not-allowed}
+@media(max-width:620px){.order-entry{grid-template-columns:1fr}.order-entry button{min-height:87px}.teaching-order-dialog{padding:16px}}
