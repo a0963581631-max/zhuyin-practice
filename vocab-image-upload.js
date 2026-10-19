@@ -136,11 +136,16 @@
     const original=card.querySelector(".vocab-default-emoji");
     const reset=card.querySelector(".vocab-reset-image");
     if(!img||!original||!reset)return;
-    img.hidden=!value;
-    original.hidden=!!value;
+    const defaultImage=card.dataset.defaultImage||"";
+    const visibleImage=value||defaultImage;
+    img.hidden=!visibleImage;
+    original.hidden=!!visibleImage;
+    // The restore button is only needed when the teacher has uploaded a custom image.
     reset.hidden=!value;
-    if(value){img.src=value;img.alt="自訂詞彙圖片";}
-    else{img.removeAttribute("src");img.alt="";}
+    if(visibleImage){
+      if(img.getAttribute("src")!==visibleImage)img.src=visibleImage;
+      img.alt=value?"自訂詞彙圖片":"詞彙預設圖片";
+    }else{img.removeAttribute("src");img.alt="";}
     card.classList.toggle("has-custom-vocab-picture",!!value);
   }
   async function mount(card){
@@ -181,7 +186,7 @@
     card.classList.remove("vocab-picture-busy");
     if(ok){
       if(card.isConnected)display(card,null);
-      message("「"+card.dataset.word+"」已還原為原本的 emoji。",false);
+      message("「"+card.dataset.word+"」已還原為"+(card.dataset.defaultImage?"預設插圖。":"原本的 emoji。"),false);
     }else message("還原後可能無法永久保存，請檢查瀏覽器儲存權限。",true);
   }
   window.VocabImageUpload={mount,upload,reset};
