@@ -126,13 +126,18 @@ h1{text-align:center;font-size:clamp(30px,5vw,46px);margin:0 0 8px}
 .player h2{margin:0 0 9px;text-align:center;color:#762b3a}
 .board-wrap{display:flex;justify-content:center}
 .stage-stack{
-  position:relative;width:min(100%,520px);aspect-ratio:1
+  position:relative;width:min(100%,520px);aspect-ratio:1;
+  /* This whole square is for handwriting, not browser text selection. */
+  -webkit-user-select:none;user-select:none;-webkit-touch-callout:none
 }
+.stage-stack *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 #stage,#practiceLayer{
   position:absolute;inset:0;width:100%;height:100%;display:block
 }
 #stage{
-  border:2px solid #3d3d3d;border-radius:17px;background:var(--board)
+  border:2px solid #3d3d3d;border-radius:17px;background:var(--board);
+  /* Visual guides must never steal input from the handwriting overlay. */
+  pointer-events:none
 }
 #practiceLayer{
   touch-action:none;pointer-events:none
@@ -1702,6 +1707,13 @@ function renderPracticeOverlay(){
   practiceLayer.innerHTML="";
   if(mode!=="practice") return;
 
+  // SVG empty space does not reliably receive pointer events. Keep a full-size
+  // transparent hit target behind the ink so pupils can write anywhere in the grid.
+  practiceLayer.appendChild(svgEl("rect",{
+    x:"0",y:"0",width:"2048",height:"2048",fill:"transparent",
+    "pointer-events":"all"
+  }));
+
   // 學生目前的描寫軌跡
   if(studentPoints.length){
     let d = `M ${studentPoints[0].x} ${studentPoints[0].y} `;
@@ -2283,8 +2295,9 @@ async function finishPracticeAttempt(){
 }
 
 practiceLayer.addEventListener("pointerdown", (evt)=>{
+  if(evt.button!==0 || mode!=="practice" || compoundLoading || !strokes.length || strokeIndex>=strokes.length) return;
+  evt.preventDefault(); // Never begin browser text selection while writing.
   getAudioContext();
-  if(mode!=="practice" || compoundLoading || !strokes.length || strokeIndex>=strokes.length) return;
   stop();
   isDrawing = true;
   studentPoints = [getSvgPointFromEvent(evt)];
@@ -2294,6 +2307,7 @@ practiceLayer.addEventListener("pointerdown", (evt)=>{
 
 practiceLayer.addEventListener("pointermove", (evt)=>{
   if(!isDrawing || mode!=="practice") return;
+  evt.preventDefault();
   const p = getSvgPointFromEvent(evt);
   const last = studentPoints[studentPoints.length-1];
   if(!last || dist(p,last) > 8){
@@ -2304,6 +2318,7 @@ practiceLayer.addEventListener("pointermove", (evt)=>{
 
 async function endPointer(evt){
   if(!isDrawing) return;
+  evt.preventDefault();
   isDrawing = false;
   if(practiceLayer.hasPointerCapture(evt.pointerId)){
     practiceLayer.releasePointerCapture(evt.pointerId);
