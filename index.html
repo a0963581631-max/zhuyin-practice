@@ -530,17 +530,6 @@ body.learn-active .portal-nav{padding:8px 0;min-height:40px}
 
 .player-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}
 .practice-main .player-heading h2{margin:0;text-align:left}
-#expandPracticeBtn{flex-shrink:0;border:2px solid #985361;border-radius:12px;background:#fff8fa;color:#762b3a;padding:8px 12px;min-height:42px;font-weight:700;font-size:15px;cursor:pointer}
-#expandPracticeBtn:hover{background:#fff}
-body.practice-expanded{overflow:hidden}
-body.practice-expanded>.portal-nav,body.practice-expanded #learningPage> :not(.practice-workspace){display:none!important}
-body.practice-expanded .practice-workspace{position:fixed;inset:0;z-index:1300;width:100%;height:100%;border:0;border-radius:0;overflow:auto;background:#efc8d0;box-shadow:none}
-body.practice-expanded .practice-sidebar,body.practice-expanded .practice-workspace>.hint-control{display:none!important}
-body.practice-expanded .practice-row{display:block}
-body.practice-expanded .practice-main{padding:0;background:#efc8d0}
-body.practice-expanded .practice-main .player{padding:12px 18px;border-radius:0}
-body.practice-expanded .player-heading{max-width:1200px;margin-left:auto;margin-right:auto}
-@media(max-width:600px){.practice-main .player-heading{flex-wrap:wrap;gap:6px}#expandPracticeBtn{padding:6px 9px;font-size:14px}}
 
 .home-subjects{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:24px}
 @media(max-width:480px){.home-subjects{flex-direction:column;gap:18px}}
@@ -761,7 +750,7 @@ body.reading-fullscreen{overflow:hidden}
 <section id="chineseSecondLessons" class="guide-block" hidden><p>下學期課文準備中。</p></section>
 </main>
 <main id="chineseReadingPage" hidden>
-<div class="reading-heading"><a class="math-back" href="#chinese-1-first">← 返回課文選擇</a><h1 tabindex="-1">好漂亮｜課文理解</h1><div class="reading-actions"><button id="prettyFullscreen" type="button" aria-pressed="false">⛶ 全螢幕</button><a class="reading-quiz" href="#chinese-1-first-pretty-quiz">小測驗</a></div></div>
+<div class="reading-heading"><a class="math-back" href="#chinese-1-first">← 返回課文選擇</a><h1 tabindex="-1">好漂亮｜課文理解</h1><div class="reading-actions"><a class="reading-quiz" href="#chinese-1-first-pretty-quiz">小測驗</a></div></div>
 <div class="reading-frame"><img id="prettyImage" alt="" decoding="async"><canvas id="prettyHighlight" aria-hidden="true" width="1448" height="1086"></canvas></div>
 <nav class="reading-controls" aria-label="切換課文理解圖片">
 <button id="prettyPrev" type="button" aria-label="上一張">&lt;</button>
@@ -1001,7 +990,7 @@ body.reading-fullscreen{overflow:hidden}
   </aside>
   <div class="practice-main">
     <div class="player" id="practicePlayer">
-      <div class="player-heading"><h2>筆順播放／練習區</h2><button id="expandPracticeBtn" type="button" aria-expanded="false" aria-controls="practicePlayer" title="放大播放／練習區">⛶ 放大</button></div>
+      <div class="player-heading"><h2>筆順播放／練習區</h2></div>
       <div class="board-wrap">
         <div class="stage-stack">
           <svg id="stage" viewBox="0 0 2048 2048" aria-label="注音標準筆順播放區"></svg>
@@ -2032,6 +2021,7 @@ async function selectSymbol(sym){
   TeachingOrder.beforeSelect(sym,currentSymbol);
   currentSymbol=sym;components=Array.from(sym);componentIndex=0;
   bigSymbol.textContent=sym;
+  window.dispatchEvent(new Event('annotationcontextchange'));
   document.querySelectorAll(".symbol").forEach(b=>b.classList.toggle("active",b.dataset.symbol===sym));
   updateNavigationButtons();
   if(vocabBackdrop.classList.contains("show")){
@@ -2451,7 +2441,7 @@ updateHintLevelUI();
 // guessing a fixed height; keep the SVG viewBox and pointer coordinates intact.
 function fitPracticeBoard(){
  const page=document.getElementById('learningPage');
- if(page.hidden) return;
+ if(page.hidden||document.body.classList.contains('teacher-region-active')) return;
  const workspace=page.querySelector('.practice-workspace');
  const stageBox=page.querySelector('.stage-stack');
  const player=page.querySelector('.player');
@@ -2462,37 +2452,12 @@ function fitPracticeBoard(){
  const panelPadding=parseFloat(mainStyle.paddingTop)+parseFloat(mainStyle.paddingBottom);
  const availableHeight=window.innerHeight-workspace.getBoundingClientRect().top-hint.getBoundingClientRect().height-extraHeight-panelPadding-18;
  const availableWidth=page.querySelector('.board-wrap').clientWidth;
- const expanded=document.body.classList.contains('practice-expanded');
- const size=Math.max(0,Math.min(expanded?Infinity:460,availableWidth,Math.max(expanded?80:180,availableHeight)));
+ const size=Math.max(0,Math.min(460,availableWidth,Math.max(180,availableHeight)));
  workspace.style.setProperty('--practice-board-size',Math.floor(size)+'px');
 }
 window.addEventListener('resize',()=>requestAnimationFrame(fitPracticeBoard));
 if(document.fonts) document.fonts.ready.then(()=>requestAnimationFrame(fitPracticeBoard));
 
-
-const expandPracticeBtn=document.getElementById('expandPracticeBtn');
-let practiceReturnScroll=0;
-function setPracticeExpanded(expanded){
- const wasExpanded=document.body.classList.contains('practice-expanded');
- if(expanded===wasExpanded) return;
- if(expanded) practiceReturnScroll=window.scrollY;
- document.body.classList.toggle('practice-expanded',expanded);
- expandPracticeBtn.setAttribute('aria-expanded',String(expanded));
- expandPracticeBtn.textContent=expanded?'⛶ 縮小':'⛶ 放大';
- expandPracticeBtn.title=expanded?'返回原版面（Esc）':'放大播放／練習區';
- // The same SVG nodes stay mounted, preserving playback and drawing progress.
- requestAnimationFrame(()=>{
-   if(!expanded) window.scrollTo(0,practiceReturnScroll);
-   fitPracticeBoard();
-   expandPracticeBtn.focus({preventScroll:true});
- });
-}
-expandPracticeBtn.addEventListener('click',()=>setPracticeExpanded(!document.body.classList.contains('practice-expanded')));
-document.addEventListener('keydown',event=>{
- if(event.key==='Escape'&&document.body.classList.contains('practice-expanded')){
-   event.preventDefault();setPracticeExpanded(false);
- }
-});
 
 /* All quantities are whole numbers and each total stays within ten. */
 function createShopQuestionPicker(rng=Math.random){
@@ -2774,7 +2739,6 @@ function showPortalPage(){
   }
   const sockFrame=document.getElementById('sockLaundryFrame');
   if(route!=='mathCount30'&&sockFrame&&sockFrame.contentWindow){sockFrame.contentWindow.postMessage('sockGamePause',location.origin);}
-  if(route!=='learn') setPracticeExpanded(false);
   stop();
   if ('speechSynthesis' in window) speechSynthesis.cancel();
   closeVocab(false);
@@ -2861,6 +2825,7 @@ showPortalPage();
  sync();
 })();
 </script>
+<script src="teacher-view-tools.js"></script>
 <script>
 /* Shared teacher tools: isolated styles, no external dependencies. */
 (()=>{
@@ -2878,8 +2843,6 @@ root.innerHTML=`<style>
 #count{width:min(460px,calc(100vw - 116px));height:min(700px,92dvh);max-height:92dvh;display:flex;padding:0;overflow:hidden}
 #count .count-shell{display:grid;grid-template-columns:96px minmax(0,1fr);width:100%;height:100%;min-width:0;min-height:0}
 #count .count-side{display:flex;flex-direction:column;align-items:center;gap:9px;min-width:0;min-height:0;padding:12px 7px;background:#eaf6f8;border-right:1px solid #c7e1e7;overflow:hidden}
-#count .count-view-controls{display:flex;flex-direction:column;gap:7px;width:100%;flex:none}
-#count .count-view-controls button{font-size:12px;line-height:1.2;font-weight:750;min-height:40px;padding:5px 2px}
 #count .count-step-area{display:flex;align-items:center;flex-direction:column;flex:1;min-height:0;width:100%}
 #count .count-step-label{font-size:13px;font-weight:800;color:#426b7a;flex:none;margin:2px 0 5px}
 #count .count-step-selector{display:flex;flex:1;min-height:78px;max-height:320px;align-items:stretch;justify-content:center;gap:4px;width:100%}
@@ -2897,23 +2860,12 @@ root.innerHTML=`<style>
 #count .count-actions{flex:none;justify-content:center;gap:12px;margin:0}
 #count .count-actions button{font-size:25px;min-width:74px;min-height:46px;padding:5px 12px;font-weight:800}
 #count .dots{display:grid;flex:1 1 auto;min-height:0;min-width:0;width:100%;height:auto;max-height:none;overflow:hidden;gap:var(--count-dot-gap,4px);grid-template-columns:repeat(10,var(--count-dot-size,12px));grid-template-rows:repeat(10,var(--count-dot-size,12px));justify-content:center;align-content:center;margin:0;padding:0}
-#count .dot,#count.enlarged .dot{display:block;width:var(--count-dot-size,12px);height:var(--count-dot-size,12px);max-height:none;aspect-ratio:1;border-radius:50%}
+#count .dot{display:block;width:var(--count-dot-size,12px);height:var(--count-dot-size,12px);max-height:none;aspect-ratio:1;border-radius:50%}
 #count .dot.is-empty{visibility:hidden}
-#count.enlarged{inset:12px 102px 12px 12px;width:auto;height:auto;max-height:none;transform:none}
-#count.enlarged .count-shell{grid-template-columns:110px minmax(0,1fr)}
-#count.enlarged #number{height:clamp(90px,20vh,155px);font-size:clamp(70px,12vh,140px)}
-#count.enlarged .count-actions button{font-size:30px;min-width:90px}
-#count.fullscreen{inset:0;width:auto;height:auto;max-height:none;border-radius:0;border:0;transform:none;box-shadow:none}
-:host(.rail-open) #count.fullscreen{right:94px}
-#count.fullscreen .count-shell{grid-template-columns:120px minmax(0,1fr)}
-#count.fullscreen #number{height:clamp(110px,23vh,200px);font-size:clamp(82px,16vh,172px)}
-#count.fullscreen .count-actions button{font-size:33px;min-width:100px}
 @media(max-width:600px){
  #count{right:80px;width:calc(100vw - 90px)}
  #count .count-shell{grid-template-columns:65px minmax(0,1fr)}
  #count .count-side{padding:7px 3px;gap:5px}
- #count .count-view-controls{gap:5px}
- #count .count-view-controls button{font-size:11px;min-height:36px;white-space:normal;padding:4px 1px}
  #count .count-step-selector{gap:0}
  #countStepSlider{width:25px}
  #count .count-step-ticks{min-width:23px}
@@ -2921,19 +2873,12 @@ root.innerHTML=`<style>
  #count .count-stage{padding:34px 5px 7px;gap:6px}
  #count #number{font-size:clamp(38px,8vh,65px);height:clamp(60px,14vh,92px)}
  #count .count-actions button{min-width:52px;font-size:20px;padding:4px 7px;min-height:40px}
- #count.enlarged{inset:5px 74px 5px 5px}
- #count.enlarged .count-shell,#count.fullscreen .count-shell{grid-template-columns:70px minmax(0,1fr)}
- #count.enlarged #number,#count.fullscreen #number{height:clamp(67px,15vh,110px);font-size:clamp(52px,12vh,100px)}
- #count.fullscreen{inset:0}
- :host(.rail-open) #count.fullscreen{right:74px}
- #count.enlarged .count-actions button,#count.fullscreen .count-actions button{font-size:23px;min-width:62px}
 }
 @media(max-height:480px){
  #count .count-side{gap:4px;padding-top:5px;padding-bottom:5px}
- #count .count-view-controls button{min-height:29px;padding:2px;font-size:11px}
  #count .count-stage{padding-top:27px;gap:4px;padding-bottom:5px}
- #count #number,#count.enlarged #number,#count.fullscreen #number{height:clamp(42px,16vh,70px);font-size:clamp(38px,13vh,64px)}
- #count .count-actions button,#count.enlarged .count-actions button,#count.fullscreen .count-actions button{min-height:32px;padding:1px 8px;font-size:19px}
+ #count #number{height:clamp(42px,16vh,70px);font-size:clamp(38px,13vh,64px)}
+ #count .count-actions button{min-height:32px;padding:1px 8px;font-size:19px}
  #count #countReset{min-height:30px}
  #count .count-speech{min-height:23px}
 }
@@ -2967,26 +2912,18 @@ root.innerHTML=`<style>
 .panel{z-index:240}
 #board{z-index:200}
 #ink{z-index:190}
-:host(:fullscreen){background:#f3fafb;overflow:hidden}
-:host(:fullscreen) #hundredOverlay{padding:0 94px 0 0;background:#fff}
-:host(:fullscreen) #hundredStage{width:100%;height:100dvh;max-height:none;border-radius:0;border:0;box-shadow:none}
-:host(:fullscreen) #hundredStage .hundred-image-area{padding:3px 8px 12px}
-@media(max-width:600px){#hundredOverlay{padding:5px 77px 5px 4px}:host(:fullscreen) #hundredOverlay{padding-right:74px}#hundredStage{width:100%}}
+@media(max-width:600px){#hundredOverlay{padding:5px 77px 5px 4px}#hundredStage{width:100%}}
 @media(max-width:640px){#aids .chart-thumb{width:60px;height:66px}#hundredStage .hundred-head{padding:7px}#hundredStage .hundred-head strong{font-size:17px}#hundredStage .hundred-actions button{font-size:12px;padding:4px 7px}}
 </style>
 <canvas id="ink" hidden aria-label="頁面畫筆區"></canvas>
 <section id="board" hidden aria-label="白板"><div class="head"><h2>白板</h2><div class="row"><button id="boardMouse" aria-pressed="true">↖ 滑鼠</button><button id="boardPen" aria-pressed="false">✎ 畫筆</button><button id="boardErase" aria-pressed="false">▱ 橡皮擦</button><button id="boardUndo">復原</button><button id="boardGrid" aria-pressed="false">格線</button><button class="close" data-close aria-label="關閉白板">×</button></div></div><div id="boardArea"><canvas id="boardCanvas" aria-label="白板書寫區"></canvas></div></section>
 <button id="handle" class="glass" aria-label="展開教學功能欄" aria-expanded="false" aria-controls="rail" title="教學工具">◀</button>
-<aside id="rail" class="glass" hidden aria-label="教學功能欄"><button id="collapse" aria-label="隱藏教學功能欄">×</button><button data-tool="mouse" aria-pressed="true"><span class="icon">↖</span><span class="label">滑鼠</span></button><button data-tool="pen" aria-pressed="false"><span class="icon">✎</span><span class="label">畫筆</span></button><button data-tool="eraser" aria-pressed="false"><span class="icon">▱</span><span class="label">橡皮擦</span></button><button data-tool="count" aria-pressed="false"><span class="icon">①</span><span class="label">數數</span></button><button data-tool="timer" aria-pressed="false"><span class="icon">⏱</span><span class="label">計時器</span></button><button data-tool="board" aria-pressed="false"><span class="icon">▤</span><span class="label">白板</span></button><button data-tool="aids" aria-pressed="false"><span class="icon">▦</span><span class="label">教具</span></button></aside>
-<section id="pen" class="panel" hidden aria-label="畫筆工具"><div class="head"><h2>畫筆設定</h2><button class="close" data-close aria-label="關閉畫筆">×</button></div><p class="muted">設定完成後按「確認」，收起面板並開始繪畫。</p><div class="row"><label>顏色 <input id="penColor" type="color" value="#e15060"></label><label>粗細 <select id="penWidth"><option value="3">細筆</option><option value="6" selected>中筆</option><option value="12">粗筆</option></select></label></div><div class="row"><label>線條／圖形 <select id="penShape"><option value="free">曲線（自由畫）</option><option value="line">直線</option><option value="square">方形（自由長寬）</option><option value="circle">圓形／橢圓</option></select></label></div><div class="row"><label>圖形填色 <select id="penFill" disabled><option value="outline">空心</option><option value="solid">實心</option></select></label></div><p class="muted">拖曳自由控制圖形長寬；方形與圓形可選實心或空心。</p><div class="row"><button id="penConfirm">確認</button><button id="penUndo">復原上一筆</button></div><p class="muted">按側欄「滑鼠」即可操作教材。換頁或捲動會清除畫記，避免錯位。</p></section>
+<aside id="rail" class="glass" hidden aria-label="教學功能欄"><button id="collapse" aria-label="隱藏教學功能欄">×</button><button data-tool="mouse" aria-pressed="true"><span class="icon">↖</span><span class="label">滑鼠</span></button><button data-tool="pen" aria-pressed="false"><span class="icon">✎</span><span class="label">畫筆</span></button><button data-tool="eraser" aria-pressed="false"><span class="icon">▱</span><span class="label">橡皮擦</span></button><button data-tool="count" aria-pressed="false"><span class="icon">①</span><span class="label">數數</span></button><button data-tool="timer" aria-pressed="false"><span class="icon">⏱</span><span class="label">計時器</span></button><button data-tool="board" aria-pressed="false"><span class="icon">▤</span><span class="label">白板</span></button><button id="regionZoom" type="button" aria-pressed="false"><span class="icon">⤢</span><span class="label">框選放大</span></button><button id="viewReset" type="button" hidden><span class="icon">↙</span><span class="label">還原</span></button><button id="viewFullscreen" type="button" aria-pressed="false"><span class="icon">⛶</span><span class="label">全螢幕</span></button><button data-tool="aids" aria-pressed="false"><span class="icon">▦</span><span class="label">教具</span></button></aside>
+<section id="pen" class="panel" hidden aria-label="畫筆工具"><div class="head"><h2>畫筆設定</h2><button class="close" data-close aria-label="關閉畫筆">×</button></div><p class="muted">設定完成後按「確認」，收起面板並開始繪畫。</p><div class="row"><label>顏色 <input id="penColor" type="color" value="#e15060"></label><label>粗細 <select id="penWidth"><option value="3">細筆</option><option value="6" selected>中筆</option><option value="12">粗筆</option></select></label></div><div class="row"><label>線條／圖形 <select id="penShape"><option value="free">曲線（自由畫）</option><option value="line">直線</option><option value="square">方形（自由長寬）</option><option value="circle">圓形／橢圓</option></select></label></div><div class="row"><label>圖形填色 <select id="penFill" disabled><option value="outline">空心</option><option value="solid">實心</option></select></label></div><p class="muted">拖曳自由控制圖形長寬；方形與圓形可選實心或空心。</p><div class="row"><button id="penConfirm">確認</button><button id="penUndo">復原上一筆</button></div><p class="muted">按側欄「滑鼠」即可操作教材。畫記依教材分開保留，捲動不會清除；重新整理後不保留。</p></section>
 <section id="eraser" class="panel" hidden aria-label="橡皮擦工具"><div class="head"><h2>橡皮擦</h2><button class="close" data-close aria-label="關閉橡皮擦">×</button></div><label for="eraseSize">擦除直徑：<output id="eraseSizeLabel">32</output> px</label><div class="row"><input id="eraseSize" type="range" min="8" max="120" step="4" value="32" style="width:100%"></div><div class="row"><button id="eraseConfirm">確認</button><button id="eraseClear">全部清除</button><button id="eraseUndo">復原上一筆</button></div><p class="muted">按確認後拖曳擦除畫記；按「滑鼠」回復網頁操作。</p></section>
 <section id="count" class="panel" hidden aria-label="數數工具">
  <div class="count-shell">
   <aside class="count-side" aria-label="數數控制">
-   <div class="count-view-controls">
-    <button id="countZoom" type="button" aria-label="放大數數" aria-pressed="false">⤢ 放大</button>
-    <button id="countFullscreen" type="button" aria-label="數數全螢幕" aria-pressed="false">⛶ 全螢幕</button>
-   </div>
    <div class="count-step-area">
     <label class="count-step-label" for="countStepSlider">跳數</label>
     <div class="count-step-selector">
@@ -3010,7 +2947,7 @@ root.innerHTML=`<style>
 
 <section id="aids" class="panel" hidden aria-label="教具">
   <div class="head"><h2>教具</h2><button class="close" data-close aria-label="關閉教具">×</button></div>
-  <p class="muted">選擇百數表。按下後會在畫面中央放大，可再切換全螢幕，方便帶領學生觀察數字排列。</p>
+  <p class="muted">選擇百數表。可從側欄框選放大或切換全螢幕，方便帶領學生觀察數字排列。</p>
   <h3 style="margin:14px 0 10px;font-size:18px">百數表</h3>
   <div class="chart-list">
     <button class="chart-choice" type="button" data-chart-choice="2" aria-label="開啟每2個一數百數表">
@@ -3032,7 +2969,6 @@ root.innerHTML=`<style>
     <div class="hundred-head">
       <div><strong id="hundredTitle">百數表</strong><div style="font-size:12px;color:#597786">滑動／滾輪看下方數字；畫筆與橡皮擦可從右側工具欄開啟</div></div>
       <div class="hundred-actions">
-        <button id="hundredFullscreen" type="button" aria-label="將百數表切換到全螢幕">⛶ 全螢幕</button>
         <button id="hundredClose" type="button" aria-label="關閉百數表">× 關閉</button>
       </div>
     </div>
@@ -3065,48 +3001,31 @@ const hundredChartData={
 function showHundred(type){
  const chart=hundredChartData[type];if(!chart)return;
  const wasOpen=!$('hundredOverlay').hidden;
- if(wasOpen&&$('hundredImage').src!==new URL(chart.src,document.baseURI).href)pen.clear();
+ view?.reset();
+ pen.setContext('hundred:'+type);
  $('hundredImage').src=chart.src;$('hundredImage').alt=chart.alt;$('hundredTitle').textContent=chart.title;
  root.querySelectorAll('[data-hundred-select]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.hundredSelect===type)));
  $('hundredOverlay').hidden=false;
  const ink=$('ink');
- if(ink.parentNode!==$('hundredImageWrap')){$('hundredImageWrap').append(ink);pen.clear();pen.resize();}
+ if(ink.parentNode!==$('hundredImageWrap')){$('hundredImageWrap').append(ink);}
+ pen.resize();
  if(!wasOpen)$('hundredScroll').scrollTop=0;
  $('hundredStage').focus();
 }
 function closeHundred(){
  const overlay=$('hundredOverlay');
  if(overlay.hidden)return;
- pen.finish();pen.clear();
+ view?.reset();pen.finish();
  if($('ink').parentNode===$('hundredImageWrap')){
   root.insertBefore($('ink'),$('board'));pen.resize();
  }
  overlay.hidden=true;
- if(document.fullscreenElement===host)document.exitFullscreen?.().catch(()=>{});
+ syncAnnotationContext();
 }
 root.querySelectorAll('[data-chart-choice]').forEach(b=>b.onclick=()=>showHundred(b.dataset.chartChoice));
 root.querySelectorAll('[data-hundred-select]').forEach(b=>b.onclick=()=>showHundred(b.dataset.hundredSelect));
 $('hundredClose').onclick=()=>{closeHundred();root.querySelector('[data-tool="aids"]')?.focus()};
 $('hundredOverlay').addEventListener('click',e=>{if(e.target===$('hundredOverlay'))closeHundred()});
-function syncHundredFullScreen(){
- const full=document.fullscreenElement===host;
- $('hundredFullscreen').textContent=full?'⛶ 退出全螢幕':'⛶ 全螢幕';
- $('hundredFullscreen').setAttribute('aria-label',full?'退出百數表全螢幕':'將百數表切換到全螢幕');
- if(full)$('rail').hidden=!opened;
- if(full)$('handle').hidden=opened;
-}
-$('hundredFullscreen').onclick=()=>{
- if(document.fullscreenElement===host){
-  document.exitFullscreen?.().catch(()=>{syncHundredFullScreen()});
- }else if(typeof host.requestFullscreen==='function'){
-  host.requestFullscreen().then(()=>{
-   setOpen(true);syncHundredFullScreen();
-  }).catch(()=>{syncHundredFullScreen()});
- }
-};
-root.addEventListener('fullscreenchange',syncHundredFullScreen);
-document.addEventListener('fullscreenchange',syncHundredFullScreen);
-
 function updateMode(){
  $('ink').classList.toggle('active',!active&&penMode!=='mouse');
  const selected=active||penMode;
@@ -3118,28 +3037,14 @@ function updateMode(){
  }else $('ink').style.cursor='crosshair';
 }
 function setOpen(v){opened=v;host.classList.toggle('rail-open',v);$('rail').hidden=!v;$('handle').hidden=v;$('handle').setAttribute('aria-expanded',String(v));if(!v){setTool('');$('handle').focus();}}
-function setTool(name){if(active==='count'&&name!=='count')leaveCountFullscreen();pen.finish();setBoardMode('mouse');active=name==='mouse'?'':name;penMode='mouse';for(const n of ['pen','eraser','count','timer','board','aids'])$(n).hidden=n!==active;updateMode();if(name==='board')requestAnimationFrame(()=>board.resize());if(name==='count')requestAnimationFrame(fitCountDots);}
+function setTool(name){pen.finish();setBoardMode('mouse');active=name==='mouse'?'':name;penMode='mouse';for(const n of ['pen','eraser','count','timer','board','aids'])$(n).hidden=n!==active;updateMode();view?.keepVisible();if(name==='board')requestAnimationFrame(()=>board.resize());if(name==='count')requestAnimationFrame(fitCountDots);}
 $('handle').onclick=()=>{setOpen(true);$('collapse').focus()};$('collapse').onclick=()=>setOpen(false);
 root.querySelectorAll('[data-tool]').forEach(b=>b.onclick=()=>setTool(active===b.dataset.tool?'':b.dataset.tool));
 root.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>{const old=active;setTool('');root.querySelector('[data-tool="'+old+'"]').focus()});
-root.addEventListener('keydown',e=>{if(e.key==='Escape'){e.stopPropagation();if($('count').classList.contains('fullscreen')){leaveCountFullscreen();return;}if(!$('hundredOverlay').hidden){closeHundred();return;}if(active||penMode!=='mouse')setTool('');else setOpen(false)}});
-function drawing(canvas,color,width){let strokes=[],current=null;const ctx=canvas.getContext('2d');let w=0,h=0;
-function paint(){ctx.clearRect(0,0,w,h);for(const s of strokes){
- ctx.globalCompositeOperation=s.erase?'destination-out':'source-over';ctx.strokeStyle=s.color;ctx.fillStyle=s.color;ctx.lineWidth=s.width;ctx.lineCap='round';ctx.lineJoin='round';ctx.beginPath();
- const a=s.points[0],b=s.points[s.points.length-1],x=a.x*w,y=a.y*h,dx=(b.x-a.x)*w,dy=(b.y-a.y)*h;
- if(s.shape==='square'||s.shape==='circle'){
-  if(s.shape==='square')ctx.rect(x,y,dx,dy);else ctx.ellipse(x+dx/2,y+dy/2,Math.abs(dx)/2,Math.abs(dy)/2,0,0,Math.PI*2);
-  if(s.fill)ctx.fill();else ctx.stroke();
- }else if(s.shape==='line'){ctx.moveTo(x,y);ctx.lineTo(b.x*w,b.y*h);ctx.stroke()}
- else{ s.points.forEach((p,i)=>i?ctx.lineTo(p.x*w,p.y*h):ctx.moveTo(p.x*w,p.y*h));if(s.points.length===1){ctx.arc(x,y,s.width/2,0,Math.PI*2);ctx.fill()}else ctx.stroke()}
- }ctx.globalCompositeOperation='source-over'}
-function resize(){const r=canvas.getBoundingClientRect();if(!r.width||!r.height)return;w=r.width;h=r.height;const d=Math.min(devicePixelRatio||1,2);canvas.width=Math.round(w*d);canvas.height=Math.round(h*d);ctx.setTransform(d,0,0,d,0,0);paint()}
-function point(e){const r=canvas.getBoundingClientRect();return{x:(e.clientX-r.left)/w,y:(e.clientY-r.top)/h}}
-function move(e){if(!current||current.id!==e.pointerId)return;const p=point(e);if(current.shape==='free')current.points.push(p);else current.points[1]=p;paint()}
-function finish(){if(!current)return;const id=current.id;current=null;if(canvas.hasPointerCapture(id))canvas.releasePointerCapture(id)}
-canvas.onpointerdown=e=>{if(e.button!==0||current||!w||!h)return;e.preventDefault();canvas.setPointerCapture(e.pointerId);current={id:e.pointerId,color:$(color).value,width:api.erase?(api.eraseWidth||Number($(width).value)*4):Number($(width).value),erase:api.erase,shape:api.erase?'free':api.shape,fill:api.fill,points:[point(e)]};strokes.push(current);paint()};canvas.onpointermove=move;canvas.onpointerup=e=>{if(current&&current.id===e.pointerId){move(e);finish()}};canvas.onpointercancel=e=>{if(current&&current.id===e.pointerId){strokes.pop();finish();paint()}};canvas.onlostpointercapture=()=>{current=null};
-const api={erase:false,eraseWidth:0,shape:'free',fill:false,resize,finish,clear(){finish();strokes=[];paint()},undo(){finish();strokes.pop();paint()}};new ResizeObserver(resize).observe(canvas);return api;}
-const pen=drawing($('ink'),'penColor','penWidth'),board=drawing($('boardCanvas'),'wbPenColor','wbPenWidth');
+root.addEventListener('keydown',e=>{if(e.key==='Escape'){e.stopPropagation();if(view?.escape()){return;}if(!$('hundredOverlay').hidden){closeHundred();return;}if(active||penMode!=='mouse')setTool('');else setOpen(false)}});
+let view=null;
+const drawing=(canvas,color,width,page=false)=>TeacherViewTools.createDrawing({canvas,color:()=>$(color).value,width:()=>Number($(width).value),space:page?()=>view?.pageSpace()||null:null});
+const pen=drawing($('ink'),'penColor','penWidth',true),board=drawing($('boardCanvas'),'wbPenColor','wbPenWidth');
 function confirmPen(mode){setTool('');penMode=mode;pen.erase=mode==='eraser';pen.eraseWidth=Number($('eraseSize').value);pen.shape=$('penShape').value;pen.fill=$('penFill').value==='solid';$('ink').hidden=false;pen.resize();updateMode();root.querySelector('[data-tool="'+mode+'"]').focus()}
 $('penConfirm').onclick=()=>confirmPen('pen');$('eraseConfirm').onclick=()=>confirmPen('eraser');
 $('penShape').onchange=()=>{$('penFill').disabled=!['square','circle'].includes($('penShape').value)};
@@ -3190,38 +3095,6 @@ $('countStepSlider').oninput=e=>selectCountStep(Number(e.target.value));
 root.querySelectorAll('[data-count-step-index]').forEach(t=>t.onclick=()=>selectCountStep(Number(t.dataset.countStepIndex)));
 function commitCount(){const raw=$('number').value.trim(),value=Number(raw);if(raw!==''&&Number.isFinite(value))count=Math.max(0,Math.min(100,Math.floor(value)));showCount()}
 $('number').onchange=commitCount;$('number').onfocus=()=>$('number').select();$('number').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();$('number').blur()}else if(e.key==='Escape'){e.stopPropagation();showCount(false);$('number').blur()}};
-function syncCountViewButtons(){
- const big=$('count').classList.contains('enlarged'),full=$('count').classList.contains('fullscreen');
- $('countZoom').textContent=big?'⤡ 縮小':'⤢ 放大';
- $('countZoom').setAttribute('aria-label',big?'縮小數數':'放大數數');$('countZoom').setAttribute('aria-pressed',String(big));
- $('countFullscreen').textContent=full?'⛶ 退出全螢幕':'⛶ 全螢幕';
- $('countFullscreen').setAttribute('aria-label',full?'退出數數全螢幕':'數數全螢幕');$('countFullscreen').setAttribute('aria-pressed',String(full));
- requestAnimationFrame(fitCountDots);
-}
-function leaveCountFullscreen(){
- if(!$('count').classList.contains('fullscreen'))return;
- $('count').classList.remove('fullscreen');
- syncCountViewButtons();
- if(document.fullscreenElement===host&&$('hundredOverlay').hidden)document.exitFullscreen?.().catch(()=>{});
-}
-$('countZoom').onclick=()=>{
- $('count').classList.toggle('enlarged');
- syncCountViewButtons();
-};
-$('countFullscreen').onclick=()=>{
- const activeFull=$('count').classList.contains('fullscreen');
- if(activeFull){leaveCountFullscreen();return;}
- $('count').classList.add('fullscreen');
- syncCountViewButtons();
- if(document.fullscreenElement!==host&&typeof host.requestFullscreen==='function'){
-  host.requestFullscreen().catch(()=>{syncCountViewButtons()});
- }
-};
-document.addEventListener('fullscreenchange',()=>{
- if(document.fullscreenElement!==host&&$('count').classList.contains('fullscreen')){
-  $('count').classList.remove('fullscreen');syncCountViewButtons();
- }
-});
 $('plus').onclick=()=>{if(count+countStep<=100){count+=countStep;showCount()}};
 $('minus').onclick=()=>{if(count-countStep>=0){count-=countStep;showCount()}};
 $('countReset').onclick=()=>{count=0;showCount()};
@@ -3241,8 +3114,21 @@ function beep(){try{if(!audio)return;for(let i=0;i<3;i++){const o=audio.createOs
 function tick(){if(!running)return;remaining=Math.max(0,deadline-Date.now());if(!remaining){running=false;started=false;clearInterval(ticker);$('timerStatus').textContent='時間到！';$('timerStatus').className='done';if(!host.hidden){setOpen(true);setTool('timer');timerMode('countdown')}beep()}renderTime()}
 $('start').onclick=()=>{if(running){remaining=Math.max(0,deadline-Date.now());running=false;clearInterval(ticker);$('timerStatus').textContent='已暫停'}else{if(!started)remaining=configured();if(!remaining){$('timerStatus').textContent='請設定大於 0 秒的時間';return}try{audio=audio||new(window.AudioContext||window.webkitAudioContext)();audio.resume().catch(()=>{})}catch{}started=running=true;deadline=Date.now()+remaining;clearInterval(ticker);ticker=setInterval(tick,150);$('timerStatus').className='';$('timerStatus').textContent='計時中'}renderTime()};
 $('resetTimer').onclick=()=>{clearInterval(ticker);running=started=false;remaining=configured();$('timerStatus').className='';$('timerStatus').textContent='設定時間後按開始';renderTime()};for(const id of ['minutes','seconds'])$(id).onchange=()=>{if(!started){remaining=configured();renderTime()}};document.addEventListener('visibilitychange',tick);
-function route(){const h=location.hash.slice(1);host.hidden=!(h==='learn'||h==='chinese'||/^chinese-[1-6](?:-(?:first|second)(?:-(?:pretty(?:-quiz)?|scissors-rock-paper|tadpole-mom))?)?$/.test(h)||h==='math'||/^math-[1-6]$/.test(h)||/^math-1-(?:parts(?:-(?:split|join|practice))?|count30)$/.test(h));closeHundred();pen.clear();$('ink').hidden=true;setTool('');if(host.hidden){opened=false;$('rail').hidden=true;$('handle').hidden=false;$('handle').setAttribute('aria-expanded','false')}}
-window.addEventListener('readingimagechange',()=>pen.clear());window.addEventListener('hashchange',route);window.addEventListener('scroll',()=>pen.clear(),{passive:true});route();
+function annotationKey(){
+ const h=location.hash||'#home';
+ if(/^#chinese-1-first-(pretty|scissors-rock-paper|tadpole-mom)$/.test(h))return h+'|'+document.getElementById('prettyImage').getAttribute('src');
+ if(h==='#learn')return h+'|'+document.getElementById('bigSymbol').textContent;
+ if(h==='#chinese-1-first-pretty-quiz')return h+'|'+(!document.getElementById('quizSetup').hidden?'setup':!document.getElementById('quizResults').hidden?'results':document.getElementById('quizProgress').textContent);
+ return h;
+}
+function syncAnnotationContext(){
+ pen.setContext(annotationKey());$('ink').hidden=false;pen.resize();
+}
+view=TeacherViewTools.createView({host,root,restoreSource(source){if(['count','board'].includes(source.id))source.hidden=active!==source.id;},prepare(){pen.finish();penMode='mouse';updateMode();},redraw(){pen.resize();board.resize();requestAnimationFrame(fitCountDots);}});
+function route(){const h=location.hash.slice(1);host.hidden=!(h==='learn'||h==='chinese'||/^chinese-[1-6](?:-(?:first|second)(?:-(?:pretty(?:-quiz)?|scissors-rock-paper|tadpole-mom))?)?$/.test(h)||h==='math'||/^math-[1-6]$/.test(h)||/^math-1-(?:parts(?:-(?:split|join|practice))?|count30)$/.test(h));closeHundred();pen.finish();setTool('');queueMicrotask(syncAnnotationContext);if(host.hidden){opened=false;$('rail').hidden=true;$('handle').hidden=false;$('handle').setAttribute('aria-expanded','false')}}
+window.addEventListener('annotationcontextchange',()=>queueMicrotask(syncAnnotationContext));
+window.addEventListener('readingimagechange',()=>queueMicrotask(syncAnnotationContext));window.addEventListener('hashchange',route);
+window.addEventListener('scroll',()=>pen.repaint(),{passive:true});route();
 })();
 
 </script>
@@ -3289,15 +3175,15 @@ async function warmLessonImages(){
 window.addEventListener('hashchange',warmLessonImages);
 document.addEventListener('visibilitychange',warmLessonImages);
 const image=document.getElementById('prettyImage'),prev=document.getElementById('prettyPrev'),next=document.getElementById('prettyNext'),position=document.getElementById('prettyPosition');
-function draw(){image.fetchPriority='high';image.src=slides[index].src;image.alt=slides[index].alt;prev.disabled=index===0;next.disabled=index===slides.length-1;position.textContent=(index+1)+' / '+slides.length;}
-function move(delta){stopReading();const target=Math.max(0,Math.min(slides.length-1,index+delta));if(target===index)return;index=target;draw();window.dispatchEvent(new Event('readingimagechange'));}
+function draw(){image.fetchPriority='high';image.src=slides[index].src;image.alt=slides[index].alt;prev.disabled=index===0;next.disabled=index===slides.length-1;position.textContent=(index+1)+' / '+slides.length;window.dispatchEvent(new Event('readingimagechange'));}
+function move(delta){stopReading();const target=Math.max(0,Math.min(slides.length-1,index+delta));if(target===index)return;index=target;draw();}
 prev.addEventListener('click',()=>move(-1));next.addEventListener('click',()=>move(1));
 function fit(){if(!isReadingRoute())return;document.body.style.setProperty('--reading-nav-bottom',document.body.classList.contains('reading-fullscreen')?'0px':Math.ceil(document.querySelector('.portal-nav').getBoundingClientRect().bottom)+'px');}
-window.addEventListener('resize',fit);window.addEventListener('hashchange',()=>{stopReading();if(!isReadingRoute())leaveFullscreen();if(isReadingRoute()){selectLesson();draw();requestAnimationFrame(fit);warmLessonImages();}});
+window.addEventListener('resize',fit);window.addEventListener('hashchange',()=>{stopReading();if(isReadingRoute()){selectLesson();draw();requestAnimationFrame(fit);warmLessonImages();}});
 window.addEventListener('keydown',e=>{if(!isReadingRoute()||e.altKey||e.ctrlKey||e.metaKey)return;if(e.composedPath().some(n=>n.tagName==='INPUT'||n.tagName==='TEXTAREA'||n.tagName==='SELECT'||n.isContentEditable))return;if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();move(e.key==='ArrowLeft'?-1:1);}});
 
-const listen=document.getElementById('prettyListen'),audioStatus=document.getElementById('prettyAudioStatus'),full=document.getElementById('prettyFullscreen');
-let reading=false,speechToken=0,ownFullscreen=false;
+const listen=document.getElementById('prettyListen'),audioStatus=document.getElementById('prettyAudioStatus');
+let reading=false,speechToken=0;
 // Word groups keep connected pronunciation when a voice offers no boundary events.
 const prettyReadingGroups=[['大象','鼻子長'],['河馬','長得壯'],['老虎','毛皮黃'],['蝴蝶','花衣裳'],['笑一笑','好漂亮']];
 // Original picture coordinates, one rectangle per printed syllable, including tone marks.
@@ -3374,10 +3260,10 @@ listen.addEventListener('click',()=>{
 });
 if('speechSynthesis' in window)window.speechSynthesis.getVoices();
 
-function syncFullscreen(){const active=ownFullscreen&&!!document.fullscreenElement;document.body.classList.toggle('reading-fullscreen',active);full.textContent=active?'⛶ 離開全螢幕':'⛶ 全螢幕';full.setAttribute('aria-pressed',String(active));if(!document.fullscreenElement)ownFullscreen=false;requestAnimationFrame(()=>{fit();window.dispatchEvent(new Event('resize'));});}
-async function leaveFullscreen(){if(ownFullscreen&&document.fullscreenElement){try{await document.exitFullscreen();}catch{}}ownFullscreen=false;document.body.classList.remove('reading-fullscreen');full.textContent='⛶ 全螢幕';full.setAttribute('aria-pressed','false');}
-full.addEventListener('click',async()=>{try{if(ownFullscreen&&document.fullscreenElement){await leaveFullscreen();}else if(document.documentElement.requestFullscreen){ownFullscreen=true;await document.documentElement.requestFullscreen();syncFullscreen();}else{audioStatus.textContent='此瀏覽器不支援網頁全螢幕。';}}catch{ownFullscreen=false;audioStatus.textContent='無法開啟全螢幕，請確認瀏覽器允許此功能。';syncFullscreen();}});
-document.addEventListener('fullscreenchange',syncFullscreen);
+function syncReadingFullscreen(){document.body.classList.toggle('reading-fullscreen',isReadingRoute()&&!!document.fullscreenElement);requestAnimationFrame(fit);}
+document.addEventListener('fullscreenchange',syncReadingFullscreen);
+window.addEventListener('hashchange',syncReadingFullscreen);
+syncReadingFullscreen();
 window.addEventListener('pagehide',stopReading);
 if(isReadingRoute()){selectLesson();draw();requestAnimationFrame(fit);}
 warmLessonImages();
@@ -3436,7 +3322,7 @@ $('quizRead').onclick=()=>{if(!record().solved)record().replays++;speak(currentQ
 $('quizHint').onclick=()=>{if(!record().solved)record().hints++;$('quizHintText').hidden=false;$('quizHintText').textContent=currentQ().hint;speak(currentQ().hint)};
 $('quizReview').onclick=()=>{stop();if(!record().solved)record().reviews++;const slide=window.prettyLessonSlides[currentQ().slide];$('quizReviewImage').src=slide.src;$('quizReviewImage').alt=slide.alt;$('quizReviewDialog').showModal()};
 $('quizReviewClose').onclick=()=>$('quizReviewDialog').close();$('quizReviewDialog').addEventListener('click',e=>{if(e.target===$('quizReviewDialog'))$('quizReviewDialog').close()});
-$('quizRestart').onclick=()=>{stop();session=false;$('quizResults').hidden=true;$('quizPlay').hidden=true;$('quizSetup').hidden=false};
+$('quizRestart').onclick=()=>{stop();session=false;$('quizResults').hidden=true;$('quizPlay').hidden=true;$('quizSetup').hidden=false;window.dispatchEvent(new Event('annotationcontextchange'))};
 window.addEventListener('hashchange',()=>{stop();if($('quizReviewDialog').open)$('quizReviewDialog').close();});
 })();
 </script>
