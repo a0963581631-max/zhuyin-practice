@@ -1,0 +1,229 @@
+{
+  "repository": "https://github.com/g0v/zh-stroke-data",
+  "revision": "16cb7fa33bfa5c1b8ff4c13a4909df0936b335b9",
+  "purpose": "國小資源班非營利教學；保留上游資料來源及著作權說明，資料檔未更動。",
+  "files": [
+    {
+      "symbol": "ㄅ",
+      "file": "3105.json",
+      "sha256": "d188805493a061c0b05f2cfdba4971bcacabecc2b7b1fcb9d14c704721e1a13b",
+      "bytes": 11510
+    },
+    {
+      "symbol": "ㄆ",
+      "file": "3106.json",
+      "sha256": "a36a809779f55bb1bf8dd3949ad625452e2cd45f0cd9607d9e80cf55a781feeb",
+      "bytes": 13455
+    },
+    {
+      "symbol": "ㄇ",
+      "file": "3107.json",
+      "sha256": "febd089adf0b423185bc9f61bd78c9cabbd313b4ef175e1113910ed5b728abec",
+      "bytes": 8875
+    },
+    {
+      "symbol": "ㄈ",
+      "file": "3108.json",
+      "sha256": "2d81dcec198c6e9eddfb81ed29a34b1a7370884ce06463d9b3b4b9501157f98e",
+      "bytes": 8542
+    },
+    {
+      "symbol": "ㄉ",
+      "file": "3109.json",
+      "sha256": "dbc33316f054048217b61734fd01c6943b0243a5ec35ef65d54b43cc2333c337",
+      "bytes": 14951
+    },
+    {
+      "symbol": "ㄊ",
+      "file": "310a.json",
+      "sha256": "4c52da1a3084e9e8e78daee2f895d26808ffe5ed4140f201206372e18fa41ec5",
+      "bytes": 13751
+    },
+    {
+      "symbol": "ㄋ",
+      "file": "310b.json",
+      "sha256": "8052bd714c5399783fde46afdb7ad3ec3138eb385eb57ae405230a435cc0229f",
+      "bytes": 12201
+    },
+    {
+      "symbol": "ㄌ",
+      "file": "310c.json",
+      "sha256": "e5bccf5daee84fb51642e43658ef5ab4609b5cda8245c2cfd94a276d704a7b06",
+      "bytes": 16663
+    },
+    {
+      "symbol": "ㄍ",
+      "file": "310d.json",
+      "sha256": "435be210e5aa463c7d1febd7dc70422cf0bfcaf673ecf972143945efaa85e419",
+      "bytes": 14242
+    },
+    {
+      "symbol": "ㄎ",
+      "file": "310e.json",
+      "sha256": "cb0671e6ab92efd4a4b4dca812c07b88997cd8892a7222c68aef7a93094ad8e6",
+      "bytes": 15147
+    },
+    {
+      "symbol": "ㄏ",
+      "file": "310f.json",
+      "sha256": "eb4052e4908e97a4afb806df2cc11427999cf65d6a77cc937cc6cebb85736ac6",
+      "bytes": 6519
+    },
+    {
+      "symbol": "ㄐ",
+      "file": "3110.json",
+      "sha256": "da5dffde1ca22557e137a5e3c009d3c2c9e463c86887cf4e3c922c9065290a09",
+      "bytes": 9993
+    },
+    {
+      "symbol": "ㄑ",
+      "file": "3111.json",
+      "sha256": "187ce5c524f9f326fbee1271f19afbd7c95817cdf348751861a795ebaf0b5f6a",
+      "bytes": 6774
+    },
+    {
+      "symbol": "ㄒ",
+      "file": "3112.json",
+      "sha256": "eff77ac314dbcce33dd8ed9f95e940ca88c55e2284b7a0f9f7fc2402d1adb953",
+      "bytes": 7568
+    },
+    {
+      "symbol": "ㄓ",
+      "file": "3113.json",
+      "sha256": "2befee837bc98c67f4b00fb098d0e2aaa0121f27dfd8c5be9170cd96c73914fe",
+      "bytes": 17670
+    },
+    {
+      "symbol": "ㄔ",
+      "file": "3114.json",
+      "sha256": "cbad678806d7d9c84417d8df70fb66189f3c6e4cc7825fe8eb05993419ace041",
+      "bytes": 11426
+    },
+    {
+      "symbol": "ㄕ",
+      "file": "3115.json",
+      "sha256": "8e62295ccc13ddc6f72829c9f112ab43f34d36308f83e2ad844088147ee06a1d",
+      "bytes": 11630
+    },
+    {
+      "symbol": "ㄖ",
+      "file": "3116.json",
+      "sha256": "63c33aa36da6e168fa06b62a352075c3f553ed84a43fc6861990353d9a711804",
+      "bytes": 16119
+    },
+    {
+      "symbol": "ㄗ",
+      "file": "3117.json",
+      "sha256": "857ab00c2a4959d3f11700205fd5a98622bbc247056f46faa1222478fbd906f1",
+      "bytes": 11477
+    },
+    {
+      "symbol": "ㄘ",
+      "file": "3118.json",
+      "sha256": "1a485b665e499fc2f3e88e9950a119a2c895a6e439396136586e2d4e01cb95ab",
+      "bytes": 13126
+    },
+    {
+      "symbol": "ㄙ",
+      "file": "3119.json",
+      "sha256": "860c0d5fce3cd22335412db2b4623b397989bff0aafef6a757b89bd54b8f1f05",
+      "bytes": 8900
+    },
+    {
+      "symbol": "ㄚ",
+      "file": "311a.json",
+      "sha256": "c9fff216126f292a9a08ad17b136c2cfdd6e886bd59e9714c732489da670ed46",
+      "bytes": 8423
+    },
+    {
+      "symbol": "ㄛ",
+      "file": "311b.json",
+      "sha256": "a60c9ed44794bb1c9d5085543d08c61160b82fbb371392beb8090e8905a90631",
+      "bytes": 9721
+    },
+    {
+      "symbol": "ㄜ",
+      "file": "311c.json",
+      "sha256": "a679e2a344ec0c7daa6fa67b5320f03e707bc8cfa5391ac5d5579b1b0d896261",
+      "bytes": 10429
+    },
+    {
+      "symbol": "ㄝ",
+      "file": "311d.json",
+      "sha256": "e560785b4adb386a928ce26218dbb800a1c56a49fad604f7b98910e5dfa64fef",
+      "bytes": 13713
+    },
+    {
+      "symbol": "ㄞ",
+      "file": "311e.json",
+      "sha256": "12b724b51a9a8ece08d88593e4c59ed5a0bbfa49a062ffd56ca038711bb21326",
+      "bytes": 17837
+    },
+    {
+      "symbol": "ㄟ",
+      "file": "311f.json",
+      "sha256": "e925bfba235f54a555731fabaf38aa58f0962cea8954ad09b0be02c771dd6ab7",
+      "bytes": 7157
+    },
+    {
+      "symbol": "ㄠ",
+      "file": "3120.json",
+      "sha256": "b69c71b2bafcc125725304661d2354cec31dee40c748af6872ff9bb23a44c9e9",
+      "bytes": 11917
+    },
+    {
+      "symbol": "ㄡ",
+      "file": "3121.json",
+      "sha256": "26af4429a1b2723033057a65e22140f12436ce12958140229235f60c03f1e433",
+      "bytes": 11707
+    },
+    {
+      "symbol": "ㄢ",
+      "file": "3122.json",
+      "sha256": "00ddb101dee970539b2611ca5cca753248550f1dc9c3b615e2e5c5f6fede3b30",
+      "bytes": 13472
+    },
+    {
+      "symbol": "ㄣ",
+      "file": "3123.json",
+      "sha256": "85612cf373595c051bd4ac9e32d02a065f9821c4ed8067893e6e92fc20ff206f",
+      "bytes": 9991
+    },
+    {
+      "symbol": "ㄤ",
+      "file": "3124.json",
+      "sha256": "fdb06fc62b9596b70cbd37730f17e1484db4bd92816184558f416717fe5d8839",
+      "bytes": 13735
+    },
+    {
+      "symbol": "ㄥ",
+      "file": "3125.json",
+      "sha256": "56baa40e09d4419a33f288e9e60dddd38f419257867813a78a3746561faf287c",
+      "bytes": 6373
+    },
+    {
+      "symbol": "ㄦ",
+      "file": "3126.json",
+      "sha256": "abe826ca84e7b6ee403d9efc6433541d47a9297ad13043c31c7b9502d82443dc",
+      "bytes": 10705
+    },
+    {
+      "symbol": "ㄧ",
+      "file": "3127.json",
+      "sha256": "7c5a9b23dce3a5002e7b6ba22c8076470621bd8c896c18221b8b7cd1dc3645d7",
+      "bytes": 4480
+    },
+    {
+      "symbol": "ㄨ",
+      "file": "3128.json",
+      "sha256": "51197cf4cafe69eb08f39681a30c7afe8619e6cbbbd7721bb34e9f36fb1c95fa",
+      "bytes": 8580
+    },
+    {
+      "symbol": "ㄩ",
+      "file": "3129.json",
+      "sha256": "7c9798cee2b7261ed8d745d6e97ba763eb5aa6825b521c591203ff1893460712",
+      "bytes": 9940
+    }
+  ]
+}

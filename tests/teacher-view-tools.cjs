@@ -13,7 +13,7 @@ const fixture=[{outline:[{type:'M',x:400,y:400},{type:'L',x:1600,y:1600},{type:'
  page.on('pageerror',e=>errors.push(e.message));
  await context.route('**/*',async route=>{
   const url=new URL(route.request().url());
-  if(url.hostname==='raw.githubusercontent.com')return route.fulfill({json:fixture});
+  if(url.pathname.startsWith('/assets/strokes/')&&url.pathname.endsWith('.json'))return route.fulfill({json:fixture});
   if(url.hostname!=='audit.local')return route.abort();
   const file=path.resolve(repo,decodeURIComponent(url.pathname==='/'?'/index.html':url.pathname).slice(1));
   if(!file.startsWith(repo+path.sep))return route.abort();

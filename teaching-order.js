@@ -1,6 +1,6 @@
 
 /* Teacher-facing Bopomofo lesson sequence; loaded before the main app script. */
-(() => {
+window.createTeachingOrder=({groups,navigationOrder,selectSymbol,fitPracticeBoard})=>{
   const page=document.getElementById("learningPage");
   const bar=document.createElement("div");
   bar.className="teaching-order-toolbar";
@@ -145,5 +145,5 @@
     if(route==="learn"&&lastRoute!=="learn")open(false);
     lastRoute=route;
   }
-  window.TeachingOrder={order,beforeSelect,syncStatus,onRoute,openIntro:()=>open(false)};
-})();
+  return {order,beforeSelect,syncStatus,onRoute,openIntro:()=>open(false)};
+};
