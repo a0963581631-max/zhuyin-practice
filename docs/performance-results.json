@@ -1,0 +1,429 @@
+{
+  "baseline_revision": "af3f0294bae4e6c845e4a71fd1f4a170315dbb4d",
+  "measurement_scope": "本機同條件模擬；執行環境不允許存取正式 GitHub Pages 網域，並非正式站或學校網路的實測。",
+  "conditions": "local gzip HTTP, 820x1180, 150ms latency, 1.6Mbps download, CPU 4x, 3 fresh contexts with warm repeat; not production measurements",
+  "before": [
+    {
+      "state": "cold",
+      "photoMs": 4290,
+      "fcpMs": 592,
+      "dclMs": 808,
+      "bytes": 786309,
+      "resources": [
+        {
+          "url": "teaching-order.css",
+          "bytes": 1280
+        },
+        {
+          "url": "vocab-image-upload.css",
+          "bytes": 1021
+        },
+        {
+          "url": "teaching-order.js",
+          "bytes": 2985
+        },
+        {
+          "url": "compound-grid-practice.js",
+          "bytes": 1803
+        },
+        {
+          "url": "vocab-image-upload.js",
+          "bytes": 2925
+        },
+        {
+          "url": "home-01.webp",
+          "bytes": 690282
+        },
+        {
+          "url": "teacher-view-tools.js",
+          "bytes": 5387
+        },
+        {
+          "url": "lesson-scissors-rock-paper.js",
+          "bytes": 1317
+        },
+        {
+          "url": "lesson-tadpole-mom.js",
+          "bytes": 1164
+        },
+        {
+          "url": "sock-laundry.html?v=20261013-reviewcount-tenrows",
+          "bytes": 17597
+        }
+      ]
+    },
+    {
+      "state": "warm",
+      "photoMs": 486,
+      "fcpMs": 304,
+      "dclMs": 510,
+      "bytes": 78145,
+      "resources": [
+        {
+          "url": "teaching-order.css",
+          "bytes": 0
+        },
+        {
+          "url": "vocab-image-upload.css",
+          "bytes": 0
+        },
+        {
+          "url": "home-01.webp",
+          "bytes": 0
+        },
+        {
+          "url": "teaching-order.js",
+          "bytes": 0
+        },
+        {
+          "url": "compound-grid-practice.js",
+          "bytes": 0
+        },
+        {
+          "url": "vocab-image-upload.js",
+          "bytes": 0
+        },
+        {
+          "url": "teacher-view-tools.js",
+          "bytes": 0
+        },
+        {
+          "url": "sock-laundry.html?v=20261013-reviewcount-tenrows",
+          "bytes": 17597
+        },
+        {
+          "url": "lesson-scissors-rock-paper.js",
+          "bytes": 0
+        },
+        {
+          "url": "lesson-tadpole-mom.js",
+          "bytes": 0
+        }
+      ]
+    },
+    {
+      "state": "cold",
+      "photoMs": 4218,
+      "fcpMs": 524,
+      "dclMs": 781,
+      "bytes": 786309,
+      "resources": [
+        {
+          "url": "home-01.webp",
+          "bytes": 690282
+        },
+        {
+          "url": "teaching-order.css",
+          "bytes": 1280
+        },
+        {
+          "url": "vocab-image-upload.css",
+          "bytes": 1021
+        },
+        {
+          "url": "teaching-order.js",
+          "bytes": 2985
+        },
+        {
+          "url": "compound-grid-practice.js",
+          "bytes": 1803
+        },
+        {
+          "url": "vocab-image-upload.js",
+          "bytes": 2925
+        },
+        {
+          "url": "teacher-view-tools.js",
+          "bytes": 5387
+        },
+        {
+          "url": "lesson-scissors-rock-paper.js",
+          "bytes": 1317
+        },
+        {
+          "url": "lesson-tadpole-mom.js",
+          "bytes": 1164
+        },
+        {
+          "url": "sock-laundry.html?v=20261013-reviewcount-tenrows",
+          "bytes": 17597
+        }
+      ]
+    },
+    {
+      "state": "warm",
+      "photoMs": 525,
+      "fcpMs": 296,
+      "dclMs": 503,
+      "bytes": 78145,
+      "resources": [
+        {
+          "url": "home-01.webp",
+          "bytes": 0
+        },
+        {
+          "url": "teaching-order.css",
+          "bytes": 0
+        },
+        {
+          "url": "vocab-image-upload.css",
+          "bytes": 0
+        },
+        {
+          "url": "teaching-order.js",
+          "bytes": 0
+        },
+        {
+          "url": "compound-grid-practice.js",
+          "bytes": 0
+        },
+        {
+          "url": "vocab-image-upload.js",
+          "bytes": 0
+        },
+        {
+          "url": "teacher-view-tools.js",
+          "bytes": 0
+        },
+        {
+          "url": "sock-laundry.html?v=20261013-reviewcount-tenrows",
+          "bytes": 17597
+        },
+        {
+          "url": "lesson-scissors-rock-paper.js",
+          "bytes": 0
+        },
+        {
+          "url": "lesson-tadpole-mom.js",
+          "bytes": 0
+        }
+      ]
+    },
+    {
+      "state": "cold",
+      "photoMs": 4228,
+      "fcpMs": 560,
+      "dclMs": 846,
+      "bytes": 786309,
+      "resources": [
+        {
+          "url": "teaching-order.css",
+          "bytes": 1280
+        },
+        {
+          "url": "vocab-image-upload.css",
+          "bytes": 1021
+        },
+        {
+          "url": "home-01.webp",
+          "bytes": 690282
+        },
+        {
+          "url": "teaching-order.js",
+          "bytes": 2985
+        },
+        {
+          "url": "compound-grid-practice.js",
+          "bytes": 1803
+        },
+        {
+          "url": "vocab-image-upload.js",
+          "bytes": 2925
+        },
+        {
+          "url": "teacher-view-tools.js",
+          "bytes": 5387
+        },
+        {
+          "url": "lesson-scissors-rock-paper.js",
+          "bytes": 1317
+        },
+        {
+          "url": "lesson-tadpole-mom.js",
+          "bytes": 1164
+        },
+        {
+          "url": "sock-laundry.html?v=20261013-reviewcount-tenrows",
+          "bytes": 17597
+        }
+      ]
+    },
+    {
+      "state": "warm",
+      "photoMs": 498,
+      "fcpMs": 340,
+      "dclMs": 499,
+      "bytes": 78145,
+      "resources": [
+        {
+          "url": "teaching-order.css",
+          "bytes": 0
+        },
+        {
+          "url": "vocab-image-upload.css",
+          "bytes": 0
+        },
+        {
+          "url": "home-01.webp",
+          "bytes": 0
+        },
+        {
+          "url": "teaching-order.js",
+          "bytes": 0
+        },
+        {
+          "url": "compound-grid-practice.js",
+          "bytes": 0
+        },
+        {
+          "url": "vocab-image-upload.js",
+          "bytes": 0
+        },
+        {
+          "url": "teacher-view-tools.js",
+          "bytes": 0
+        },
+        {
+          "url": "sock-laundry.html?v=20261013-reviewcount-tenrows",
+          "bytes": 17597
+        },
+        {
+          "url": "lesson-scissors-rock-paper.js",
+          "bytes": 0
+        },
+        {
+          "url": "lesson-tadpole-mom.js",
+          "bytes": 0
+        }
+      ]
+    }
+  ],
+  "after": [
+    {
+      "state": "cold",
+      "photoMs": 1416,
+      "fcpMs": 516,
+      "dclMs": 566,
+      "bytes": 195271,
+      "resources": [
+        {
+          "url": "app.js",
+          "bytes": 3093
+        },
+        {
+          "url": "home-slideshow.js",
+          "bytes": 1573
+        },
+        {
+          "url": "home-01-960.webp",
+          "bytes": 168950
+        }
+      ]
+    },
+    {
+      "state": "warm",
+      "photoMs": 374,
+      "fcpMs": 292,
+      "dclMs": 308,
+      "bytes": 21655,
+      "resources": [
+        {
+          "url": "home-01-960.webp",
+          "bytes": 0
+        },
+        {
+          "url": "app.js",
+          "bytes": 0
+        },
+        {
+          "url": "home-slideshow.js",
+          "bytes": 0
+        }
+      ]
+    },
+    {
+      "state": "cold",
+      "photoMs": 1423,
+      "fcpMs": 512,
+      "dclMs": 545,
+      "bytes": 195271,
+      "resources": [
+        {
+          "url": "app.js",
+          "bytes": 3093
+        },
+        {
+          "url": "home-slideshow.js",
+          "bytes": 1573
+        },
+        {
+          "url": "home-01-960.webp",
+          "bytes": 168950
+        }
+      ]
+    },
+    {
+      "state": "warm",
+      "photoMs": 401,
+      "fcpMs": 296,
+      "dclMs": 316,
+      "bytes": 21655,
+      "resources": [
+        {
+          "url": "home-01-960.webp",
+          "bytes": 0
+        },
+        {
+          "url": "app.js",
+          "bytes": 0
+        },
+        {
+          "url": "home-slideshow.js",
+          "bytes": 0
+        }
+      ]
+    },
+    {
+      "state": "cold",
+      "photoMs": 1351,
+      "fcpMs": 468,
+      "dclMs": 723,
+      "bytes": 195271,
+      "resources": [
+        {
+          "url": "home-01-960.webp",
+          "bytes": 168950
+        },
+        {
+          "url": "app.js",
+          "bytes": 3093
+        },
+        {
+          "url": "home-slideshow.js",
+          "bytes": 1573
+        }
+      ]
+    },
+    {
+      "state": "warm",
+      "photoMs": 381,
+      "fcpMs": 296,
+      "dclMs": 314,
+      "bytes": 21655,
+      "resources": [
+        {
+          "url": "home-01-960.webp",
+          "bytes": 0
+        },
+        {
+          "url": "app.js",
+          "bytes": 0
+        },
+        {
+          "url": "home-slideshow.js",
+          "bytes": 0
+        }
+      ]
+    }
+  ]
+}
