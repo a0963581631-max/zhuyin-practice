@@ -1,0 +1,52 @@
+/* Bopomofo entrance and teacher-driven challenge, loaded on relevant routes. */
+#bopomofoEntryPage,#challengePage{width:min(1080px,96vw);max-width:none;margin:0 auto;padding:16px 0 50px}
+.bopo-choice-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px;margin:28px auto 10px;max-width:870px}
+.bopo-choice{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;min-height:245px;padding:28px;text-align:center;text-decoration:none;color:#254866;background:#fff;border:3px solid #c7ddec;border-radius:26px;box-shadow:0 6px 20px #305c7814;transition:transform .15s,border-color .15s}
+.bopo-choice:hover,.bopo-choice:focus-visible{transform:translateY(-3px);border-color:#3d86c5}
+.bopo-choice.learn{background:#f5fcf8;border-color:#addac0}
+.bopo-choice.challenge{background:#f4f9ff;border-color:#b8d4f4}
+.bopo-choice-icon{font-size:48px;line-height:1.1}
+.bopo-choice-name{font-size:clamp(24px,3vw,33px);font-weight:900}
+.bopo-choice-desc{font-size:16px;color:#526879;line-height:1.6}
+.learn-return{display:inline-flex;align-items:center;color:#29669a;font-weight:800;text-decoration:none;margin:0 0 12px}
+#challengePage .challenge-top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:9px}
+#challengePage h1{margin:0;color:#24496b;font-size:clamp(26px,3vw,34px)}
+#challengePage .challenge-lead{font-size:16px;color:#51687a;line-height:1.65;margin:14px 0}
+.challenge-legend{display:flex;gap:12px;flex-wrap:wrap;align-items:center;padding:12px 14px;border-radius:15px;background:#fff;border:1px solid #dce8f4}
+.challenge-legend-item{display:inline-flex;gap:7px;align-items:center;font-size:14px;font-weight:700;color:#355066}
+.challenge-swatch{display:inline-block;width:17px;height:17px;border-radius:5px;border:1px solid #a5b6c0}
+.challenge-swatch.normal{background:#66ba7d}.challenge-swatch.review{background:#ffcf4d}.challenge-swatch.boss{background:#f37171}
+#challengeSummary{font-size:15px;font-weight:800;margin:16px 0 6px;color:#365671;line-height:1.6}
+#challengeStatus{background:#f4f8fc;border-radius:12px;padding:10px 14px;min-height:44px;color:#355771;font-size:14px}
+#challengePage .challenge-group{background:#fff;border:1px solid #d9e6f1;border-radius:20px;padding:18px;margin:17px 0}
+#challengePage .challenge-group h2{font-size:21px;margin:0 0 15px;color:#2e5877}
+.challenge-grid{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:11px}
+.challenge-cell{
+ position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;
+ min-height:100px;padding:12px 4px 9px;border:2px solid #b6c7cf;border-radius:16px;
+ color:#1a3543;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;
+ transition:background-color .14s ease,border-color .14s ease;overflow:hidden
+}
+.challenge-cell:active{cursor:grabbing}
+.challenge-cell[data-flag="review"]{border:3px solid #c58f08}
+.challenge-cell[data-flag="boss"]{border:3px solid #d83e43}
+.challenge-cell:focus-visible{outline:4px solid #285db8!important;outline-offset:3px}
+.challenge-glyph{font-size:clamp(26px,3vw,42px);font-weight:900;line-height:1.2;white-space:nowrap}
+.challenge-points{font-size:13px;line-height:1.4;font-weight:800;margin-top:6px;color:#30495b;font-variant-numeric:tabular-nums}
+.challenge-tag{font-size:12px;line-height:1.3;font-weight:900;background:#fff8;border-radius:6px;padding:1px 4px;margin-top:4px}
+.challenge-cell[data-flag="review"] .challenge-tag{color:#765000}
+.challenge-cell[data-flag="boss"] .challenge-tag{color:#a41c29}
+.challenge-reset{border:1px solid #bacbd9;border-radius:10px;padding:10px 15px;background:#fff;color:#405e76;cursor:pointer;font-weight:800}
+.challenge-reset:hover{background:#f5f8fb}
+.challenge-hint{font-size:13px;line-height:1.65;color:#5c7181;margin:12px 2px}
+@media(max-width:850px){.challenge-grid{grid-template-columns:repeat(6,minmax(0,1fr))}}
+@media(max-width:580px){
+ .bopo-choice-grid{grid-template-columns:1fr;gap:14px;margin:20px auto}
+ .bopo-choice{min-height:180px;padding:18px;gap:9px}
+ .bopo-choice-icon{font-size:39px}
+ #challengePage .challenge-group{padding:12px;margin:13px 0}
+ .challenge-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+ .challenge-cell{min-height:91px;border-radius:12px}
+ .challenge-glyph{font-size:30px}
+ .challenge-points,.challenge-tag{font-size:11px}
+}
