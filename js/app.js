@@ -35,7 +35,7 @@ async function showPortalPage(){
   const gradeMatch=/^math-([1-6])$/.exec(hash);
   const topicMatch=/^math-1-parts-(split|join|practice)$/.exec(hash);
   const topicTitles={split:'分',join:'合',practice:'綜合練習'};
-  const route=hash==='chinese-1-first-pretty-quiz'?'chineseQuiz':isReading?'chineseReading':chineseTermMatch?'chineseLessons':topicMatch?'mathPartsTopic':hash==='math-1-parts'?'mathParts':hash==='math-1-count30'?'mathCount30':gradeMatch?'mathGrade':chineseGradeMatch?'chineseGrade':(['home','learn','help','math','chinese'].includes(hash)?hash:'home');
+  const route=hash==='chinese-1-first-pretty-quiz'?'chineseQuiz':isReading?'chineseReading':chineseTermMatch?'chineseLessons':topicMatch?'mathPartsTopic':hash==='math-1-parts'?'mathParts':hash==='math-1-count30'?'mathCount30':gradeMatch?'mathGrade':chineseGradeMatch?'chineseGrade':hash==='learn'?'bopomofoEntry':hash==='learn-practice'?'learn':hash==='learn-challenge'?'challenge':(['home','help','math','chinese'].includes(hash)?hash:'home');
   if(topicMatch) document.getElementById('mathPartsTopicTitle').textContent=topicTitles[topicMatch[1]];
   const isShop=hash==='math-1-parts-split';
   document.body.classList.toggle('shop-active',isShop);
@@ -71,7 +71,7 @@ async function showPortalPage(){
   document.getElementById('helpBackdrop').classList.remove('show');
   window.TeachingFeedback?.clearConfetti();
 
-  const pages={chineseQuiz:document.getElementById('chineseQuizPage'),chineseReading:document.getElementById('chineseReadingPage'),chineseLessons:document.getElementById('chineseLessonsPage'),chinese:document.getElementById('chinesePage'),chineseGrade:document.getElementById('chineseGradePage'),home:document.getElementById('homePage'),learn:document.getElementById('learningPage'),help:document.getElementById('guidePage'),math:document.getElementById('mathPage'),mathGrade:document.getElementById('mathGradePage'),mathCount30:document.getElementById('mathCount30Page'),mathParts:document.getElementById('mathPartsPage'),mathPartsTopic:document.getElementById('mathPartsTopicPage')};
+  const pages={chineseQuiz:document.getElementById('chineseQuizPage'),chineseReading:document.getElementById('chineseReadingPage'),chineseLessons:document.getElementById('chineseLessonsPage'),chinese:document.getElementById('chinesePage'),chineseGrade:document.getElementById('chineseGradePage'),home:document.getElementById('homePage'),bopomofoEntry:document.getElementById('bopomofoEntryPage'),learn:document.getElementById('learningPage'),challenge:document.getElementById('challengePage'),help:document.getElementById('guidePage'),math:document.getElementById('mathPage'),mathGrade:document.getElementById('mathGradePage'),mathCount30:document.getElementById('mathCount30Page'),mathParts:document.getElementById('mathPartsPage'),mathPartsTopic:document.getElementById('mathPartsTopicPage')};
   for(const [name,page] of Object.entries(pages)) page.hidden=name!==route;
   document.getElementById('helpBtn').hidden=route!=='learn';
   document.body.classList.toggle('learn-active',route==='learn');
@@ -80,22 +80,24 @@ async function showPortalPage(){
     if(a.dataset.route===route) a.setAttribute('aria-current','page');
     else a.removeAttribute('aria-current');
   });
-  document.title='教學互動學習網站｜'+(hash==='chinese-1-first-pretty-quiz'?'好漂亮｜小測驗':isTadpole?'小蝌蚪找媽媽｜課文理解':isScissors?'剪刀石頭布｜課文理解':isPretty?'好漂亮｜課文理解':chineseTermMatch?'一年級'+(chineseTermMatch[1]==='first'?'上學期':'下學期')+'｜課文選擇':topicMatch?'1年級數學・分與合・'+topicTitles[topicMatch[1]]:gradeMatch?gradeMatch[1]+'年級數學':chineseGradeMatch?chineseGradeMatch[1]+'年級國語科':{chinese:'國語科',home:'首頁',learn:'注音學習',help:'幫助',math:'數學',mathParts:'1年級數學・分與合',mathCount30:'1年級數學・數到30'}[route]);
+  document.title='教學互動學習網站｜'+(hash==='chinese-1-first-pretty-quiz'?'好漂亮｜小測驗':isTadpole?'小蝌蚪找媽媽｜課文理解':isScissors?'剪刀石頭布｜課文理解':isPretty?'好漂亮｜課文理解':chineseTermMatch?'一年級'+(chineseTermMatch[1]==='first'?'上學期':'下學期')+'｜課文選擇':topicMatch?'1年級數學・分與合・'+topicTitles[topicMatch[1]]:gradeMatch?gradeMatch[1]+'年級數學':chineseGradeMatch?chineseGradeMatch[1]+'年級國語科':{chinese:'國語科',home:'首頁',bopomofoEntry:'注音學習',learn:'注音認讀與標準筆順',challenge:'注音挑戰',help:'幫助',math:'數學',mathParts:'1年級數學・分與合',mathCount30:'1年級數學・數到30'}[route]);
   window.scrollTo(0,0);
   (pages[route].querySelector('h1') || pages[route].querySelector('a')).focus({preventScroll:true});
   const page=pages[route];
-  const teacher=route!=='home'&&route!=='help';
+  const teacher=route!=='home'&&route!=='help'&&route!=='bopomofoEntry';
   page.inert=true;
   try{
     if(teacher){showLoad('教材載入中……');await ensureTeacherTools();}
     if(epoch!==navigationEpoch)return;
     if(route==='learn')await loadBopomofo();
+    if(route==='challenge')await loadScript('js/challenge.js');
     if(isShop||isJoin)await loadMath();
     if(isReading)await loadReading();
     if(route==='chineseQuiz')await loadQuiz();
     if(epoch!==navigationEpoch)return;
     page.inert=false;hideLoad();
     if(route==='learn')Bopomofo.enter();
+    if(route==='challenge')window.ZhuyinChallenge.enter();
     if(isShop||isJoin)MathLessons.enter(hash);
     if(route==='mathCount30'&&!sockFrame.getAttribute('src'))sockFrame.src=sockFrame.dataset.src;
   }catch(error){
