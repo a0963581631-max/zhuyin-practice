@@ -700,6 +700,7 @@ body.reading-fullscreen{overflow:hidden}
 #sockLaundryFrame{display:block;width:100%;height:max(680px,calc(100vh - 215px));min-height:680px;border:2px solid #d7e7ee;border-radius:22px;background:#f3f9fc}
 @media(max-width:700px){#mathCount30Page{width:98vw;padding-left:0;padding-right:0}#sockLaundryFrame{height:82vh;min-height:650px}}
 </style>
+<link rel="stylesheet" href="css/challenge.css">
 </head>
 <body>
 <div id="homeBackdrop" aria-hidden="true" hidden><div class="home-photo"></div><div class="home-photo"></div></div>
@@ -714,6 +715,23 @@ body.reading-fullscreen{overflow:hidden}
 <a class="portal-choice home-study" href="#learn"><span class="portal-icon" aria-hidden="true">ㄅ ㄆ ㄇ</span><span class="home-study-label">注音學習</span></a>
 <a class="portal-choice home-study" href="#math"><span class="portal-icon" aria-hidden="true">＋ − × ÷</span><span class="home-study-label">數學</span></a>
 </div>
+</main>
+<main id="bopomofoEntryPage" class="portal-help" hidden>
+<a class="math-back" href="#home">← 回首頁</a>
+<h1 tabindex="-1">注音學習</h1>
+<p class="lead">今天想進行哪一種注音活動？</p>
+<nav class="bopo-choice-grid" aria-label="注音活動選擇">
+ <a class="bopo-choice learn" href="#learn-practice">
+  <span class="bopo-choice-icon" aria-hidden="true">✍️</span>
+  <span class="bopo-choice-name">去學習</span>
+  <span class="bopo-choice-desc">注音認讀・標準筆順・書寫練習・詞彙</span>
+ </a>
+ <a class="bopo-choice challenge" href="#learn-challenge">
+  <span class="bopo-choice-icon" aria-hidden="true">🏆</span>
+  <span class="bopo-choice-name">去挑戰</span>
+  <span class="bopo-choice-desc">滑動計分・待加強・大魔王學習檢核</span>
+ </a>
+</nav>
 </main>
 <main id="chinesePage" class="portal-help" hidden>
 <h1 tabindex="-1">國語科</h1>
@@ -964,7 +982,28 @@ body.reading-fullscreen{overflow:hidden}
 
 <div id="confettiLayer" aria-hidden="true"></div>
 
+<main id="challengePage" class="portal-help" hidden>
+<a class="math-back" href="#learn">← 返回注音選擇</a>
+<div class="challenge-top">
+ <h1 tabindex="-1">注音挑戰｜學習檢核</h1>
+ <button id="challengeReset" class="challenge-reset" type="button">清除全部紀錄</button>
+</div>
+<p class="challenge-lead">向上滑加 1 分、向下滑減 1 分（每項 0～10 分）；快速按三下標記「待加強」，長按 3 秒標記「大魔王」。同樣操作可取消該標記。</p>
+<div class="challenge-legend" aria-label="顏色說明">
+ <span class="challenge-legend-item"><i class="challenge-swatch normal" aria-hidden="true"></i>一般分數：越高越綠</span>
+ <span class="challenge-legend-item"><i class="challenge-swatch review" aria-hidden="true"></i>待加強：加分越淡</span>
+ <span class="challenge-legend-item"><i class="challenge-swatch boss" aria-hidden="true"></i>大魔王：加分越淡</span>
+</div>
+<div id="challengeSummary" aria-live="polite"></div>
+<p id="challengeStatus" role="status" aria-live="polite">正在載入檢核紀錄……</p>
+<p class="challenge-hint">可用滑鼠按住拖曳或直接用手指滑動；鍵盤也可用 ↑／↓ 計分，Y 標記待加強、R 標記大魔王。分數與標記僅儲存在此瀏覽器，不會自動同步其他裝置。</p>
+<section class="challenge-group"><h2>聲母</h2><div id="challengeInitials" class="challenge-grid"></div></section>
+<section class="challenge-group"><h2>介音與韻母</h2><div id="challengeFinals" class="challenge-grid"></div></section>
+<section class="challenge-group"><h2>結合韻</h2><div id="challengeCompound" class="challenge-grid"></div></section>
+</main>
+
 <main id="learningPage" hidden>
+<a class="learn-return" href="#learn">← 返回注音選擇</a>
 <div class="learning-heading"><h1 tabindex="-1">注音認讀與標準筆順練習</h1><button id="helpBtn" class="help-btn" type="button" aria-label="開啟使用說明" title="使用說明" hidden>練習操作說明</button></div>
 <p class="lead">可播放標準筆順，也可進入練習模式讓學生依照正確筆畫順序實際描寫。</p>
 
