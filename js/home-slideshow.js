@@ -4,7 +4,7 @@
  const layers=[...backdrop.querySelectorAll('.home-photo')];
  let index=0, active=0, timer=null, warmTimer=null, busy=false, started=false;
  const animations=[null,null], cache=new Map();
- const home=()=>!['learn','help','math','chinese','math-1-parts','math-1-count30'].includes(location.hash.slice(1))&&!/^chinese-[1-6](?:-(?:first|second)(?:-(?:pretty(?:-quiz)?|scissors-rock-paper|tadpole-mom))?)?$/.test(location.hash.slice(1))&&!/^math-[1-6]$/.test(location.hash.slice(1))&&!/^math-1-parts-(split|join|practice)$/.test(location.hash.slice(1));
+ const home=()=>!location.hash||location.hash==='#home';
  const running=()=>home()&&!document.hidden;
  function load(n,priority='low'){
    if(cache.has(n))return cache.get(n);
