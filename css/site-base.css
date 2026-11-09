@@ -1,0 +1,16 @@
+
+:root{
+  --bg:#f4f9ff;--card:#fff;--text:#243447;--muted:#63778b;
+  --blue:#4e8bd8;--blue2:#2f69aa;--green:#66a77b;--green2:#44795a;
+  --border:#d6e5f5;--board:#aaa;--guide:#f7f7f7;--ink:#080808;--grid:#000000;
+  --practice:#fffbdf;--practice-border:#e8d26d;--student:#295fb8;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;font-family:"Noto Sans TC","Microsoft JhengHei",sans-serif;
+  color:var(--text);background:linear-gradient(#f8fbff,#edf6ff);min-height:100vh
+}
+button,input{font:inherit}
+main{width:min(1160px,95vw);margin:auto;padding:24px 0 50px}
+h1{text-align:center;font-size:clamp(30px,5vw,46px);margin:0 0 8px}
+.lead{text-align:center;color:var(--muted);font-size:17px;margin:0 0 22px}

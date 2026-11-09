@@ -23,6 +23,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Validate subject modules
+        run: |
+          node tests/subject-modules.cjs
+          node --check js/subject-loader.js
+          node --check js/app.js
       - name: Setup Pages
         uses: actions/configure-pages@v5
         with:

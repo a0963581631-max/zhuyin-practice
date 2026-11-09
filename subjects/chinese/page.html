@@ -1,0 +1,66 @@
+<main id="chinesePage" class="portal-help" hidden>
+<h1 tabindex="-1">國語科</h1>
+<p class="lead">請選擇本次授課的年級。</p>
+<nav class="grade-grid" aria-label="國語科授課年級">
+<a class="grade-choice" href="#chinese-1"><span class="grade-number" aria-hidden="true">1</span><span>1年級</span></a>
+<a class="grade-choice" href="#chinese-2"><span class="grade-number" aria-hidden="true">2</span><span>2年級</span></a>
+<a class="grade-choice" href="#chinese-3"><span class="grade-number" aria-hidden="true">3</span><span>3年級</span></a>
+<a class="grade-choice" href="#chinese-4"><span class="grade-number" aria-hidden="true">4</span><span>4年級</span></a>
+<a class="grade-choice" href="#chinese-5"><span class="grade-number" aria-hidden="true">5</span><span>5年級</span></a>
+<a class="grade-choice" href="#chinese-6"><span class="grade-number" aria-hidden="true">6</span><span>6年級</span></a>
+</nav>
+<a class="math-back" href="#home">← 回首頁</a>
+</main>
+<main id="chineseGradePage" class="portal-help" hidden>
+<a class="math-back" href="#chinese">← 返回年級選擇</a>
+<h1 id="chineseGradeTitle" tabindex="-1">1年級國語科</h1>
+<nav id="chineseTerms" class="grade-grid" aria-label="一年級學期" hidden>
+<a class="grade-choice" href="#chinese-1-first">上學期</a>
+<a class="grade-choice" href="#chinese-1-second">下學期</a>
+</nav>
+<section id="chineseGradePlaceholder" class="guide-block"><p>此年級的國語科教學內容準備中。</p></section>
+</main>
+<main id="chineseLessonsPage" class="portal-help" hidden>
+<a class="math-back" href="#chinese-1">← 返回學期選擇</a>
+<h1 id="chineseLessonsTitle" tabindex="-1">一年級上學期</h1>
+<p class="lead">請選擇課文。</p>
+<nav id="chineseFirstLessons" class="grade-grid" aria-label="上學期課文">
+<a class="grade-choice" href="#chinese-1-first-pretty">好漂亮</a>
+<a class="grade-choice" href="#chinese-1-first-scissors-rock-paper">剪刀石頭布</a>
+<a class="grade-choice" href="#chinese-1-first-tadpole-mom">小蝌蚪找媽媽</a>
+</nav>
+<section id="chineseSecondLessons" class="guide-block" hidden><p>下學期課文準備中。</p></section>
+</main>
+<main id="chineseReadingPage" hidden>
+<div class="reading-heading"><a class="math-back" href="#chinese-1-first">← 返回課文選擇</a><h1 tabindex="-1">好漂亮｜課文理解</h1><div class="reading-actions"><a class="reading-quiz" href="#chinese-1-first-pretty-quiz">小測驗</a></div></div>
+<div class="reading-frame"><img id="prettyImage" alt="" decoding="async"><canvas id="prettyHighlight" aria-hidden="true" width="1448" height="1086"></canvas></div>
+<nav class="reading-controls" aria-label="切換課文理解圖片">
+<button id="prettyPrev" type="button" aria-label="上一張">&lt;</button>
+<span id="prettyPosition" role="status" aria-live="polite"></span>
+<button id="prettyListen" type="button" aria-pressed="false">🔊 聆聽課文</button>
+<button id="prettyNext" type="button" aria-label="下一張">&gt;</button>
+</nav>
+<p id="prettyAudioStatus" class="reading-audio-status" role="status" aria-live="polite"></p>
+</main>
+<main id="chineseQuizPage" class="portal-help" hidden>
+<a class="math-back" href="#chinese-1-first-pretty">← 返回課文理解</a>
+<h1 tabindex="-1">好漂亮｜小測驗</h1>
+<section id="quizSetup" class="quiz-card">
+<p>聽題目，選圖片。也可以指給老師看，由老師代按。</p>
+<div class="quiz-settings"><label>選項數量 <select id="quizChoiceCount"><option value="2">2 個選項</option><option value="3">3 個選項</option></select></label>
+<label><input id="quizAdvanced" type="checkbox" checked> 加入第六題：換張圖試試看</label>
+<label><input id="quizAutoRead" type="checkbox" checked> 進入題目時自動朗讀</label></div>
+<button id="quizStart" class="quiz-primary" type="button">開始小測驗</button>
+<p class="quiz-note">不計時。紀錄保留在本次頁面，重新整理後會清除。</p></section>
+<section id="quizPlay" class="quiz-card" hidden>
+<div class="quiz-top"><span id="quizProgress"></span><span id="quizLevel"></span></div>
+<h2 id="quizQuestion" tabindex="-1"></h2>
+<div class="quiz-actions"><button id="quizRead" type="button">🔊 再聽一次</button><button id="quizHint" type="button">給我提示</button><button id="quizReview" type="button">回看課文</button></div>
+<p id="quizHintText" class="quiz-hint" hidden></p>
+<div id="quizAnswers" class="quiz-answers"></div>
+<p id="quizFeedback" role="status" aria-live="polite"></p>
+<div class="quiz-bottom"><button id="quizSkip" type="button">先跳過</button><button id="quizNext" class="quiz-primary" type="button" hidden>下一題 →</button></div>
+</section>
+<section id="quizResults" class="quiz-card" hidden><h2 tabindex="-1">本次學習紀錄</h2><p id="quizSummary"></p><div id="quizResultTable" class="quiz-table-wrap"></div><p class="quiz-note">重聽或提示後答對，與第一次獨立答對分開記錄。單次答對可能含猜測，請搭配指認或換圖再確認；進階題單獨呈現。</p><button id="quizRestart" type="button">重新設定與作答</button></section>
+<dialog id="quizReviewDialog"><div class="quiz-review-head"><h2>回看課文</h2><button id="quizReviewClose" type="button">關閉並繼續作答</button></div><img id="quizReviewImage" alt=""><p>看完後關閉圖片，再試一次。</p></dialog>
+</main>

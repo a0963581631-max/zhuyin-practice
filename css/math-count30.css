@@ -1,0 +1,4 @@
+
+#mathCount30Page{width:min(1370px,98vw);max-width:none}
+#sockLaundryFrame{display:block;width:100%;height:max(680px,calc(100vh - 215px));min-height:680px;border:2px solid #d7e7ee;border-radius:22px;background:#f3f9fc}
+@media(max-width:700px){#mathCount30Page{width:98vw;padding-left:0;padding-right:0}#sockLaundryFrame{height:82vh;min-height:650px}}
