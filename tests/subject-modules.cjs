@@ -28,7 +28,10 @@ for(const lesson of ['好漂亮','剪刀石頭布','小蝌蚪找媽媽']){
  const volume=chinese.split('<main id="chineseVolumePage"')[1].split('</main>')[0];
  assert(volume.includes(lesson),'Primer is missing lesson '+lesson);
 }
-assert(chinese.includes('id="chineseBookOnePlaceholder"')&&chinese.includes('第一冊課文準備中'), 'Missing empty first volume');
+assert(chinese.includes('id="chineseBookOnePlaceholder"')&&chinese.includes('href="#chinese-1-first-handprint"'), 'Missing first-book handprint lesson');
+const handprint=read('lesson-handprint.js');
+assert(app.includes("const isHandprint=hash==='chinese-1-first-handprint'"), 'Handprint route is not registered');
+assert(handprint.includes('assets/images/reading/handprint/01.webp')&&handprint.includes('assets/images/reading/handprint/06.webp'), 'Handprint images missing');
 assert(chinese.includes('href="#chinese-1-first-primer">← 返回首冊課文選擇'), 'Lesson back link must return to primer');
 assert(app.includes("chineseVolumeMatch?'chineseVolume'"),'Book routing missing');
 assert(app.includes("chineseVolume:document.getElementById('chineseVolumePage')"),'Book page unregistered');

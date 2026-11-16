@@ -3,7 +3,8 @@ const prettySlides=window.prettyLessonSlides;
 let slides=prettySlides,index=0;
 const newLesson=window.scissorsRockPaperLesson;
 const tadpoleLesson=window.tadpoleMomLesson;
-const readingRoutes=['#chinese-1-first-pretty',newLesson.route,tadpoleLesson.route];
+const handprintLesson=window.handprintLesson;
+const readingRoutes=['#chinese-1-first-pretty',newLesson.route,tadpoleLesson.route,handprintLesson.route];
 const isReadingRoute=()=>readingRoutes.includes(location.hash);
 // Decode the current picture first and warm only its immediate successor.
 const warmedLessonImages=new Set();let warmingLessonImages=false;
@@ -48,7 +49,7 @@ const sourceContext=sourceCanvas.getContext('2d',{willReadFrequently:true});
 let maskIndex=-1,sourcePixels=null,selectedSyllables=[];
 const syllablePatches=new Map();
 function selectLesson(){
- const selected=location.hash===tadpoleLesson.route?tadpoleLesson:location.hash===newLesson.route?newLesson:null;
+ const selected=location.hash===handprintLesson.route?handprintLesson:location.hash===tadpoleLesson.route?tadpoleLesson:location.hash===newLesson.route?newLesson:null;
  slides=selected?selected.slides:prettySlides;
  readingGroups=selected?selected.groups:prettyReadingGroups;
  syllableRects=selected?selected.syllableRects:prettySyllableRects;
