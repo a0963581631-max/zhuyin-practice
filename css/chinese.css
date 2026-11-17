@@ -87,3 +87,18 @@ body.reading-fullscreen{overflow:hidden}
 .hanzi-search-row input:focus-visible,.hanzi-workspace button:focus-visible{outline:3px solid #f4c357;outline-offset:2px}
 @media(max-width:720px){.hanzi-workspace{grid-template-columns:135px minmax(0,1fr)}.hanzi-sidebar{padding:12px 8px;gap:9px}.hanzi-current-character{font-size:56px}.hanzi-main-action{padding:10px 4px;font-size:15px}.hanzi-board-panel{padding:12px 8px}.hanzi-board-panel h2{font-size:17px}.hanzi-pager{gap:5px}.hanzi-pager button{padding:8px 5px}}
 @media(max-width:520px){.hanzi-search-box{padding:15px}.hanzi-search-row{flex-direction:column}.hanzi-search-row input{font-size:21px}.hanzi-choices{gap:8px}.hanzi-choice{min-width:54px;min-height:60px;font-size:31px}.hanzi-lesson-choices .hanzi-choice{min-width:44px;min-height:48px;font-size:23px}.hanzi-workspace{grid-template-columns:110px minmax(0,1fr)}.hanzi-current-character{font-size:46px}.hanzi-main-action{font-size:13px}.hanzi-board-controls{gap:6px}.hanzi-board-controls button{font-size:13px;padding:7px 9px}}
+
+/* Chinese-character practice: level 0 no hints, 1 start dot, 2 dot plus next outline */
+.hanzi-radical-panel{display:flex;flex-direction:column;align-items:center;gap:4px;margin:2px 0 10px;padding:11px 6px;border:1px solid #c7dfe8;border-radius:14px;background:white;font-size:14px;color:#4c6a78}
+.hanzi-radical-panel strong{font-size:41px;line-height:1.2;color:#226e86}
+.hanzi-radical-panel small{font-size:12px;text-align:center;color:#687d89}
+.hanzi-guide-layer{position:absolute;inset:0;width:100%;height:100%;z-index:2;pointer-events:none;touch-action:none}
+.hanzi-start-dot{position:absolute;z-index:3;transform:translate(-50%,-50%);width:17px;height:17px;border-radius:50%;background:#39ab63;border:3px solid white;box-shadow:0 0 0 2px #218c4a,0 1px 4px #0004;pointer-events:none;touch-action:none}
+.hanzi-start-dot[hidden]{display:none}
+.hanzi-hint-control{max-width:1030px;box-sizing:border-box;margin:0;background:#f1f7ff;border:2px solid #cbdfe8;border-top:0;border-radius:0 0 20px 20px;padding:13px 24px}
+.hanzi-hint-control label{display:block;color:#3f6179;font-weight:800;margin-bottom:8px}
+#hanziHintLevel{width:100%;height:28px;margin:0;accent-color:#307e9a;cursor:pointer}
+.hanzi-hint-scale{display:flex;justify-content:space-between;font-size:13px;color:#526a80}
+.hanzi-hint-control p{font-size:14px;font-weight:700;color:#23668c;text-align:center;margin:10px 0 0}
+@media(max-width:720px){.hanzi-radical-panel strong{font-size:32px}.hanzi-hint-control{padding:12px}}
+@media(max-width:520px){.hanzi-radical-panel{padding:8px 2px}.hanzi-radical-panel strong{font-size:29px}.hanzi-start-dot{width:13px;height:13px}}

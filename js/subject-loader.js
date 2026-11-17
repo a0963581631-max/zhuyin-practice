@@ -33,7 +33,7 @@
    }
    await new Promise((resolve,reject)=>{
     const script=document.createElement('script');
-    script.src='js/app.js?v=hanzi-first-20261117';
+    script.src='js/app.js?v=hanzi-hints-20261117';
     script.onload=()=>document.getElementById('lessonLoadStatus')?resolve():reject(Error('網站導覽初始化失敗'));
     script.onerror=()=>reject(Error('網站導覽程式載入失敗'));
     document.body.append(script);

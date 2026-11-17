@@ -50,6 +50,7 @@
   <div class="hanzi-current-label">目前教學國字</div>
   <div id="hanziCurrentCharacter" class="hanzi-current-character" aria-live="polite"></div>
   <div id="hanziStrokeCount" class="hanzi-count"></div>
+  <div class="hanzi-radical-panel" aria-label="部首資訊"><span>部首</span><strong id="hanziRadical" aria-live="polite">—</strong><small id="hanziRadicalHelp"></small></div>
   <button id="hanziPlayAll" class="hanzi-main-action" type="button" disabled>▶ 播放筆順</button>
   <button id="hanziStartPractice" class="hanzi-main-action hanzi-practice-action" type="button" disabled>✍ 練習筆順</button>
   <div class="hanzi-pager">
@@ -64,6 +65,8 @@
    <div class="hanzi-board" id="hanziBoard">
     <div class="hanzi-grid-lines" aria-hidden="true"></div>
     <div id="hanziWritingTarget" class="hanzi-writing-target" aria-label="國字書寫區，使用滑鼠或手指一筆一畫書寫"></div>
+    <svg id="hanziGuideLayer" class="hanzi-guide-layer" aria-hidden="true"></svg>
+    <div id="hanziStartDot" class="hanzi-start-dot" aria-hidden="true" hidden></div>
    </div>
   </div>
   <div class="hanzi-board-controls">
@@ -77,7 +80,13 @@
   <p id="hanziProgress" class="hanzi-progress" role="status" aria-live="polite">請選擇國字。</p>
  </div>
 </section>
-<p class="hanzi-data-note">筆畫資料使用 <a href="https://hanziwriter.org/" target="_blank" rel="noopener noreferrer">Hanzi Writer</a> 開放字庫，並非教育部官方筆順資料。個別國字的字形或筆順可能不同，教學時請以<a href="https://stroke-order.learningweb.moe.edu.tw/searchW.jsp?ID2=1" target="_blank" rel="noopener noreferrer">教育部《國字標準字體筆順學習網》</a>核對。首次載入國字需要網路。</p>
+<section class="hanzi-hint-control" aria-label="國字筆順提示程度設定">
+ <label for="hanziHintLevel">提示程度滑桿</label>
+ <input id="hanziHintLevel" type="range" min="0" max="2" step="1" value="2" aria-describedby="hanziHintLevelText">
+ <div class="hanzi-hint-scale" aria-hidden="true"><span>無提示</span><span>部分提示</span><span>完全提示</span></div>
+ <p id="hanziHintLevelText" role="status">目前提示程度：完全提示（綠色起筆點＋藍色下一畫）</p>
+</section>
+<p class="hanzi-data-note">筆畫資料使用 <a href="https://hanziwriter.org/" target="_blank" rel="noopener noreferrer">Hanzi Writer</a> 開放字庫，並非教育部官方筆順資料。個別國字的字形或筆順可能不同，教學時請以<a href="https://stroke-order.learningweb.moe.edu.tw/searchW.jsp?ID2=1" target="_blank" rel="noopener noreferrer">教育部《國字標準字體筆順學習網》</a>核對。筆畫名稱和部首另參考 <a href="https://github.com/theajack/cnchar" target="_blank" rel="noopener noreferrer">cnchar</a> 資料，資料可能與臺灣標準不同；無法比對時不會猜測筆畫名稱。首次載入國字需要網路。</p>
 </main>
 <main id="chineseGradePage" class="portal-help" hidden>
 <a class="math-back" href="#chinese">← 返回年級選擇</a>

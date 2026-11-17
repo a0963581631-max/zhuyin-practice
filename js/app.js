@@ -18,10 +18,18 @@ async function loadMath(){await loadScript('js/feedback.js');await loadScript('j
 async function loadReading(){await Promise.all([loadScript('js/reading-data.js'),loadScript('lesson-scissors-rock-paper.js'),loadScript('lesson-tadpole-mom.js'),loadScript('lesson-handprint.js')]);await loadScript('js/reading.js');}
 async function loadQuiz(){await loadScript('js/reading-data.js');await loadScript('js/reading-quiz.js');}
 async function loadChineseHandwriting(){
- await loadScript('js/chinese-handwriting.js?v=hanzi-first-20261117');
+ await loadScript('js/chinese-handwriting.js?v=hanzi-hints-20261117');
 }
 async function loadHanziWriter(){
  await Promise.all([loadScript('js/feedback.js'),loadScript('https://cdn.jsdelivr.net/npm/hanzi-writer@3.7.3/dist/hanzi-writer.min.js')]);
+ try{
+  await loadScript('https://cdn.jsdelivr.net/gh/theajack/cnchar/dist/cnchar.latest.min.js');
+  await Promise.allSettled([
+   loadScript('https://cdn.jsdelivr.net/npm/cnchar-order/cnchar.order.min.js'),
+   loadScript('https://cdn.jsdelivr.net/npm/cnchar-trad/cnchar.trad.min.js'),
+   loadScript('https://cdn.jsdelivr.net/npm/cnchar-radical/cnchar.radical.min.js')
+  ]);
+ }catch(error){console.warn('Optional stroke/radical dictionary unavailable',error);}
 }
 let navigationEpoch=0;
 const loadStatus=document.createElement('div');loadStatus.id='lessonLoadStatus';loadStatus.hidden=true;loadStatus.setAttribute('role','status');loadStatus.style.cssText='position:fixed;bottom:12px;left:12px;right:100px;z-index:11000;padding:12px;background:#f7fcfd;border:2px solid #c7e1e7;border-radius:12px;color:#214858;';
