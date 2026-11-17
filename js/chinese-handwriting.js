@@ -22,26 +22,60 @@
  const isPracticeRoute=()=>location.hash==='#chinese-vocabulary-practice';
  const feedback=()=>window.TeachingFeedback;
 
+ // Versioned, lightweight index derived from the MOE Mini Dictionary's official
+ // released 2019_20260929 data. Built during GitHub Pages deployment, not scraped.
+ const MOE_RADICAL_INDEX='assets/data/moe-mini-radicals-20260929.json';
+ let moeIndexPromise=null,radicalLookupEpoch=0;
  const radicalOverrides={花:'艸',開:'門'};
  const fallbackRadicals={大:'大',象:'豕',鼻:'鼻',子:'子',長:'長',河:'水',馬:'馬',小:'小',蝌:'虫',蚪:'虫',找:'手',媽:'女',剪:'刀',石:'石',頭:'頁',布:'巾',印:'卩',手:'手'};
  const radicalVariants={'艹':'艸','门':'門','氵':'水','氺':'水','亻':'人','扌':'手','忄':'心','攵':'攴','刂':'刀','灬':'火','礻':'示','衤':'衣','讠':'言','訁':'言','犭':'犬','钅':'金','釒':'金','纟':'糸','糹':'糸','饣':'食','飠':'食','辶':'辵','贝':'貝','见':'見','车':'車','页':'頁','风':'風','马':'馬'};
  const strokeChars={'横':'橫','竖':'豎','钩':'鉤','弯':'彎','卧':'臥','点':'點'};
  const levelExplanations=['無提示（不顯示起筆點及下一畫）','部分提示（只有綠色起筆點）','完全提示（綠色起筆點＋藍色下一畫）'];
- function updateRadical(ch){
-  let result=radicalOverrides[ch]||'';
-  if(!result){
-   try{
-    const lookup=window.cnchar?.radical||window.CncharRadical?.radical;
-    if(typeof lookup==='function'){
-     let raw=lookup(ch,'array');raw=Array.isArray(raw)?raw[0]:raw;
-     if(raw&&typeof raw==='object')raw=raw.radical;
-     if(typeof raw==='string'&&raw.length&&raw!=='*')result=radicalVariants[raw]||raw;
-    }
-   }catch(error){console.warn('Radical lookup failed',error);}
+ function getMoeRadicals(){
+  if(!moeIndexPromise){
+   moeIndexPromise=fetch(MOE_RADICAL_INDEX,{cache:'force-cache'})
+    .then(response=>{if(!response.ok)throw new Error('HTTP '+response.status);return response.json();})
+    .then(json=>{
+     if(json?.edition!=='2019_20260929'||!json.radicals||Object.keys(json.radicals).length<4000)
+      throw new Error('部首索引資料不完整');
+     return json.radicals;
+    })
+    .catch(error=>{
+     console.warn('MOE mini-dictionary radical index unavailable',error);
+     return null;
+    });
   }
-  result=result||fallbackRadicals[ch]||'';
-  elements.radical.textContent=result||'—';
-  elements.radicalHelp.textContent=result?'康熙部首':'尚無可用部首資料';
+  return moeIndexPromise;
+ }
+ function lookupSupplementaryRadical(ch){
+  try{
+   const lookup=window.cnchar?.radical||window.CncharRadical?.radical;
+   if(typeof lookup==='function'){
+    let value=lookup(ch,'array');value=Array.isArray(value)?value[0]:value;
+    if(value&&typeof value==='object')value=value.radical;
+    if(typeof value==='string'&&value.length&&value!=='*'&&value!=='？'){
+     return radicalVariants[value]||value;
+    }
+   }
+  }catch(error){console.warn('Supplementary radical lookup error',error);}
+  return radicalOverrides[ch]||fallbackRadicals[ch]||null;
+ }
+ async function updateRadical(ch){
+  const epoch=++radicalLookupEpoch;
+  elements.radical.textContent='…';
+  elements.radicalHelp.textContent='正在查詢教育部字典';
+  const official=await getMoeRadicals();
+  if(epoch!==radicalLookupEpoch||elements.char.textContent!==ch||!isPracticeRoute())return;
+  const value=official?.[ch];
+  if(typeof value==='string'&&value.trim()){
+   // Normalize only the displayed radical form. The underlying official lookup is unchanged.
+   elements.radical.textContent=radicalVariants[value.trim()]||value.trim();
+   elements.radicalHelp.textContent='教育部《國語小字典》';
+   return;
+  }
+  const supplement=lookupSupplementaryRadical(ch);
+  elements.radical.textContent=supplement||'—';
+  elements.radicalHelp.textContent=supplement?'補充字庫（請核對教育部）':'本字典未收錄此字的部首';
  }
  function namesFor(ch,count){
   try{
@@ -314,6 +348,7 @@
   loadCurrent();
  }
  function leave(){
+  ++radicalLookupEpoch;
   ++loadToken;
   resetWriter();
   feedback()?.clearConfetti();

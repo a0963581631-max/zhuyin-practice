@@ -28,6 +28,9 @@ jobs:
           node tests/subject-modules.cjs
           node --check js/subject-loader.js
           node --check js/app.js
+      - name: Build Ministry of Education mini-dictionary radical index
+        run: |
+          python3 scripts/build-moe-mini-radicals.py
       - name: Setup Pages
         uses: actions/configure-pages@v5
         with:

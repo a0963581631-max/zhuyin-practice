@@ -102,3 +102,5 @@ body.reading-fullscreen{overflow:hidden}
 .hanzi-hint-control p{font-size:14px;font-weight:700;color:#23668c;text-align:center;margin:10px 0 0}
 @media(max-width:720px){.hanzi-radical-panel strong{font-size:32px}.hanzi-hint-control{padding:12px}}
 @media(max-width:520px){.hanzi-radical-panel{padding:8px 2px}.hanzi-radical-panel strong{font-size:29px}.hanzi-start-dot{width:13px;height:13px}}
+
+.hanzi-radical-panel a{color:#276c8b;font-size:12px;text-decoration:underline;text-underline-offset:3px;text-align:center}
