@@ -5,7 +5,7 @@ Source: https://language.moe.gov.tw/001/Upload/Files/site_content/M0001/respub/d
 Edition: 2019_20260929
 Mirrored in: https://github.com/kemdict/kemdict-data-ministry-of-education
 MOE dictionary data copyright: Ministry of Education (Taiwan), CC BY-ND 3.0 TW.
-The raw fields `title` and `radical` are used unmodified as factual lookup values.
+The source mirror fields `id` (character) and `title` (radical) contain the released factual values.
 Never fetch or scrape dict.mini.moe.edu.tw web pages or call its private APIs.
 """
 from __future__ import annotations
@@ -36,7 +36,7 @@ def build() -> None:
     for row in rows:
         if not isinstance(row, dict):
             continue
-        character, radical = row.get("title"), row.get("radical")
+        character, radical = row.get("id"), row.get("title")
         if not isinstance(character, str) or len(character) != 1 or not isinstance(radical, str):
             continue
         if not radical or len(radical) > 4:
@@ -47,7 +47,6 @@ def build() -> None:
     if conflicting:
         print(f"Note: {len(conflicting)} entries have multiple radical values; keeping first entry.")
     if len(lookup) < 4000:
-        print("DATA DEBUG", "rows:", len(rows), "example:", repr(rows[:4]))
         raise ValueError(f"Only {len(lookup)} distinct radicals; aborting incomplete deploy")
     for char, expected in {"花": "艸", "開": "門"}.items():
         actual = lookup.get(char)
