@@ -43,7 +43,7 @@ const hanzi=read('js/chinese-handwriting.js');
 assert(chinese.includes('id="hanziHintLevel"') && chinese.includes('hanzi-hint-base-note'),'Hanzi hint slider or grey-outline instruction missing');
 assert(hanzi.includes('writer.showOutline({duration:0});'),'Grey character guide must remain visible');
 assert(!hanzi.includes('writer.hideOutline('),'No hint level may hide the grey character');
-assert(/leniency:0\\.82,averageDistanceThreshold:170/.test(hanzi),'Tighter shape and position thresholds missing');
+assert(hanzi.includes('leniency:0.82,averageDistanceThreshold:170'),'Tighter shape and position thresholds missing');
 assert(hanzi.includes('markStrokeCorrectAfterMisses:false'),'No forced acceptance after repeated mistakes');
 assert(hanzi.includes('if(level===2&&strokeData.strokes[strokeNumber])'),'Blue hint must be limited to full guidance');
 assert(hanzi.includes('if(level>=1){'),'Start dot must be limited to partial and full guidance');
