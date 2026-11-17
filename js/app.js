@@ -18,7 +18,7 @@ async function loadMath(){await loadScript('js/feedback.js');await loadScript('j
 async function loadReading(){await Promise.all([loadScript('js/reading-data.js'),loadScript('lesson-scissors-rock-paper.js'),loadScript('lesson-tadpole-mom.js'),loadScript('lesson-handprint.js')]);await loadScript('js/reading.js');}
 async function loadQuiz(){await loadScript('js/reading-data.js');await loadScript('js/reading-quiz.js');}
 async function loadChineseHandwriting(){
- await loadScript('js/chinese-handwriting.js?v=hanzi-hints-20261117');
+ await loadScript('js/chinese-handwriting.js?v=hanzi-hints2-20261117');
 }
 async function loadHanziWriter(){
  await Promise.all([loadScript('js/feedback.js'),loadScript('https://cdn.jsdelivr.net/npm/hanzi-writer@3.7.3/dist/hanzi-writer.min.js')]);

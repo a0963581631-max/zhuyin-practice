@@ -46,7 +46,9 @@
  function namesFor(ch,count){
   try{
    let raw=window.cnchar?.stroke?.(ch,'order','name');
-   if(Array.isArray(raw)&&raw.length===1&&typeof raw[0]==='string')raw=raw[0];
+   // cnchar.stroke('花','order','name') returns a nested array: [[...strokeNames]].
+   if(Array.isArray(raw)&&raw.length===1&&Array.isArray(raw[0]))raw=raw[0];
+   else if(Array.isArray(raw)&&raw.length===1&&typeof raw[0]==='string'&&raw[0].includes(' '))raw=raw[0];
    if(typeof raw==='string')raw=raw.trim().split(/\s+/);
    if(!Array.isArray(raw)||raw.length!==count)return [];
    const labels=raw.map(name=>Array.from(String(name)).map(c=>strokeChars[c]||c).join(''));
