@@ -21,3 +21,7 @@
 @media(max-width:700px){.grade-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.grade-choice{min-height:112px;padding:16px 10px;gap:10px;font-size:22px}.grade-number{width:42px;height:42px;font-size:26px}}
 @media(max-width:360px){.grade-choice{flex-direction:column;gap:8px}}
 .math-unit-label{color:#52697f;font-size:15px;margin:12px 0 0}
+
+/* Chinese subject entry: choose a grade or future vocabulary practice. */
+.chinese-mode-grid{grid-template-columns:repeat(2,minmax(0,1fr));max-width:880px}
+@media(max-width:540px){.chinese-mode-grid{grid-template-columns:1fr}}
