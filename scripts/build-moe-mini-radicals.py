@@ -47,6 +47,7 @@ def build() -> None:
     if conflicting:
         print(f"Note: {len(conflicting)} entries have multiple radical values; keeping first entry.")
     if len(lookup) < 4000:
+        print("DATA DEBUG", "rows:", len(rows), "example:", repr(rows[:4]))
         raise ValueError(f"Only {len(lookup)} distinct radicals; aborting incomplete deploy")
     for char, expected in {"花": "艸", "開": "門"}.items():
         actual = lookup.get(char)
