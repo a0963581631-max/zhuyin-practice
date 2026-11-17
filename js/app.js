@@ -17,6 +17,12 @@ async function loadBopomofo(){
 async function loadMath(){await loadScript('js/feedback.js');await loadScript('js/math.js');}
 async function loadReading(){await Promise.all([loadScript('js/reading-data.js'),loadScript('lesson-scissors-rock-paper.js'),loadScript('lesson-tadpole-mom.js'),loadScript('lesson-handprint.js')]);await loadScript('js/reading.js');}
 async function loadQuiz(){await loadScript('js/reading-data.js');await loadScript('js/reading-quiz.js');}
+async function loadChineseHandwriting(){
+ await loadScript('js/chinese-handwriting.js?v=hanzi-first-20261117');
+}
+async function loadHanziWriter(){
+ await Promise.all([loadScript('js/feedback.js'),loadScript('https://cdn.jsdelivr.net/npm/hanzi-writer@3.7.3/dist/hanzi-writer.min.js')]);
+}
 let navigationEpoch=0;
 const loadStatus=document.createElement('div');loadStatus.id='lessonLoadStatus';loadStatus.hidden=true;loadStatus.setAttribute('role','status');loadStatus.style.cssText='position:fixed;bottom:12px;left:12px;right:100px;z-index:11000;padding:12px;background:#f7fcfd;border:2px solid #c7e1e7;border-radius:12px;color:#214858;';
 const loadMessage=document.createElement('span'),retry=document.createElement('button');retry.type='button';retry.textContent='重新載入';retry.style.marginLeft='12px';retry.onclick=()=>showPortalPage();loadStatus.append(loadMessage,retry);document.body.append(loadStatus);
@@ -37,7 +43,7 @@ async function showPortalPage(){
   const gradeMatch=/^math-([1-6])$/.exec(hash);
   const topicMatch=/^math-1-parts-(split|join|practice)$/.exec(hash);
   const topicTitles={split:'分',join:'合',practice:'綜合練習'};
-  const route=hash==='chinese-1-first-pretty-quiz'?'chineseQuiz':isReading?'chineseReading':chineseVolumeMatch?'chineseVolume':chineseTermMatch?'chineseLessons':topicMatch?'mathPartsTopic':hash==='math-1-parts'?'mathParts':hash==='math-1-count30'?'mathCount30':gradeMatch?'mathGrade':chineseGradeMatch?'chineseGrade':hash==='chinese-grades'?'chineseGrades':hash==='chinese-vocabulary'?'chineseVocabulary':hash==='learn'?'bopomofoEntry':hash==='learn-practice'?'learn':hash==='learn-challenge'?'challenge':(['home','help','math','chinese'].includes(hash)?hash:'home');
+  const route=hash==='chinese-1-first-pretty-quiz'?'chineseQuiz':isReading?'chineseReading':chineseVolumeMatch?'chineseVolume':chineseTermMatch?'chineseLessons':topicMatch?'mathPartsTopic':hash==='math-1-parts'?'mathParts':hash==='math-1-count30'?'mathCount30':gradeMatch?'mathGrade':chineseGradeMatch?'chineseGrade':hash==='chinese-grades'?'chineseGrades':hash==='chinese-vocabulary'?'chineseVocabulary':hash==='chinese-vocabulary-practice'?'chineseHandwriting':hash==='learn'?'bopomofoEntry':hash==='learn-practice'?'learn':hash==='learn-challenge'?'challenge':(['home','help','math','chinese'].includes(hash)?hash:'home');
   if(topicMatch) document.getElementById('mathPartsTopicTitle').textContent=topicTitles[topicMatch[1]];
   const isShop=hash==='math-1-parts-split';
   document.body.classList.toggle('shop-active',isShop);
@@ -84,7 +90,7 @@ async function showPortalPage(){
   document.getElementById('helpBackdrop').classList.remove('show');
   window.TeachingFeedback?.clearConfetti();
 
-  const pages={chineseQuiz:document.getElementById('chineseQuizPage'),chineseReading:document.getElementById('chineseReadingPage'),chineseLessons:document.getElementById('chineseLessonsPage'),chineseVolume:document.getElementById('chineseVolumePage'),chinese:document.getElementById('chinesePage'),chineseGrades:document.getElementById('chineseGradesPage'),chineseVocabulary:document.getElementById('chineseVocabularyPage'),chineseGrade:document.getElementById('chineseGradePage'),home:document.getElementById('homePage'),bopomofoEntry:document.getElementById('bopomofoEntryPage'),learn:document.getElementById('learningPage'),challenge:document.getElementById('challengePage'),help:document.getElementById('guidePage'),math:document.getElementById('mathPage'),mathGrade:document.getElementById('mathGradePage'),mathCount30:document.getElementById('mathCount30Page'),mathParts:document.getElementById('mathPartsPage'),mathPartsTopic:document.getElementById('mathPartsTopicPage')};
+  const pages={chineseQuiz:document.getElementById('chineseQuizPage'),chineseReading:document.getElementById('chineseReadingPage'),chineseLessons:document.getElementById('chineseLessonsPage'),chineseVolume:document.getElementById('chineseVolumePage'),chinese:document.getElementById('chinesePage'),chineseGrades:document.getElementById('chineseGradesPage'),chineseVocabulary:document.getElementById('chineseVocabularyPage'),chineseHandwriting:document.getElementById('chineseHandwritingPage'),chineseGrade:document.getElementById('chineseGradePage'),home:document.getElementById('homePage'),bopomofoEntry:document.getElementById('bopomofoEntryPage'),learn:document.getElementById('learningPage'),challenge:document.getElementById('challengePage'),help:document.getElementById('guidePage'),math:document.getElementById('mathPage'),mathGrade:document.getElementById('mathGradePage'),mathCount30:document.getElementById('mathCount30Page'),mathParts:document.getElementById('mathPartsPage'),mathPartsTopic:document.getElementById('mathPartsTopicPage')};
   for(const [name,page] of Object.entries(pages)) page.hidden=name!==route;
   document.getElementById('helpBtn').hidden=route!=='learn';
   document.body.classList.toggle('learn-active',route==='learn');
@@ -93,7 +99,7 @@ async function showPortalPage(){
     if(a.dataset.route===route) a.setAttribute('aria-current','page');
     else a.removeAttribute('aria-current');
   });
-  document.title='教學互動學習網站｜'+(hash==='chinese-1-first-pretty-quiz'?'好漂亮｜小測驗':isHandprint?'印手印｜課文理解':isTadpole?'小蝌蚪找媽媽｜課文理解':isScissors?'剪刀石頭布｜課文理解':isPretty?'好漂亮｜課文理解':chineseVolumeMatch?'一年級上學期｜'+(chineseVolumeMatch[1]==='primer'?'首冊':'第一冊'):chineseTermMatch?'一年級'+(chineseTermMatch[1]==='first'?'上學期｜冊別選擇':'下學期｜課文選擇'):topicMatch?'1年級數學・分與合・'+topicTitles[topicMatch[1]]:gradeMatch?gradeMatch[1]+'年級數學':chineseGradeMatch?chineseGradeMatch[1]+'年級國語科':{chinese:'國語科',chineseGrades:'國語科｜選擇年級',chineseVocabulary:'國語科｜生字詞練習',home:'首頁',bopomofoEntry:'注音學習',learn:'注音認讀與標準筆順',challenge:'注音挑戰',help:'幫助',math:'數學',mathParts:'1年級數學・分與合',mathCount30:'1年級數學・數到30'}[route]);
+  document.title='教學互動學習網站｜'+(hash==='chinese-1-first-pretty-quiz'?'好漂亮｜小測驗':isHandprint?'印手印｜課文理解':isTadpole?'小蝌蚪找媽媽｜課文理解':isScissors?'剪刀石頭布｜課文理解':isPretty?'好漂亮｜課文理解':chineseVolumeMatch?'一年級上學期｜'+(chineseVolumeMatch[1]==='primer'?'首冊':'第一冊'):chineseTermMatch?'一年級'+(chineseTermMatch[1]==='first'?'上學期｜冊別選擇':'下學期｜課文選擇'):topicMatch?'1年級數學・分與合・'+topicTitles[topicMatch[1]]:gradeMatch?gradeMatch[1]+'年級數學':chineseGradeMatch?chineseGradeMatch[1]+'年級國語科':{chinese:'國語科',chineseGrades:'國語科｜選擇年級',chineseVocabulary:'國語科｜生字詞練習',chineseHandwriting:'國語科｜國字筆順練習',home:'首頁',bopomofoEntry:'注音學習',learn:'注音認讀與標準筆順',challenge:'注音挑戰',help:'幫助',math:'數學',mathParts:'1年級數學・分與合',mathCount30:'1年級數學・數到30'}[route]);
   window.scrollTo(0,0);
   (pages[route].querySelector('h1') || pages[route].querySelector('a')).focus({preventScroll:true});
   const page=pages[route];
@@ -107,9 +113,13 @@ async function showPortalPage(){
     if(isShop||isJoin)await loadMath();
     if(isReading)await loadReading();
     if(route==='chineseQuiz')await loadQuiz();
+    if(route==='chineseVocabulary'||route==='chineseHandwriting')await loadChineseHandwriting();
+    if(route==='chineseHandwriting')await loadHanziWriter();
     if(epoch!==navigationEpoch)return;
     page.inert=false;hideLoad();
     if(route==='learn')Bopomofo.enter();
+    if(route==='chineseVocabulary'||route==='chineseHandwriting')window.ChineseHandwriting.enter(route);
+    else window.ChineseHandwriting?.leave();
     if(route==='challenge')window.ZhuyinChallenge.enter();
     if(isShop||isJoin)MathLessons.enter(hash);
     if(route==='mathCount30'&&!sockFrame.getAttribute('src'))sockFrame.src=sockFrame.dataset.src;

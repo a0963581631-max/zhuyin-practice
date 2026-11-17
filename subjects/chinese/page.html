@@ -23,7 +23,61 @@
 <main id="chineseVocabularyPage" class="portal-help" hidden>
 <a class="math-back" href="#chinese">← 返回國語選單</a>
 <h1 tabindex="-1">生字詞練習</h1>
-<section class="guide-block"><p>生字詞練習功能尚未建置。</p></section>
+<p class="lead">輸入今天要教的國字，再從結果中選擇要先教的字。</p>
+<section class="hanzi-search-box">
+ <form id="hanziSearchForm" class="hanzi-search-form">
+  <label for="hanziSearchInput">請輸入要練習的國字（最多20個不同的字）</label>
+  <div class="hanzi-search-row">
+   <input id="hanziSearchInput" type="text" placeholder="例如：大象鼻子長" maxlength="80" autocomplete="off" required aria-describedby="hanziSearchNote">
+   <button type="submit">搜尋國字</button>
+  </div>
+  <p id="hanziSearchNote" class="hanzi-search-tip">可輸入整個詞語或句子，系統會依順序列出國字並自動略過重複字及標點符號。</p>
+ </form>
+ <p id="hanziSearchStatus" class="hanzi-search-status" role="status" aria-live="polite"></p>
+ <section id="hanziSearchResults" hidden>
+  <h2>本次教學國字</h2>
+  <p class="hanzi-search-tip">點選任一國字，即可從該字開始播放或練習筆順。</p>
+  <div id="hanziSearchChoices" class="hanzi-choices" aria-label="選擇要先教的國字"></div>
+ </section>
+</section>
+</main>
+<main id="chineseHandwritingPage" class="portal-help" hidden>
+<a class="math-back" href="#chinese-vocabulary">← 返回生字搜尋</a>
+<h1 tabindex="-1">國字筆順教學與練習</h1>
+<nav id="hanziLessonChoices" class="hanzi-choices hanzi-lesson-choices" aria-label="切換本次教學國字"></nav>
+<section class="hanzi-workspace" aria-label="國字筆順練習區">
+ <aside class="hanzi-sidebar">
+  <div class="hanzi-current-label">目前教學國字</div>
+  <div id="hanziCurrentCharacter" class="hanzi-current-character" aria-live="polite"></div>
+  <div id="hanziStrokeCount" class="hanzi-count"></div>
+  <button id="hanziPlayAll" class="hanzi-main-action" type="button" disabled>▶ 播放筆順</button>
+  <button id="hanziStartPractice" class="hanzi-main-action hanzi-practice-action" type="button" disabled>✍ 練習筆順</button>
+  <div class="hanzi-pager">
+   <button id="hanziPrevious" type="button" aria-label="上一個國字">〈</button>
+   <button id="hanziNext" type="button" aria-label="下一個國字">〉</button>
+  </div>
+  <p class="hanzi-search-tip">可以點上方的國字，或按左右箭頭切換。</p>
+ </aside>
+ <div class="hanzi-board-panel">
+  <h2>筆順播放／逐筆練習</h2>
+  <div class="hanzi-board-wrap">
+   <div class="hanzi-board" id="hanziBoard">
+    <div class="hanzi-grid-lines" aria-hidden="true"></div>
+    <div id="hanziWritingTarget" class="hanzi-writing-target" aria-label="國字書寫區，使用滑鼠或手指一筆一畫書寫"></div>
+   </div>
+  </div>
+  <div class="hanzi-board-controls">
+   <button id="hanziStep" type="button" disabled>下一畫</button>
+   <button id="hanziHint" type="button" disabled>提示下一筆</button>
+   <button id="hanziRestart" type="button" disabled>重新播放／重寫</button>
+  </div>
+  <label class="hanzi-speed-label" for="hanziSpeed">播放速度：
+   <select id="hanziSpeed"><option value="0.75">慢</option><option value="1.25" selected>中</option><option value="2.2">快</option></select>
+  </label>
+  <p id="hanziProgress" class="hanzi-progress" role="status" aria-live="polite">請選擇國字。</p>
+ </div>
+</section>
+<p class="hanzi-data-note">筆畫資料使用 <a href="https://hanziwriter.org/" target="_blank" rel="noopener noreferrer">Hanzi Writer</a> 開放字庫，並非教育部官方筆順資料。個別國字的字形或筆順可能不同，教學時請以<a href="https://stroke-order.learningweb.moe.edu.tw/searchW.jsp?ID2=1" target="_blank" rel="noopener noreferrer">教育部《國字標準字體筆順學習網》</a>核對。首次載入國字需要網路。</p>
 </main>
 <main id="chineseGradePage" class="portal-help" hidden>
 <a class="math-back" href="#chinese">← 返回年級選擇</a>

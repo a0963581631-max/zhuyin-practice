@@ -41,3 +41,49 @@ body.reading-fullscreen{overflow:hidden}
 .quiz-table-wrap{overflow:auto}.quiz-table-wrap table{width:100%;border-collapse:collapse;min-width:650px}.quiz-table-wrap th,.quiz-table-wrap td{padding:12px;border:1px solid #d8e5e9;text-align:left;vertical-align:top}.quiz-table-wrap th{background:#edf6f7}
 #quizReviewDialog{border:0;border-radius:20px;padding:18px;width:min(1000px,calc(100vw - 50px));max-height:90dvh;box-sizing:border-box}#quizReviewDialog::backdrop{background:#173342aa}.quiz-review-head{display:flex;justify-content:space-between;align-items:center;gap:12px}#quizReviewDialog img{display:block;width:100%;height:65dvh;object-fit:contain}
 @media(max-width:600px){#chineseQuizPage{padding:10px 86px 24px 12px}.quiz-card{padding:14px}.quiz-answers{gap:10px;grid-template-columns:repeat(2,minmax(0,1fr))}.quiz-settings{gap:14px}.quiz-answer{aspect-ratio:1}.quiz-review-head{flex-wrap:wrap}#chineseQuizPage button{padding:8px 10px}}
+
+/* Independent traditional-character handwriting practice; scoped to the Chinese module. */
+.hanzi-search-box{background:#fff;border:2px solid #d0e5ec;border-radius:24px;padding:24px;max-width:920px;margin:24px 0;box-shadow:0 5px 17px #315c8211}
+.hanzi-search-form label{display:block;color:#245d76;font-size:19px;font-weight:800;margin-bottom:12px}
+.hanzi-search-row{display:flex;gap:12px;align-items:stretch}
+.hanzi-search-row input{flex:1;min-width:0;border:2px solid #9dc1d2;border-radius:14px;padding:14px 16px;font:inherit;font-size:25px;background:#fcfefe;color:#253d4a}
+.hanzi-search-row button,.hanzi-main-action,.hanzi-board-controls button,.hanzi-pager button{font:inherit;font-weight:750;cursor:pointer;border-radius:13px;border:2px solid #2e758f;background:#2e758f;color:#fff;padding:10px 18px}
+.hanzi-search-row button{white-space:nowrap;font-size:19px}
+.hanzi-search-tip{font-size:14px;color:#526d79;line-height:1.55;margin:10px 0}
+.hanzi-search-status{color:#27647b;font-weight:700;min-height:1.3em}
+#hanziSearchResults{border-top:1px solid #d9e5e9;padding-top:14px;margin-top:16px}
+#hanziSearchResults h2{font-size:21px;margin:4px 0}
+.hanzi-choices{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin:12px 0}
+.hanzi-choice{display:grid;place-items:center;min-width:72px;min-height:76px;border:2px solid #9ac5d2;background:#fff;border-radius:15px;padding:8px 12px;color:#254a5f;font:inherit;font-weight:800;font-size:38px;cursor:pointer;line-height:1.15}
+.hanzi-choice:hover,.hanzi-choice:focus-visible{outline:3px solid #d7eef3;border-color:#2d829d}
+.hanzi-choice[aria-current="true"]{background:#236e86;color:#fff;border-color:#236e86}
+.hanzi-lesson-choices{margin-top:14px;margin-bottom:17px}
+.hanzi-lesson-choices .hanzi-choice{min-width:55px;min-height:57px;font-size:28px}
+.hanzi-workspace{display:grid;grid-template-columns:195px minmax(0,1fr);max-width:1030px;border:2px solid #cbdfe8;border-radius:22px;background:#fff;overflow:hidden;box-shadow:0 8px 25px #315c8212}
+.hanzi-sidebar{display:flex;flex-direction:column;align-items:stretch;gap:12px;background:#f2f8fb;border-right:2px solid #cbdfe8;padding:20px 14px}
+.hanzi-current-label{text-align:center;font-size:14px;color:#546f7c}
+.hanzi-current-character{text-align:center;font-size:76px;line-height:1.12;font-weight:800;color:#246e83}
+.hanzi-count{text-align:center;font-size:14px;color:#566d78;margin-bottom:10px}
+.hanzi-main-action{width:100%;min-height:52px;font-size:17px}
+.hanzi-practice-action{background:#2e8a70;border-color:#2e8a70}
+.hanzi-main-action.is-active{outline:4px solid #e4f5c1}
+.hanzi-workspace button:disabled{opacity:.45;cursor:not-allowed}
+.hanzi-pager{display:flex;gap:12px;margin-top:auto}
+.hanzi-pager button{min-width:0;flex:1;background:#fff;color:#245d76;font-size:26px;line-height:1}
+.hanzi-board-panel{min-width:0;padding:15px 16px;text-align:center;background:#fff}
+.hanzi-board-panel h2{font-size:21px;color:#762b3a;margin:0 0 12px}
+.hanzi-board-wrap{display:flex;justify-content:center}
+.hanzi-board{position:relative;width:min(100%,480px);aspect-ratio:1;background:#fffdf9;border:3px solid #647a86;border-radius:14px;overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none}
+.hanzi-grid-lines{position:absolute;inset:0;pointer-events:none;background:linear-gradient(to right,transparent calc(50% - 1px),#cbd7df 50%,transparent calc(50% + 1px)),linear-gradient(to bottom,transparent calc(50% - 1px),#cbd7df 50%,transparent calc(50% + 1px))}
+.hanzi-writing-target{position:absolute;inset:0;z-index:1;width:100%;height:100%;touch-action:none;user-select:none;-webkit-user-select:none}
+.hanzi-writing-target svg{display:block;touch-action:none}
+.hanzi-board-controls{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin:14px 0}
+.hanzi-board-controls button{font-size:16px;background:#f0f7fa;color:#245d76;min-height:44px;border-color:#91b9c8}
+.hanzi-speed-label{font-size:15px;color:#526d79;display:inline-flex;align-items:center;gap:7px}
+.hanzi-speed-label select{font:inherit;border:1px solid #8fb6c2;border-radius:9px;padding:5px 7px;background:white}
+.hanzi-progress{font-size:16px;font-weight:700;color:#285e70;min-height:2.4em;line-height:1.5;margin:12px 0 2px}
+.hanzi-data-note{max-width:1030px;line-height:1.6;font-size:13px;color:#526b77;margin:14px 0}
+.hanzi-data-note a{color:#22678a}
+.hanzi-search-row input:focus-visible,.hanzi-workspace button:focus-visible{outline:3px solid #f4c357;outline-offset:2px}
+@media(max-width:720px){.hanzi-workspace{grid-template-columns:135px minmax(0,1fr)}.hanzi-sidebar{padding:12px 8px;gap:9px}.hanzi-current-character{font-size:56px}.hanzi-main-action{padding:10px 4px;font-size:15px}.hanzi-board-panel{padding:12px 8px}.hanzi-board-panel h2{font-size:17px}.hanzi-pager{gap:5px}.hanzi-pager button{padding:8px 5px}}
+@media(max-width:520px){.hanzi-search-box{padding:15px}.hanzi-search-row{flex-direction:column}.hanzi-search-row input{font-size:21px}.hanzi-choices{gap:8px}.hanzi-choice{min-width:54px;min-height:60px;font-size:31px}.hanzi-lesson-choices .hanzi-choice{min-width:44px;min-height:48px;font-size:23px}.hanzi-workspace{grid-template-columns:110px minmax(0,1fr)}.hanzi-current-character{font-size:46px}.hanzi-main-action{font-size:13px}.hanzi-board-controls{gap:6px}.hanzi-board-controls button{font-size:13px;padding:7px 9px}}
