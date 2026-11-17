@@ -30,7 +30,8 @@
  const fallbackRadicals={大:'大',象:'豕',鼻:'鼻',子:'子',長:'長',河:'水',馬:'馬',小:'小',蝌:'虫',蚪:'虫',找:'手',媽:'女',剪:'刀',石:'石',頭:'頁',布:'巾',印:'卩',手:'手'};
  const radicalVariants={'艹':'艸','门':'門','氵':'水','氺':'水','亻':'人','扌':'手','忄':'心','攵':'攴','刂':'刀','灬':'火','礻':'示','衤':'衣','讠':'言','訁':'言','犭':'犬','钅':'金','釒':'金','纟':'糸','糹':'糸','饣':'食','飠':'食','辶':'辵','贝':'貝','见':'見','车':'車','页':'頁','风':'風','马':'馬'};
  const strokeChars={'横':'橫','竖':'豎','钩':'鉤','弯':'彎','卧':'臥','点':'點'};
- const levelExplanations=['無提示（不顯示起筆點及下一畫）','部分提示（只有綠色起筆點）','完全提示（綠色起筆點＋藍色下一畫）'];
+ // Grey character outline is ALWAYS visible; levels control only extra guidance.
+ const levelExplanations=['無提示（保留灰色底字，不顯示額外提示）','部分提示（灰色底字＋綠色起筆點）','完全提示（灰色底字＋綠色起筆點＋淡藍色下一畫）'];
  function getMoeRadicals(){
   if(!moeIndexPromise){
    moeIndexPromise=fetch(MOE_RADICAL_INDEX,{cache:'force-cache'})
@@ -95,8 +96,8 @@
   elements.levelText.textContent='目前提示程度：'+levelExplanations[level];
   clearGuides();
   if(!writer||mode!=='practice'||strokeNumber>=strokeTotal||!strokeData)return;
-  if(level===2)writer.showOutline({duration:0});
-  else writer.hideOutline({duration:0});
+  // Never remove the low-contrast stroke outline: all three levels need the same grey model.
+  writer.showOutline({duration:0});
   const scale=(boardSize-36)/1024;
   if(level===2&&strokeData.strokes[strokeNumber]){
    elements.guide.setAttribute('viewBox','0 0 '+boardSize+' '+boardSize);
@@ -288,7 +289,12 @@
   setProgress('請從第1畫開始，依照提示程度練習書寫。');
   setButtons(false);
   thisWriter.quiz({
-   leniency:1.2,acceptBackwardsStrokes:false,showHintAfterMisses:false,
+   // Require both correct direction/shape AND close physical placement on the model.
+   // Hanzi Writer's default 350-unit average-distance gate was too permissive.
+   // With the grey outline always visible, effective average tolerance is
+   // 170 * 0.82 * 0.5 ≈ 70 Hanzi units (instead of the old 350 * 1.2 * 0.5 = 210).
+   leniency:0.82,averageDistanceThreshold:170,
+   acceptBackwardsStrokes:false,markStrokeCorrectAfterMisses:false,showHintAfterMisses:false,
    onCorrectStroke:details=>{
     if(token!==runToken||thisWriter!==writer||!isPracticeRoute())return;
     strokeNumber=details.strokeNum+1;
@@ -299,7 +305,7 @@
    onMistake:details=>{
     if(token!==runToken||thisWriter!==writer||!isPracticeRoute())return;
     feedback()?.playWrongSound();
-    setProgress('第 '+(details.strokeNum+1)+' 畫還需要調整，請再試一次。寫錯不會跳到下一畫。');
+    setProgress('第 '+(details.strokeNum+1)+' 畫的位置、起筆或方向還不正確，請對準灰色字形再試一次；不會跳到下一畫。');
    },
    onComplete:()=>{
     if(token!==runToken||thisWriter!==writer||!isPracticeRoute())return;

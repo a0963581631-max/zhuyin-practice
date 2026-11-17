@@ -37,4 +37,14 @@ assert(app.includes("chineseVolumeMatch?'chineseVolume'"),'Book routing missing'
 assert(app.includes("chineseVolume:document.getElementById('chineseVolumePage')"),'Book page unregistered');
 assert(index.includes('subject-loader.js'));assert(index.includes('home-slideshow.js'));
 assert(!index.includes('<style'),'Inline styles remain');
-console.log('PASS: separate subject markup/styles, shared shell and routes');
+// Chinese handwriting regressions: baseline remains visible in all three hint modes;
+// the graded stroke must be close to the model, not merely have the right direction.
+const hanzi=read('js/chinese-handwriting.js');
+assert(chinese.includes('id="hanziHintLevel"') && chinese.includes('hanzi-hint-base-note'),'Hanzi hint slider or grey-outline instruction missing');
+assert(hanzi.includes('writer.showOutline({duration:0});'),'Grey character guide must remain visible');
+assert(!hanzi.includes('writer.hideOutline('),'No hint level may hide the grey character');
+assert(/leniency:0\\.82,averageDistanceThreshold:170/.test(hanzi),'Tighter shape and position thresholds missing');
+assert(hanzi.includes('markStrokeCorrectAfterMisses:false'),'No forced acceptance after repeated mistakes');
+assert(hanzi.includes('if(level===2&&strokeData.strokes[strokeNumber])'),'Blue hint must be limited to full guidance');
+assert(hanzi.includes('if(level>=1){'),'Start dot must be limited to partial and full guidance');
+console.log('PASS: separate subject markup/styles, shared shell and routes; Hanzi hint and spatial grading invariants');

@@ -28,6 +28,7 @@ jobs:
           node tests/subject-modules.cjs
           node --check js/subject-loader.js
           node --check js/app.js
+          node --check js/chinese-handwriting.js
       - name: Build Ministry of Education mini-dictionary radical index
         run: |
           python3 scripts/build-moe-mini-radicals.py
