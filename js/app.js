@@ -9,13 +9,13 @@ function loadStyle(path){
  if(styleLoads.has(path))return styleLoads.get(path);
  const task=new Promise((resolve,reject)=>{const el=document.createElement('link');el.rel='stylesheet';el.href=path;el.onload=()=>resolve();el.onerror=()=>{styleLoads.delete(path);el.remove();reject(new Error(path));};document.head.append(el);});styleLoads.set(path,task);return task;
 }
-async function ensureTeacherTools(){await loadScript('teacher-view-tools.js');await loadScript('js/teacher-tools.js');}
+async function ensureTeacherTools(){await loadScript('teacher-view-tools.js');await loadScript('js/teacher-tools.js?v=bubble-20261125');}
 async function loadBopomofo(){
  await Promise.all([loadStyle('teaching-order.css'),loadStyle('vocab-image-upload.css'),loadScript('js/feedback.js'),loadScript('teaching-order.js?v=2'),loadScript('compound-grid-practice.js'),loadScript('vocab-image-upload.js')]);
  await loadScript('js/bopomofo.js');
 }
 async function loadMath(){await loadScript('js/feedback.js');await loadScript('js/math.js');}
-async function loadReading(){await Promise.all([loadScript('js/reading-data.js'),loadScript('lesson-scissors-rock-paper.js'),loadScript('lesson-tadpole-mom.js'),loadScript('lesson-handprint.js')]);await loadScript('js/reading.js');}
+async function loadReading(){await Promise.all([loadScript('js/reading-data.js'),loadScript('lesson-scissors-rock-paper.js'),loadScript('lesson-tadpole-mom.js'),loadScript('lesson-handprint.js'),loadScript('lesson-bubble.js')]);await loadScript('js/reading.js?v=bubble-20261125');}
 async function loadQuiz(){await loadScript('js/reading-data.js');await loadScript('js/reading-quiz.js');}
 async function loadChineseHandwriting(){
  await loadScript('js/chinese-handwriting.js?v=position-hints-20261117');
@@ -46,7 +46,8 @@ async function showPortalPage(){
   const isScissors=hash==='chinese-1-first-scissors-rock-paper';
   const isTadpole=hash==='chinese-1-first-tadpole-mom';
   const isHandprint=hash==='chinese-1-first-handprint';
-  const isReading=isPretty||isScissors||isTadpole||isHandprint;
+  const isBubble=hash==='chinese-1-first-bubble';
+  const isReading=isPretty||isScissors||isTadpole||isHandprint||isBubble;
   const chineseGradeMatch=/^chinese-([1-6])$/.exec(hash);
   const gradeMatch=/^math-([1-6])$/.exec(hash);
   const topicMatch=/^math-1-parts-(split|join|practice)$/.exec(hash);
@@ -79,10 +80,10 @@ async function showPortalPage(){
   }
   document.body.classList.toggle('reading-active',isReading);
   if(isReading){
-    document.querySelector('#chineseReadingPage h1').textContent=(isHandprint?'印手印':isTadpole?'小蝌蚪找媽媽':isScissors?'剪刀石頭布':'好漂亮')+'｜課文理解';
+    document.querySelector('#chineseReadingPage h1').textContent=(isBubble?'吹泡泡':isHandprint?'印手印':isTadpole?'小蝌蚪找媽媽':isScissors?'剪刀石頭布':'好漂亮')+'｜課文理解';
     const readingBack=document.querySelector('#chineseReadingPage .reading-heading .math-back');
-    readingBack.href=isHandprint?'#chinese-1-first-book1':'#chinese-1-first-primer';
-    readingBack.textContent=isHandprint?'← 返回第一冊課文選擇':'← 返回首冊課文選擇';
+    readingBack.href=(isHandprint||isBubble)?'#chinese-1-first-book1':'#chinese-1-first-primer';
+    readingBack.textContent=(isHandprint||isBubble)?'← 返回第一冊課文選擇':'← 返回首冊課文選擇';
     document.querySelector('#chineseReadingPage .reading-quiz').hidden=!isPretty;
   }
   if(gradeMatch){
@@ -107,7 +108,7 @@ async function showPortalPage(){
     if(a.dataset.route===route) a.setAttribute('aria-current','page');
     else a.removeAttribute('aria-current');
   });
-  document.title='教學互動學習網站｜'+(hash==='chinese-1-first-pretty-quiz'?'好漂亮｜小測驗':isHandprint?'印手印｜課文理解':isTadpole?'小蝌蚪找媽媽｜課文理解':isScissors?'剪刀石頭布｜課文理解':isPretty?'好漂亮｜課文理解':chineseVolumeMatch?'一年級上學期｜'+(chineseVolumeMatch[1]==='primer'?'首冊':'第一冊'):chineseTermMatch?'一年級'+(chineseTermMatch[1]==='first'?'上學期｜冊別選擇':'下學期｜課文選擇'):topicMatch?'1年級數學・分與合・'+topicTitles[topicMatch[1]]:gradeMatch?gradeMatch[1]+'年級數學':chineseGradeMatch?chineseGradeMatch[1]+'年級國語科':{chinese:'國語科',chineseGrades:'國語科｜選擇年級',chineseVocabulary:'國語科｜生字詞練習',chineseHandwriting:'國語科｜國字筆順練習',home:'首頁',bopomofoEntry:'注音學習',learn:'注音認讀與標準筆順',challenge:'注音挑戰',help:'幫助',math:'數學',mathParts:'1年級數學・分與合',mathCount30:'1年級數學・數到30'}[route]);
+  document.title='教學互動學習網站｜'+(hash==='chinese-1-first-pretty-quiz'?'好漂亮｜小測驗':isBubble?'吹泡泡｜課文理解':isHandprint?'印手印｜課文理解':isTadpole?'小蝌蚪找媽媽｜課文理解':isScissors?'剪刀石頭布｜課文理解':isPretty?'好漂亮｜課文理解':chineseVolumeMatch?'一年級上學期｜'+(chineseVolumeMatch[1]==='primer'?'首冊':'第一冊'):chineseTermMatch?'一年級'+(chineseTermMatch[1]==='first'?'上學期｜冊別選擇':'下學期｜課文選擇'):topicMatch?'1年級數學・分與合・'+topicTitles[topicMatch[1]]:gradeMatch?gradeMatch[1]+'年級數學':chineseGradeMatch?chineseGradeMatch[1]+'年級國語科':{chinese:'國語科',chineseGrades:'國語科｜選擇年級',chineseVocabulary:'國語科｜生字詞練習',chineseHandwriting:'國語科｜國字筆順練習',home:'首頁',bopomofoEntry:'注音學習',learn:'注音認讀與標準筆順',challenge:'注音挑戰',help:'幫助',math:'數學',mathParts:'1年級數學・分與合',mathCount30:'1年級數學・數到30'}[route]);
   window.scrollTo(0,0);
   (pages[route].querySelector('h1') || pages[route].querySelector('a')).focus({preventScroll:true});
   const page=pages[route];

@@ -287,7 +287,7 @@ $('start').onclick=()=>{if(running){remaining=Math.max(0,deadline-Date.now());ru
 $('resetTimer').onclick=()=>{clearInterval(ticker);running=started=false;remaining=configured();$('timerStatus').className='';$('timerStatus').textContent='設定時間後按開始';renderTime()};for(const id of ['minutes','seconds'])$(id).onchange=()=>{if(!started){remaining=configured();renderTime()}};document.addEventListener('visibilitychange',tick);
 function annotationKey(){
  const h=location.hash||'#home';
- if(/^#chinese-1-first-(pretty|scissors-rock-paper|tadpole-mom|handprint)$/.test(h))return h+'|'+document.getElementById('prettyImage').getAttribute('src');
+ if(/^#chinese-1-first-(pretty|scissors-rock-paper|tadpole-mom|handprint|bubble)$/.test(h))return h+'|'+document.getElementById('prettyImage').getAttribute('src');
  if(h==='#learn')return h+'|'+document.getElementById('bigSymbol').textContent;
  if(h==='#chinese-1-first-pretty-quiz')return h+'|'+(!document.getElementById('quizSetup').hidden?'setup':!document.getElementById('quizResults').hidden?'results':document.getElementById('quizProgress').textContent);
  return h;

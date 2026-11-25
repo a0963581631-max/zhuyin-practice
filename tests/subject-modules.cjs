@@ -48,3 +48,17 @@ assert(hanzi.includes('markStrokeCorrectAfterMisses:false'),'No forced acceptanc
 assert(hanzi.includes('if(level===2&&strokeData.strokes[strokeNumber])'),'Blue hint must be limited to full guidance');
 assert(hanzi.includes('if(level>=1){'),'Start dot must be limited to partial and full guidance');
 console.log('PASS: separate subject markup/styles, shared shell and routes; Hanzi hint and spatial grading invariants');
+
+// Blow Bubbles uses the same reader and one annotation rectangle per printed syllable.
+const bubbleSandbox={window:{}};require('node:vm').runInNewContext(read('lesson-bubble.js'),bubbleSandbox);
+const bubble=bubbleSandbox.window.bubbleLesson;
+assert(chinese.includes('href="'+bubble.route+'"'),'Missing bubble lesson link');
+assert(app.includes("const isBubble=hash==='chinese-1-first-bubble'")&&app.includes("loadScript('lesson-bubble.js')"),'Missing bubble route or dependency');
+assert(read('js/reading.js').includes('bubbleLesson.route'),'Missing bubble reader route');
+assert.equal(bubble.slides.length,6);
+for(let i=0;i<6;i++){
+ const slide=bubble.slides[i];assert(fs.existsSync(path.join(root,slide.src)),'Missing '+slide.src);
+ assert.equal(bubble.groups[i].join('').length,bubble.syllableRects[i].length);
+ for(const [x,y,r,b] of bubble.syllableRects[i])assert(x>=0&&y>=0&&r<=bubble.width&&b<=bubble.height&&x<r&&y<b);
+}
+console.log('PASS: Bubble lesson assets, route and per-character rectangles');
